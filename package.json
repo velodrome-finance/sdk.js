@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/velodrome-finance/sdk.js#readme",
   "description": "",
+  "type": "module",
   "exports": {
     ".": "./dist/index.js",
     "./primitives": "./dist/primitives/index.js"

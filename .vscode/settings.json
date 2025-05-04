@@ -2,5 +2,6 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "typescript.preferences.importModuleSpecifierEnding": "js"
 }

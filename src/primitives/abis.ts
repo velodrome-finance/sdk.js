@@ -3,7 +3,18 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x3B919747B46B13CFfd9f16629cFf951C0b7ea1e2)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x3B919747B46B13CFfd9f16629cFf951C0b7ea1e2)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0xF179eD1FBbDC975C45AB35111E6Bf7430cCca14F)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0xC1E2B701d10A34c7c3bC2f0848806EF03E699221)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x567401a95c33bcD401b0BFF0701eB5E1e5634236)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x26350C6a222E9391279A7513Ee730a3c13c71961)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x8a159f2C1b7eeAf0A7aea870835e29a23000fc0B)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0xF179eD1FBbDC975C45AB35111E6Bf7430cCca14F)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xB1d0DFFe6260982164B53EdAcD3ccd58B081889d)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x92294D631E995f1dd9CeE4097426e6a71aB87Bcf)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xB0E8149dC7cF82A51E4317dBe821784F86E5f9A6)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x56870657bEaE842156057B138dd3a85bF0dfe2C1)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0xe21c0E1116b4Add0B47318F6D2D10aC61B1fb794)
  */
 export const lpSugarAbi = [
   {
@@ -310,14 +321,47 @@ export const lpSugarAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x3B919747B46B13CFfd9f16629cFf951C0b7ea1e2)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x3B919747B46B13CFfd9f16629cFf951C0b7ea1e2)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0xF179eD1FBbDC975C45AB35111E6Bf7430cCca14F)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0xC1E2B701d10A34c7c3bC2f0848806EF03E699221)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x567401a95c33bcD401b0BFF0701eB5E1e5634236)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x26350C6a222E9391279A7513Ee730a3c13c71961)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x8a159f2C1b7eeAf0A7aea870835e29a23000fc0B)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0xF179eD1FBbDC975C45AB35111E6Bf7430cCca14F)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xB1d0DFFe6260982164B53EdAcD3ccd58B081889d)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x92294D631E995f1dd9CeE4097426e6a71aB87Bcf)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xB0E8149dC7cF82A51E4317dBe821784F86E5f9A6)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x56870657bEaE842156057B138dd3a85bF0dfe2C1)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0xe21c0E1116b4Add0B47318F6D2D10aC61B1fb794)
  */
 export const lpSugarAddress = {
   10: '0x3B919747B46B13CFfd9f16629cFf951C0b7ea1e2',
+  130: '0xF179eD1FBbDC975C45AB35111E6Bf7430cCca14F',
+  252: '0xC1E2B701d10A34c7c3bC2f0848806EF03E699221',
+  1135: '0x567401a95c33bcD401b0BFF0701eB5E1e5634236',
+  1750: '0x26350C6a222E9391279A7513Ee730a3c13c71961',
+  1868: '0x8a159f2C1b7eeAf0A7aea870835e29a23000fc0B',
+  1923: '0xF179eD1FBbDC975C45AB35111E6Bf7430cCca14F',
+  5330: '0xB1d0DFFe6260982164B53EdAcD3ccd58B081889d',
+  8453: '0x92294D631E995f1dd9CeE4097426e6a71aB87Bcf',
+  34443: '0xB0E8149dC7cF82A51E4317dBe821784F86E5f9A6',
+  42220: '0x56870657bEaE842156057B138dd3a85bF0dfe2C1',
+  57073: '0xe21c0E1116b4Add0B47318F6D2D10aC61B1fb794',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x3B919747B46B13CFfd9f16629cFf951C0b7ea1e2)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x3B919747B46B13CFfd9f16629cFf951C0b7ea1e2)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0xF179eD1FBbDC975C45AB35111E6Bf7430cCca14F)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0xC1E2B701d10A34c7c3bC2f0848806EF03E699221)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x567401a95c33bcD401b0BFF0701eB5E1e5634236)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x26350C6a222E9391279A7513Ee730a3c13c71961)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x8a159f2C1b7eeAf0A7aea870835e29a23000fc0B)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0xF179eD1FBbDC975C45AB35111E6Bf7430cCca14F)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xB1d0DFFe6260982164B53EdAcD3ccd58B081889d)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x92294D631E995f1dd9CeE4097426e6a71aB87Bcf)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xB0E8149dC7cF82A51E4317dBe821784F86E5f9A6)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x56870657bEaE842156057B138dd3a85bF0dfe2C1)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0xe21c0E1116b4Add0B47318F6D2D10aC61B1fb794)
  */
 export const lpSugarConfig = {
   address: lpSugarAddress,
@@ -329,7 +373,18 @@ export const lpSugarConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x416b433906b1B72FA758e166e239c43d68dC6F29)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x416b433906b1B72FA758e166e239c43d68dC6F29)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x827922686190790b37229fd06084350E74485b72)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
  */
 export const nfpmAbi = [
   {
@@ -1015,14 +1070,47 @@ export const nfpmAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x416b433906b1B72FA758e166e239c43d68dC6F29)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x416b433906b1B72FA758e166e239c43d68dC6F29)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x827922686190790b37229fd06084350E74485b72)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
  */
 export const nfpmAddress = {
   10: '0x416b433906b1B72FA758e166e239c43d68dC6F29',
+  130: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
+  252: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
+  1135: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
+  1750: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
+  1868: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
+  1923: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
+  5330: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
+  8453: '0x827922686190790b37229fd06084350E74485b72',
+  34443: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
+  42220: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
+  57073: '0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x416b433906b1B72FA758e166e239c43d68dC6F29)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x416b433906b1B72FA758e166e239c43d68dC6F29)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x827922686190790b37229fd06084350E74485b72)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702)
  */
 export const nfpmConfig = { address: nfpmAddress, abi: nfpmAbi } as const
 
@@ -1031,7 +1119,18 @@ export const nfpmConfig = { address: nfpmAddress, abi: nfpmAbi } as const
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x59114D308C6DE4A84F5F8cD80485a5481047b99f)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x59114D308C6DE4A84F5F8cD80485a5481047b99f)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x4817f8D70aE32Ee96e5E6BFA24eb7Fcfa83bbf29)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x024503003fFE9AF285f47c1DaAaA497D9f1166D0)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x3e71CCdf495d9628D3655A600Bcad3afF2ddea98)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x288a124CB87D7c95656Ad7512B7Da733Bb60A432)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xbAEe949B52cb503e39f1Df54Dcee778da59E11bc)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0xbf6d753FC4a10Ec5191c56BB3DC1e414b7572327)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
  */
 export const pricesAbi = [
   {
@@ -1486,14 +1585,47 @@ export const pricesAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x59114D308C6DE4A84F5F8cD80485a5481047b99f)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x59114D308C6DE4A84F5F8cD80485a5481047b99f)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x4817f8D70aE32Ee96e5E6BFA24eb7Fcfa83bbf29)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x024503003fFE9AF285f47c1DaAaA497D9f1166D0)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x3e71CCdf495d9628D3655A600Bcad3afF2ddea98)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x288a124CB87D7c95656Ad7512B7Da733Bb60A432)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xbAEe949B52cb503e39f1Df54Dcee778da59E11bc)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0xbf6d753FC4a10Ec5191c56BB3DC1e414b7572327)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
  */
 export const pricesAddress = {
   10: '0x59114D308C6DE4A84F5F8cD80485a5481047b99f',
+  130: '0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE',
+  252: '0x4817f8D70aE32Ee96e5E6BFA24eb7Fcfa83bbf29',
+  1135: '0x024503003fFE9AF285f47c1DaAaA497D9f1166D0',
+  1750: '0x3e71CCdf495d9628D3655A600Bcad3afF2ddea98',
+  1868: '0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE',
+  1923: '0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE',
+  5330: '0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE',
+  8453: '0x288a124CB87D7c95656Ad7512B7Da733Bb60A432',
+  34443: '0xbAEe949B52cb503e39f1Df54Dcee778da59E11bc',
+  42220: '0xbf6d753FC4a10Ec5191c56BB3DC1e414b7572327',
+  57073: '0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x59114D308C6DE4A84F5F8cD80485a5481047b99f)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x59114D308C6DE4A84F5F8cD80485a5481047b99f)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x4817f8D70aE32Ee96e5E6BFA24eb7Fcfa83bbf29)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x024503003fFE9AF285f47c1DaAaA497D9f1166D0)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x3e71CCdf495d9628D3655A600Bcad3afF2ddea98)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x288a124CB87D7c95656Ad7512B7Da733Bb60A432)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xbAEe949B52cb503e39f1Df54Dcee778da59E11bc)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0xbf6d753FC4a10Ec5191c56BB3DC1e414b7572327)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0xe58920a8c684CD3d6dCaC2a41b12998e4CB17EfE)
  */
 export const pricesConfig = { address: pricesAddress, abi: pricesAbi } as const
 
@@ -1502,7 +1634,8 @@ export const pricesConfig = { address: pricesAddress, abi: pricesAbi } as const
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xA405a1e247c40e1e88F5344135327e22bA0AC4b7)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xA405a1e247c40e1e88F5344135327e22bA0AC4b7)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0xE1328FFaDa4f9CC2b6EFE4aD4db63C5ABAC9bab1)
  */
 export const relaySugarAbi = [
   {
@@ -1590,14 +1723,17 @@ export const relaySugarAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xA405a1e247c40e1e88F5344135327e22bA0AC4b7)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xA405a1e247c40e1e88F5344135327e22bA0AC4b7)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0xE1328FFaDa4f9CC2b6EFE4aD4db63C5ABAC9bab1)
  */
 export const relaySugarAddress = {
   10: '0xA405a1e247c40e1e88F5344135327e22bA0AC4b7',
+  8453: '0xE1328FFaDa4f9CC2b6EFE4aD4db63C5ABAC9bab1',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xA405a1e247c40e1e88F5344135327e22bA0AC4b7)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xA405a1e247c40e1e88F5344135327e22bA0AC4b7)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0xE1328FFaDa4f9CC2b6EFE4aD4db63C5ABAC9bab1)
  */
 export const relaySugarConfig = {
   address: relaySugarAddress,
@@ -1609,7 +1745,18 @@ export const relaySugarConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x62CCFB2496f49A80B0184AD720379B529E9152fB)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x62CCFB2496f49A80B0184AD720379B529E9152fB)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0xB1d0DFFe6260982164B53EdAcD3ccd58B081889d)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0xA44600F4DBA6683d8BD99270B1A6a143fB9F1C3B)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xD5d3ABAcB8CF075636792658EE0be8B03AF517B8)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x2DCD9B33F0721000Dc1F8f84B804d4CFA23d7713)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0xc100DC20aff9907E833a6aDEDDB52fC310554fF2)
  */
 export const rewardsSugarAbi = [
   {
@@ -1774,14 +1921,47 @@ export const rewardsSugarAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x62CCFB2496f49A80B0184AD720379B529E9152fB)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x62CCFB2496f49A80B0184AD720379B529E9152fB)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0xB1d0DFFe6260982164B53EdAcD3ccd58B081889d)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0xA44600F4DBA6683d8BD99270B1A6a143fB9F1C3B)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xD5d3ABAcB8CF075636792658EE0be8B03AF517B8)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x2DCD9B33F0721000Dc1F8f84B804d4CFA23d7713)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0xc100DC20aff9907E833a6aDEDDB52fC310554fF2)
  */
 export const rewardsSugarAddress = {
   10: '0x62CCFB2496f49A80B0184AD720379B529E9152fB',
+  130: '0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b',
+  252: '0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b',
+  1135: '0xB1d0DFFe6260982164B53EdAcD3ccd58B081889d',
+  1750: '0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b',
+  1868: '0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b',
+  1923: '0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b',
+  5330: '0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b',
+  8453: '0xA44600F4DBA6683d8BD99270B1A6a143fB9F1C3B',
+  34443: '0xD5d3ABAcB8CF075636792658EE0be8B03AF517B8',
+  42220: '0x2DCD9B33F0721000Dc1F8f84B804d4CFA23d7713',
+  57073: '0xc100DC20aff9907E833a6aDEDDB52fC310554fF2',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x62CCFB2496f49A80B0184AD720379B529E9152fB)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x62CCFB2496f49A80B0184AD720379B529E9152fB)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0xB1d0DFFe6260982164B53EdAcD3ccd58B081889d)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0xA44600F4DBA6683d8BD99270B1A6a143fB9F1C3B)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xD5d3ABAcB8CF075636792658EE0be8B03AF517B8)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x2DCD9B33F0721000Dc1F8f84B804d4CFA23d7713)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0xc100DC20aff9907E833a6aDEDDB52fC310554fF2)
  */
 export const rewardsSugarConfig = {
   address: rewardsSugarAddress,
@@ -1793,7 +1973,18 @@ export const rewardsSugarConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xff79ec912ba114fd7989b9a2b90c65f0c1b44722)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xff79ec912ba114fd7989b9a2b90c65f0c1b44722)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x0A5aA5D3a4d28014f967Bf0f29EAA3FF9807D5c6)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
  */
 export const routeQuoterAbi = [
   {
@@ -1917,14 +2108,47 @@ export const routeQuoterAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xff79ec912ba114fd7989b9a2b90c65f0c1b44722)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xff79ec912ba114fd7989b9a2b90c65f0c1b44722)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x0A5aA5D3a4d28014f967Bf0f29EAA3FF9807D5c6)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
  */
 export const routeQuoterAddress = {
   10: '0xFF79ec912bA114FD7989b9A2b90C65f0c1b44722',
+  130: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
+  252: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
+  1135: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
+  1750: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
+  1868: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
+  1923: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
+  5330: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
+  8453: '0x0A5aA5D3a4d28014f967Bf0f29EAA3FF9807D5c6',
+  34443: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
+  42220: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
+  57073: '0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xff79ec912ba114fd7989b9a2b90c65f0c1b44722)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xff79ec912ba114fd7989b9a2b90c65f0c1b44722)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x0A5aA5D3a4d28014f967Bf0f29EAA3FF9807D5c6)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24)
  */
 export const routeQuoterConfig = {
   address: routeQuoterAddress,
@@ -1936,641 +2160,216 @@ export const routeQuoterConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xa062aE8A9c5e11aaA026fc2670B0D65cCc8B2858)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x9A7defE617e05BdB66063026eD601D3Ed906Ba47)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x6Cb442acF35158D5eDa88fe602221b67B400Be3E)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
  */
 export const routerAbi = [
   {
     type: 'constructor',
     inputs: [
-      { name: '_forwarder', internalType: 'address', type: 'address' },
-      { name: '_factoryRegistry', internalType: 'address', type: 'address' },
-      { name: '_v1Factory', internalType: 'address', type: 'address' },
-      { name: '_factory', internalType: 'address', type: 'address' },
-      { name: '_voter', internalType: 'address', type: 'address' },
-      { name: '_weth', internalType: 'address', type: 'address' },
-    ],
-    stateMutability: 'nonpayable',
-  },
-  { type: 'error', inputs: [], name: 'ConversionFromV2ToV1VeloProhibited' },
-  { type: 'error', inputs: [], name: 'ETHTransferFailed' },
-  { type: 'error', inputs: [], name: 'Expired' },
-  { type: 'error', inputs: [], name: 'InsufficientAmount' },
-  { type: 'error', inputs: [], name: 'InsufficientAmountA' },
-  { type: 'error', inputs: [], name: 'InsufficientAmountADesired' },
-  { type: 'error', inputs: [], name: 'InsufficientAmountAOptimal' },
-  { type: 'error', inputs: [], name: 'InsufficientAmountB' },
-  { type: 'error', inputs: [], name: 'InsufficientAmountBDesired' },
-  { type: 'error', inputs: [], name: 'InsufficientLiquidity' },
-  { type: 'error', inputs: [], name: 'InsufficientOutputAmount' },
-  { type: 'error', inputs: [], name: 'InvalidAmountInForETHDeposit' },
-  { type: 'error', inputs: [], name: 'InvalidPath' },
-  { type: 'error', inputs: [], name: 'InvalidRouteA' },
-  { type: 'error', inputs: [], name: 'InvalidRouteB' },
-  { type: 'error', inputs: [], name: 'InvalidTokenInForETHDeposit' },
-  { type: 'error', inputs: [], name: 'OnlyWETH' },
-  { type: 'error', inputs: [], name: 'PoolDoesNotExist' },
-  { type: 'error', inputs: [], name: 'PoolFactoryDoesNotExist' },
-  { type: 'error', inputs: [], name: 'SameAddresses' },
-  { type: 'error', inputs: [], name: 'ZeroAddress' },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'ETHER',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
       {
-        name: 'routes',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
+        name: 'params',
+        internalType: 'struct RouterParameters',
+        type: 'tuple',
         components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
+          { name: 'permit2', internalType: 'address', type: 'address' },
+          { name: 'weth9', internalType: 'address', type: 'address' },
+          { name: 'seaportV1_5', internalType: 'address', type: 'address' },
+          { name: 'seaportV1_4', internalType: 'address', type: 'address' },
+          { name: 'openseaConduit', internalType: 'address', type: 'address' },
+          { name: 'nftxZap', internalType: 'address', type: 'address' },
+          { name: 'x2y2', internalType: 'address', type: 'address' },
+          { name: 'foundation', internalType: 'address', type: 'address' },
+          { name: 'sudoswap', internalType: 'address', type: 'address' },
+          { name: 'elementMarket', internalType: 'address', type: 'address' },
+          { name: 'nft20Zap', internalType: 'address', type: 'address' },
+          { name: 'cryptopunks', internalType: 'address', type: 'address' },
+          { name: 'looksRareV2', internalType: 'address', type: 'address' },
+          {
+            name: 'routerRewardsDistributor',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'looksRareRewardsDistributor',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'looksRareToken', internalType: 'address', type: 'address' },
+          { name: 'v2Factory', internalType: 'address', type: 'address' },
+          {
+            name: 'v2Implementation',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'v3Factory', internalType: 'address', type: 'address' },
+          {
+            name: 'clImplementation',
+            internalType: 'address',
+            type: 'address',
+          },
         ],
       },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
     ],
-    name: 'UNSAFE_swapExactTokensForTokens',
-    outputs: [{ name: '', internalType: 'uint256[]', type: 'uint256[]' }],
+    stateMutability: 'nonpayable',
+  },
+  { type: 'error', inputs: [], name: 'BalanceTooLow' },
+  { type: 'error', inputs: [], name: 'BuyPunkFailed' },
+  { type: 'error', inputs: [], name: 'ContractLocked' },
+  { type: 'error', inputs: [], name: 'ETHNotAccepted' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'commandIndex', internalType: 'uint256', type: 'uint256' },
+      { name: 'message', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'ExecutionFailed',
+  },
+  { type: 'error', inputs: [], name: 'FromAddressIsNotOwner' },
+  { type: 'error', inputs: [], name: 'InsufficientETH' },
+  { type: 'error', inputs: [], name: 'InsufficientToken' },
+  { type: 'error', inputs: [], name: 'InvalidBips' },
+  {
+    type: 'error',
+    inputs: [{ name: 'commandType', internalType: 'uint256', type: 'uint256' }],
+    name: 'InvalidCommandType',
+  },
+  { type: 'error', inputs: [], name: 'InvalidOwnerERC1155' },
+  { type: 'error', inputs: [], name: 'InvalidOwnerERC721' },
+  { type: 'error', inputs: [], name: 'InvalidPath' },
+  { type: 'error', inputs: [], name: 'InvalidReserves' },
+  { type: 'error', inputs: [], name: 'InvalidSpender' },
+  { type: 'error', inputs: [], name: 'LengthMismatch' },
+  { type: 'error', inputs: [], name: 'NotUniversalRouter' },
+  { type: 'error', inputs: [], name: 'SliceOutOfBounds' },
+  { type: 'error', inputs: [], name: 'StableExactOutputUnsupported' },
+  { type: 'error', inputs: [], name: 'TransactionDeadlinePassed' },
+  { type: 'error', inputs: [], name: 'UnableToClaim' },
+  { type: 'error', inputs: [], name: 'UnsafeCast' },
+  { type: 'error', inputs: [], name: 'V2InvalidPath' },
+  { type: 'error', inputs: [], name: 'V2TooLittleReceived' },
+  { type: 'error', inputs: [], name: 'V2TooMuchRequested' },
+  { type: 'error', inputs: [], name: 'V3InvalidAmountOut' },
+  { type: 'error', inputs: [], name: 'V3InvalidCaller' },
+  { type: 'error', inputs: [], name: 'V3InvalidSwap' },
+  { type: 'error', inputs: [], name: 'V3TooLittleReceived' },
+  { type: 'error', inputs: [], name: 'V3TooMuchRequested' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'RewardsSent',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'looksRareClaim', internalType: 'bytes', type: 'bytes' }],
+    name: 'collectRewards',
+    outputs: [],
     stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: 'amountADesired', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountBDesired', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountAMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountBMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: 'commands', internalType: 'bytes', type: 'bytes' },
+      { name: 'inputs', internalType: 'bytes[]', type: 'bytes[]' },
     ],
-    name: 'addLiquidity',
-    outputs: [
-      { name: 'amountA', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountB', internalType: 'uint256', type: 'uint256' },
-      { name: 'liquidity', internalType: 'uint256', type: 'uint256' },
-    ],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'token', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: 'amountTokenDesired', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountTokenMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountETHMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'addLiquidityETH',
-    outputs: [
-      { name: 'amountToken', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountETH', internalType: 'uint256', type: 'uint256' },
-      { name: 'liquidity', internalType: 'uint256', type: 'uint256' },
-    ],
+    name: 'execute',
+    outputs: [],
     stateMutability: 'payable',
   },
   {
     type: 'function',
-    inputs: [],
-    name: 'defaultFactory',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'factoryRegistry',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
     inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: '_factory', internalType: 'address', type: 'address' },
-      { name: 'amountInA', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountInB', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'routesA',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      {
-        name: 'routesB',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-    ],
-    name: 'generateZapInParams',
-    outputs: [
-      { name: 'amountOutMinA', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountOutMinB', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountAMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountBMin', internalType: 'uint256', type: 'uint256' },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: '_factory', internalType: 'address', type: 'address' },
-      { name: 'liquidity', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'routesA',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      {
-        name: 'routesB',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-    ],
-    name: 'generateZapOutParams',
-    outputs: [
-      { name: 'amountOutMinA', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountOutMinB', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountAMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountBMin', internalType: 'uint256', type: 'uint256' },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'amountIn', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'routes',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-    ],
-    name: 'getAmountsOut',
-    outputs: [
-      { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: '_factory', internalType: 'address', type: 'address' },
-    ],
-    name: 'getReserves',
-    outputs: [
-      { name: 'reserveA', internalType: 'uint256', type: 'uint256' },
-      { name: 'reserveB', internalType: 'uint256', type: 'uint256' },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'forwarder', internalType: 'address', type: 'address' }],
-    name: 'isTrustedForwarder',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: '_factory', internalType: 'address', type: 'address' },
-    ],
-    name: 'pairFor',
-    outputs: [{ name: 'pool', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: '_factory', internalType: 'address', type: 'address' },
-    ],
-    name: 'poolFor',
-    outputs: [{ name: 'pool', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: '_factory', internalType: 'address', type: 'address' },
-      { name: 'amountADesired', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountBDesired', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'quoteAddLiquidity',
-    outputs: [
-      { name: 'amountA', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountB', internalType: 'uint256', type: 'uint256' },
-      { name: 'liquidity', internalType: 'uint256', type: 'uint256' },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: '_factory', internalType: 'address', type: 'address' },
-      { name: 'liquidity', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'quoteRemoveLiquidity',
-    outputs: [
-      { name: 'amountA', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountB', internalType: 'uint256', type: 'uint256' },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: '_factory', internalType: 'address', type: 'address' },
-    ],
-    name: 'quoteStableLiquidityRatio',
-    outputs: [{ name: 'ratio', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: 'liquidity', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountAMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountBMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'commands', internalType: 'bytes', type: 'bytes' },
+      { name: 'inputs', internalType: 'bytes[]', type: 'bytes[]' },
       { name: 'deadline', internalType: 'uint256', type: 'uint256' },
     ],
-    name: 'removeLiquidity',
-    outputs: [
-      { name: 'amountA', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountB', internalType: 'uint256', type: 'uint256' },
-    ],
-    stateMutability: 'nonpayable',
+    name: 'execute',
+    outputs: [],
+    stateMutability: 'payable',
   },
   {
     type: 'function',
     inputs: [
-      { name: 'token', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: 'liquidity', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountTokenMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountETHMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'uint256[]', type: 'uint256[]' },
+      { name: '', internalType: 'uint256[]', type: 'uint256[]' },
+      { name: '', internalType: 'bytes', type: 'bytes' },
     ],
-    name: 'removeLiquidityETH',
-    outputs: [
-      { name: 'amountToken', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountETH', internalType: 'uint256', type: 'uint256' },
-    ],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'token', internalType: 'address', type: 'address' },
-      { name: 'stable', internalType: 'bool', type: 'bool' },
-      { name: 'liquidity', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountTokenMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountETHMin', internalType: 'uint256', type: 'uint256' },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'removeLiquidityETHSupportingFeeOnTransferTokens',
-    outputs: [{ name: 'amountETH', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenA', internalType: 'address', type: 'address' },
-      { name: 'tokenB', internalType: 'address', type: 'address' },
-    ],
-    name: 'sortTokens',
-    outputs: [
-      { name: 'token0', internalType: 'address', type: 'address' },
-      { name: 'token1', internalType: 'address', type: 'address' },
-    ],
+    name: 'onERC1155BatchReceived',
+    outputs: [{ name: '', internalType: 'bytes4', type: 'bytes4' }],
     stateMutability: 'pure',
   },
   {
     type: 'function',
     inputs: [
-      { name: 'amountOutMin', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'routes',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'uint256', type: 'uint256' },
+      { name: '', internalType: 'uint256', type: 'uint256' },
+      { name: '', internalType: 'bytes', type: 'bytes' },
     ],
-    name: 'swapExactETHForTokens',
-    outputs: [
-      { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
-    ],
-    stateMutability: 'payable',
+    name: 'onERC1155Received',
+    outputs: [{ name: '', internalType: 'bytes4', type: 'bytes4' }],
+    stateMutability: 'pure',
   },
   {
     type: 'function',
     inputs: [
-      { name: 'amountOutMin', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'routes',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'uint256', type: 'uint256' },
+      { name: '', internalType: 'bytes', type: 'bytes' },
     ],
-    name: 'swapExactETHForTokensSupportingFeeOnTransferTokens',
-    outputs: [],
-    stateMutability: 'payable',
+    name: 'onERC721Received',
+    outputs: [{ name: '', internalType: 'bytes4', type: 'bytes4' }],
+    stateMutability: 'pure',
   },
   {
     type: 'function',
     inputs: [
-      { name: 'amountIn', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountOutMin', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'routes',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
+      { name: 'token', internalType: 'address', type: 'address' },
+      { name: 'from', internalType: 'address', type: 'address' },
       { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
     ],
-    name: 'swapExactTokensForETH',
-    outputs: [
-      { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
-    ],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'amountIn', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountOutMin', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'routes',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'swapExactTokensForETHSupportingFeeOnTransferTokens',
+    name: 'stf',
     outputs: [],
     stateMutability: 'nonpayable',
   },
   {
     type: 'function',
-    inputs: [
-      { name: 'amountIn', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountOutMin', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'routes',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'swapExactTokensForTokens',
-    outputs: [
-      { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
-    ],
-    stateMutability: 'nonpayable',
+    inputs: [{ name: 'interfaceId', internalType: 'bytes4', type: 'bytes4' }],
+    name: 'supportsInterface',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'pure',
   },
   {
     type: 'function',
     inputs: [
-      { name: 'amountIn', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountOutMin', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'routes',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: 'amount0Delta', internalType: 'int256', type: 'int256' },
+      { name: 'amount1Delta', internalType: 'int256', type: 'int256' },
+      { name: 'data', internalType: 'bytes', type: 'bytes' },
     ],
-    name: 'swapExactTokensForTokensSupportingFeeOnTransferTokens',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'v1Factory',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'voter',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'weth',
-    outputs: [{ name: '', internalType: 'contract IWETH', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenIn', internalType: 'address', type: 'address' },
-      { name: 'amountInA', internalType: 'uint256', type: 'uint256' },
-      { name: 'amountInB', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'zapInPool',
-        internalType: 'struct IRouter.Zap',
-        type: 'tuple',
-        components: [
-          { name: 'tokenA', internalType: 'address', type: 'address' },
-          { name: 'tokenB', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-          { name: 'amountOutMinA', internalType: 'uint256', type: 'uint256' },
-          { name: 'amountOutMinB', internalType: 'uint256', type: 'uint256' },
-          { name: 'amountAMin', internalType: 'uint256', type: 'uint256' },
-          { name: 'amountBMin', internalType: 'uint256', type: 'uint256' },
-        ],
-      },
-      {
-        name: 'routesA',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      {
-        name: 'routesB',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      { name: 'to', internalType: 'address', type: 'address' },
-      { name: 'stake', internalType: 'bool', type: 'bool' },
-    ],
-    name: 'zapIn',
-    outputs: [{ name: 'liquidity', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'payable',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'tokenOut', internalType: 'address', type: 'address' },
-      { name: 'liquidity', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'zapOutPool',
-        internalType: 'struct IRouter.Zap',
-        type: 'tuple',
-        components: [
-          { name: 'tokenA', internalType: 'address', type: 'address' },
-          { name: 'tokenB', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-          { name: 'amountOutMinA', internalType: 'uint256', type: 'uint256' },
-          { name: 'amountOutMinB', internalType: 'uint256', type: 'uint256' },
-          { name: 'amountAMin', internalType: 'uint256', type: 'uint256' },
-          { name: 'amountBMin', internalType: 'uint256', type: 'uint256' },
-        ],
-      },
-      {
-        name: 'routesA',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-      {
-        name: 'routesB',
-        internalType: 'struct IRouter.Route[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'from', internalType: 'address', type: 'address' },
-          { name: 'to', internalType: 'address', type: 'address' },
-          { name: 'stable', internalType: 'bool', type: 'bool' },
-          { name: 'factory', internalType: 'address', type: 'address' },
-        ],
-      },
-    ],
-    name: 'zapOut',
+    name: 'uniswapV3SwapCallback',
     outputs: [],
     stateMutability: 'nonpayable',
   },
@@ -2578,14 +2377,47 @@ export const routerAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xa062aE8A9c5e11aaA026fc2670B0D65cCc8B2858)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x9A7defE617e05BdB66063026eD601D3Ed906Ba47)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x6Cb442acF35158D5eDa88fe602221b67B400Be3E)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
  */
 export const routerAddress = {
-  10: '0xa062aE8A9c5e11aaA026fc2670B0D65cCc8B2858',
+  10: '0x4bF3E32de155359D1D75e8B474b66848221142fc',
+  130: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  252: '0x9A7defE617e05BdB66063026eD601D3Ed906Ba47',
+  1135: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  1750: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  1868: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  1923: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  5330: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  8453: '0x6Cb442acF35158D5eDa88fe602221b67B400Be3E',
+  34443: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  42220: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  57073: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xa062aE8A9c5e11aaA026fc2670B0D65cCc8B2858)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x9A7defE617e05BdB66063026eD601D3Ed906Ba47)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x6Cb442acF35158D5eDa88fe602221b67B400Be3E)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
  */
 export const routerConfig = { address: routerAddress, abi: routerAbi } as const
 
@@ -2594,7 +2426,18 @@ export const routerConfig = { address: routerAddress, abi: routerAbi } as const
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xD45624bf2CB9f65ecbdF3067d21992b099b56202)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xD45624bf2CB9f65ecbdF3067d21992b099b56202)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x593D092BB28CCEfe33bFdD3d9457e77Bd3084271)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0xB98fB4C9C99dE155cCbF5A14af0dBBAd96033D6f)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x9c62ab10577fB3C20A22E231b7703Ed6D456CC7a)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xD24a61656AB0d70994Ef5F42fE11AA95c0a1d329)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x928Bb6c9097d5C9c1eB5E99E71e24E4D773f2Be5)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
  */
 export const slipstreamSugarAbi = [
   {
@@ -2791,14 +2634,47 @@ export const slipstreamSugarAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xD45624bf2CB9f65ecbdF3067d21992b099b56202)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xD45624bf2CB9f65ecbdF3067d21992b099b56202)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x593D092BB28CCEfe33bFdD3d9457e77Bd3084271)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0xB98fB4C9C99dE155cCbF5A14af0dBBAd96033D6f)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x9c62ab10577fB3C20A22E231b7703Ed6D456CC7a)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xD24a61656AB0d70994Ef5F42fE11AA95c0a1d329)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x928Bb6c9097d5C9c1eB5E99E71e24E4D773f2Be5)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
  */
 export const slipstreamSugarAddress = {
   10: '0xD45624bf2CB9f65ecbdF3067d21992b099b56202',
+  130: '0x222ed297aF0560030136AE652d39fa40E1B72818',
+  252: '0x593D092BB28CCEfe33bFdD3d9457e77Bd3084271',
+  1135: '0xB98fB4C9C99dE155cCbF5A14af0dBBAd96033D6f',
+  1750: '0x222ed297aF0560030136AE652d39fa40E1B72818',
+  1868: '0x222ed297aF0560030136AE652d39fa40E1B72818',
+  1923: '0x222ed297aF0560030136AE652d39fa40E1B72818',
+  5330: '0x222ed297aF0560030136AE652d39fa40E1B72818',
+  8453: '0x9c62ab10577fB3C20A22E231b7703Ed6D456CC7a',
+  34443: '0xD24a61656AB0d70994Ef5F42fE11AA95c0a1d329',
+  42220: '0x928Bb6c9097d5C9c1eB5E99E71e24E4D773f2Be5',
+  57073: '0x222ed297aF0560030136AE652d39fa40E1B72818',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xD45624bf2CB9f65ecbdF3067d21992b099b56202)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xD45624bf2CB9f65ecbdF3067d21992b099b56202)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x593D092BB28CCEfe33bFdD3d9457e77Bd3084271)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0xB98fB4C9C99dE155cCbF5A14af0dBBAd96033D6f)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x9c62ab10577fB3C20A22E231b7703Ed6D456CC7a)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0xD24a61656AB0d70994Ef5F42fE11AA95c0a1d329)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x928Bb6c9097d5C9c1eB5E99E71e24E4D773f2Be5)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x222ed297aF0560030136AE652d39fa40E1B72818)
  */
 export const slipstreamSugarConfig = {
   address: slipstreamSugarAddress,
@@ -3299,7 +3175,18 @@ export const tokenBridgeConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x9A7defE617e05BdB66063026eD601D3Ed906Ba47)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x6Cb442acF35158D5eDa88fe602221b67B400Be3E)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
  */
 export const universalRouterAbi = [
   {
@@ -3505,14 +3392,47 @@ export const universalRouterAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x9A7defE617e05BdB66063026eD601D3Ed906Ba47)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x6Cb442acF35158D5eDa88fe602221b67B400Be3E)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
  */
 export const universalRouterAddress = {
   10: '0x4bF3E32de155359D1D75e8B474b66848221142fc',
+  130: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  252: '0x9A7defE617e05BdB66063026eD601D3Ed906Ba47',
+  1135: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  1750: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  1868: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  1923: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  5330: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  8453: '0x6Cb442acF35158D5eDa88fe602221b67B400Be3E',
+  34443: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  42220: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  57073: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x9A7defE617e05BdB66063026eD601D3Ed906Ba47)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x6Cb442acF35158D5eDa88fe602221b67B400Be3E)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
  */
 export const universalRouterConfig = {
   address: universalRouterAddress,
@@ -3524,7 +3444,8 @@ export const universalRouterConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x94f913362b232e31daB49a1aFB775cfd25DaA6a1)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x94f913362b232e31daB49a1aFB775cfd25DaA6a1)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x4c5d3925fe65DFeB5A079485136e4De09cb664A5)
  */
 export const veSugarAbi = [
   {
@@ -3682,14 +3603,17 @@ export const veSugarAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x94f913362b232e31daB49a1aFB775cfd25DaA6a1)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x94f913362b232e31daB49a1aFB775cfd25DaA6a1)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x4c5d3925fe65DFeB5A079485136e4De09cb664A5)
  */
 export const veSugarAddress = {
   10: '0x94f913362b232e31daB49a1aFB775cfd25DaA6a1',
+  8453: '0x4c5d3925fe65DFeB5A079485136e4De09cb664A5',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x94f913362b232e31daB49a1aFB775cfd25DaA6a1)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x94f913362b232e31daB49a1aFB775cfd25DaA6a1)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x4c5d3925fe65DFeB5A079485136e4De09cb664A5)
  */
 export const veSugarConfig = {
   address: veSugarAddress,
@@ -3701,7 +3625,18 @@ export const veSugarConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x16613524e02ad97eDfeF371bC883F2F5d6C480A5)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
  */
 export const voterAbi = [
   {
@@ -4424,13 +4359,46 @@ export const voterAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x16613524e02ad97eDfeF371bC883F2F5d6C480A5)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
  */
 export const voterAddress = {
   10: '0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C',
+  130: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
+  252: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
+  1135: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
+  1750: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
+  1868: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
+  1923: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
+  5330: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
+  8453: '0x16613524e02ad97eDfeF371bC883F2F5d6C480A5',
+  34443: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
+  42220: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
+  57073: '0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C)
+ * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Base Basescan__](https://basescan.org/address/0x16613524e02ad97eDfeF371bC883F2F5d6C480A5)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123)
  */
 export const voterConfig = { address: voterAddress, abi: voterAbi } as const

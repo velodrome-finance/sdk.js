@@ -1,7 +1,9 @@
 import { ContractConfig, defineConfig } from "@wagmi/cli";
 import { etherscan } from "@wagmi/cli/plugins";
+import type { Address } from "viem";
 import { optimism } from "viem/chains";
-import { velodromeConfig } from "./src/velodrome-config";
+import { aerodromeConfig } from "./src/primitives/aerodrome-config";
+import { velodromeConfig } from "./src/primitives/velodrome-config";
 
 function etherscanWithRetries({
   maxAttempts,
@@ -53,7 +55,24 @@ function etherscanWithRetries({
 
 export default defineConfig(() => {
   const chainId = optimism.id;
-  const cfg = velodromeConfig;
+
+  const getAddresses = (configKey: string) => {
+    const getAddressesFromConfig = (config: object) => {
+      const addresses = {} as Record<number, Address>;
+
+      for (const key in config) {
+        if (key === configKey) {
+          addresses[chainId] = config[key];
+        } else if (new RegExp(configKey + "_\\d+").test(key)) {
+          addresses[key.slice(key.lastIndexOf("_") + 1)] = config[key];
+        }
+      }
+
+      return addresses;
+    };
+
+    return { ...getAddressesFromConfig(aerodromeConfig), ...getAddressesFromConfig(velodromeConfig) };
+  };
 
   return {
     out: "src/primitives/abis.ts",
@@ -67,53 +86,53 @@ export default defineConfig(() => {
         contracts: [
           {
             name: "lpSugar",
-            address: cfg[`LP_SUGAR_ADDRESS_${chainId}`],
+            address: getAddresses("LP_SUGAR_ADDRESS"),
           },
           {
             name: "rewardsSugar",
-            address: cfg[`REWARDS_SUGAR_ADDRESS_${chainId}`],
+            address: getAddresses("REWARDS_SUGAR_ADDRESS"),
           },
           {
             name: "relaySugar",
-            address: cfg[`RELAY_SUGAR_ADDRESS_${chainId}`],
+            address: getAddresses("RELAY_SUGAR_ADDRESS"),
           },
           {
             name: "router",
-            address: cfg[`ROUTER_ADDRESS_${chainId}`],
+            address: getAddresses("ROUTER_ADDRESS"),
           },
           {
             name: "universalRouter",
-            address: cfg[`UNIVERSAL_ROUTER_ADDRESS_${chainId}`],
+            address: getAddresses("UNIVERSAL_ROUTER_ADDRESS"),
           },
           {
             name: "veSugar",
-            address: cfg[`VE_SUGAR_ADDRESS_${chainId}`],
+            address: getAddresses("VE_SUGAR_ADDRESS"),
           },
           {
             name: "prices",
-            address: cfg[`PRICES_ADDRESS_${chainId}`],
+            address: getAddresses("PRICES_ADDRESS"),
           },
           {
             name: "routeQuoter",
-            address: cfg[`QUOTER_ADDRESS_${chainId}`],
+            address: getAddresses("QUOTER_ADDRESS"),
           },
           {
             name: "slipstreamSugar",
-            address: cfg[`SLIPSTREAM_SUGAR_ADDRESS_${chainId}`],
+            address: getAddresses("SLIPSTREAM_SUGAR_ADDRESS"),
           },
           {
             name: "nfpm",
-            address: cfg[`NFPM_ADDRESS_${chainId}`],
+            address: getAddresses("NFPM_ADDRESS"),
           },
           {
             name: "voter",
-            address: cfg[`VOTER_ADDRESS_${chainId}`],
+            address: getAddresses("VOTER_ADDRESS"),
           },
           {
             name: "tokenBridge",
-            address: cfg.TOKEN_BRIDGE,
+            address: getAddresses("TOKEN_BRIDGE"),
           },
-        ],
+        ] as ContractConfig<number, 10>[],
       }),
     ],
   };
