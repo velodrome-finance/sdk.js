@@ -1,13 +1,53 @@
-import { Abi, Address, Chain, Client, createClient, extractChain, http, ReadContractParameters } from "viem";
+import {
+  Abi,
+  Address,
+  Chain,
+  Client,
+  ContractFunctionArgs,
+  ContractFunctionName,
+  createClient,
+  extractChain,
+  http,
+  ReadContractParameters,
+  ReadContractReturnType,
+} from "viem";
 import { readContract } from "viem/actions";
-import { base, celo, fraxtal, ink, lisk, metalL2, mode, optimism, soneium, superseed, swellchain, unichain } from "viem/chains";
+import {
+  base,
+  celo,
+  fraxtal,
+  ink,
+  lisk,
+  metalL2,
+  mode,
+  optimism,
+  soneium,
+  superseed,
+  swellchain,
+  unichain,
+} from "viem/chains";
 import { aerodromeConfig } from "./aerodrome-config.js";
 import { velodromeConfig } from "./velodrome-config.js";
 
-export const chains = [optimism, mode, lisk, metalL2, fraxtal, ink, soneium, superseed, swellchain, unichain, celo, base] as readonly Chain[];
+export const chains = [
+  optimism,
+  mode,
+  lisk,
+  metalL2,
+  fraxtal,
+  ink,
+  soneium,
+  superseed,
+  swellchain,
+  unichain,
+  celo,
+  base,
+] as readonly Chain[];
 export type ChainId = (typeof chains)[number]["id"];
 export type ChainIdOrClient = ChainId | Client;
-type SdkClientExtension = { isVelodrome: true; sdkConfig: typeof velodromeConfig } | { isVelodrome: false; sdkConfig: typeof aerodromeConfig };
+type SdkClientExtension =
+  | { isVelodrome: true; sdkConfig: typeof velodromeConfig }
+  | { isVelodrome: false; sdkConfig: typeof aerodromeConfig };
 
 const clients = new Map<ChainId, Client & SdkClientExtension>();
 
@@ -29,15 +69,26 @@ export function getClient(chainId: ChainId) {
   return clients.get(chainId)!;
 }
 
-export async function readContractExt(
+export async function readContractExt<
+  const abiType extends Abi,
+  functionNameType extends ContractFunctionName<abiType, "pure" | "view">,
+  const argsType extends ContractFunctionArgs<
+    abiType,
+    "pure" | "view",
+    functionNameType
+  >,
+>(
   chainIdOrClient: ChainIdOrClient,
   chainToAddressMap: { [index: number]: Address },
-  abi: Abi,
-  functionName: string,
-  args: unknown[],
-  params?: ReadContractParameters
-) {
-  const client = typeof chainIdOrClient === "number" ? getClient(chainIdOrClient) : chainIdOrClient;
+  abi: abiType,
+  functionName: functionNameType,
+  args: argsType,
+  params?: NoInfer<ReadContractParameters<abiType, functionNameType, argsType>>
+): Promise<ReadContractReturnType<abiType, functionNameType, argsType>> {
+  const client =
+    typeof chainIdOrClient === "number"
+      ? getClient(chainIdOrClient)
+      : chainIdOrClient;
   const address = params?.address ?? chainToAddressMap[client.chain?.id!];
 
   if (!address) {
@@ -55,5 +106,8 @@ export async function readContractExt(
   params.functionName ??= functionName;
   params.args ??= args;
 
-  return await readContract(client, params);
+  return await readContract(
+    client,
+    params as ReadContractParameters<abiType, functionNameType, argsType>
+  );
 }

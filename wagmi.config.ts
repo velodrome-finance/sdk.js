@@ -71,7 +71,10 @@ export default defineConfig(() => {
       return addresses;
     };
 
-    return { ...getAddressesFromConfig(aerodromeConfig), ...getAddressesFromConfig(velodromeConfig) };
+    return {
+      ...getAddressesFromConfig(aerodromeConfig),
+      ...getAddressesFromConfig(velodromeConfig),
+    };
   };
 
   return {
