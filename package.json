@@ -28,7 +28,8 @@
     "prettier": "3.5.3",
     "typescript": "^5.8.2"
   },
-  "dependencies": {
-    "viem": "2.28.2"
+  "peerDependencies": {
+    "@wagmi/core": "^2.0.0",
+    "viem": "^2.0.0"
   }
 }
