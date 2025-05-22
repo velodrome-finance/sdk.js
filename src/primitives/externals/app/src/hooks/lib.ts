@@ -1,9 +1,10 @@
 // src commit 7033ad288c0bf70324bf7fd93e2af244d213cf79
 import { Address, encodePacked } from "viem";
-import { getConfig } from "../../../../../utils.js";
 import { RouteElement } from "./types.js";
+import { DromeConfig } from "../../../../../config.js";
 
-export function prepareRoute(nodes: RouteElement[]): {
+// diff export function prepareRoute(nodes: RouteElement[]): {
+export function prepareRoute(config: DromeConfig, nodes: RouteElement[]): {
   types: string[];
   values: (Address | number)[];
 } {
@@ -20,9 +21,9 @@ export function prepareRoute(nodes: RouteElement[]): {
         let filler =
           Number(pool.type) === 0
             // diff ? QUOTER_STABLE_POOL_FILLER
-            ? getConfig().QUOTER_STABLE_POOL_FILLER
+            ? config.QUOTER_STABLE_POOL_FILLER
             // diff : QUOTER_VOLATILE_POOL_FILLER;
-            : getConfig().QUOTER_VOLATILE_POOL_FILLER;
+            : config.QUOTER_VOLATILE_POOL_FILLER;
 
         // CL pools filler is the same as their type aka tick space...
         if (Number(pool.type) > 0) {
@@ -38,7 +39,9 @@ export function prepareRoute(nodes: RouteElement[]): {
   };
 }
 
-export function packRoute(nodes: RouteElement[]) {
-  const { types, values } = prepareRoute(nodes);
+// diff export function packRoute(nodes: RouteElement[]) {
+export function packRoute(config: DromeConfig, nodes: RouteElement[]) {
+  // diff const { types, values } = prepareRoute(nodes);
+  const { types, values } = prepareRoute(config, nodes);
   return encodePacked(types, values);
 }

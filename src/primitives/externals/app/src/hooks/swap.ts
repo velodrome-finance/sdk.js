@@ -5,6 +5,7 @@ import { CommandType, RoutePlanner } from "../lib/router.js";
 import { packRoute } from "./lib";
 import { applyPct } from "./math";
 import { Quote, RouteElement } from "./types";
+import { DromeConfig } from "../../../../../config.js";
 
 // this is used to indicate "all available funds" for in-between trades with v3 pools
 export const CONTRACT_BALANCE_FOR_V3_SWAPS = hexToBigInt(
@@ -12,6 +13,8 @@ export const CONTRACT_BALANCE_FOR_V3_SWAPS = hexToBigInt(
 );
 
 export const setupPlanner = ({
+  // diff+
+  config,
   // diff chain,
   chainId,
   account,
@@ -19,6 +22,8 @@ export const setupPlanner = ({
   slippagePct,
   routePlanner = new RoutePlanner(),
 }: {
+  // diff+
+  config: DromeConfig
   // diff chain: Superchain;
   chainId: number;
   account?: Address;
@@ -26,7 +31,8 @@ export const setupPlanner = ({
   slippagePct: string;
   routePlanner?: RoutePlanner;
 }): RoutePlanner => {
-  const routerAddress = getChainConfig(chainId).UNIVERSAL_ROUTER_ADDRESS;
+  // diff const routerAddress = chain.superchainConfig.universalRouter;
+  const routerAddress = getChainConfig(config, chainId).UNIVERSAL_ROUTER_ADDRESS;
   const minAmountOut = applyPct(
     quote.amountOut,
     quote.toToken.decimals,
@@ -100,7 +106,8 @@ export const setupPlanner = ({
               to: n.to,
               stable: Number(n.type) === 0,
             }))
-          : packRoute(nodes),
+          // diff : packRoute(nodes),
+          : packRoute(config, nodes),
         !tokensComeFromContract,
       ]
     );
@@ -137,7 +144,8 @@ export const setupPlanner = ({
               to: n.to,
               stable: Number(n.type) === 0,
             }))
-          : packRoute(firstBatch),
+          // diff : packRoute(firstBatch),
+          : packRoute(config, firstBatch),
         !tokensComeFromContract,
       ]
     );
@@ -168,7 +176,8 @@ export const setupPlanner = ({
                   to: n.to,
                   stable: Number(n.type) === 0,
                 }))
-              : packRoute(batch),
+              // diff : packRoute(batch),
+              : packRoute(config, batch),
             // money comes from the contract
             false,
           ]
@@ -198,7 +207,8 @@ export const setupPlanner = ({
               to: n.to,
               stable: Number(n.type) === 0,
             }))
-          : packRoute(lastBatch),
+          // diff : packRoute(lastBatch),
+          : packRoute(config, lastBatch),
         false,
       ]
     );

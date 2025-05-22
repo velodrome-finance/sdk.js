@@ -2,8 +2,8 @@ import { ContractConfig, defineConfig } from "@wagmi/cli";
 import { etherscan } from "@wagmi/cli/plugins";
 import type { Address } from "viem";
 import { optimism } from "viem/chains";
-import { aerodromeConfig } from "./src/primitives/aerodrome-config";
-import { velodromeConfig } from "./src/primitives/velodrome-config";
+
+import { aerodromeConfig, velodromeConfig } from "./src";
 
 function etherscanWithRetries({
   maxAttempts,

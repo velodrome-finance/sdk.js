@@ -1,4 +1,6 @@
 import { ContractFunctionReturnType } from "viem";
+
+import { DromeConfig } from "../config.js";
 import { getChainConfig } from "../utils.js";
 import { lpSugarAbi } from "./abis.js";
 import { ContractFunction } from "./utils.js";
@@ -11,13 +13,14 @@ import { ContractFunction } from "./utils.js";
  * @returns The requested pools.
  */
 export function getPoolsParams<ChainId extends number>(
+  config: DromeConfig,
   chainId: ChainId,
   offset: number,
   length: number
 ) {
   return {
     chainId,
-    address: getChainConfig(chainId).LP_SUGAR_ADDRESS,
+    address: getChainConfig(config, chainId).LP_SUGAR_ADDRESS,
     abi: lpSugarAbi,
     functionName: "all",
     args: [BigInt(length), BigInt(offset)],
@@ -25,13 +28,14 @@ export function getPoolsParams<ChainId extends number>(
 }
 
 export function getPoolsForSwapParams<ChainId extends number>(
+  config: DromeConfig,
   chainId: ChainId,
   offset: number,
   length: number
 ) {
   return {
     chainId,
-    address: getChainConfig(chainId).LP_SUGAR_ADDRESS,
+    address: getChainConfig(config, chainId).LP_SUGAR_ADDRESS,
     abi: lpSugarAbi,
     functionName: "forSwaps",
     args: [BigInt(length), BigInt(offset)],

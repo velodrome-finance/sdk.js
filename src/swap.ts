@@ -1,5 +1,4 @@
 import {
-  Config,
   getAccount,
   readContract,
   readContracts,
@@ -7,6 +6,7 @@ import {
   writeContract,
 } from "@wagmi/core";
 import { Hex } from "viem";
+
 import {
   depaginate,
   executeSwapParams,
@@ -18,26 +18,31 @@ import {
   setupPlanner,
   Token,
 } from "./primitives/index.js";
-import { getChainConfig } from "./utils.js";
+import { DromeWagmiConfig, getChainConfig } from "./utils.js";
 
 export async function getQuoteForSwap(
-  config: Config,
+  config: DromeWagmiConfig,
   fromToken: Token,
   toToken: Token,
   amountIn: bigint
 ) {
-  // TODO swapper.tsx code?
   const chainId = fromToken.chainId;
 
   const pools = await depaginate((offset, length) =>
-    readContract(config, getPoolsForSwapParams(chainId, offset, length))
+    readContract(
+      config,
+      getPoolsForSwapParams(config.dromeConfig, chainId, offset, length)
+    )
   );
 
-  const unsafeTokensSet = new Set(getChainConfig(chainId).UNSAFE_TOKENS ?? []);
+  const unsafeTokensSet = new Set(
+    getChainConfig(config.dromeConfig, chainId).UNSAFE_TOKENS ?? []
+  );
   unsafeTokensSet.delete(fromToken.address);
   unsafeTokensSet.delete(toToken.address);
 
   const paths = getPaths({
+    config: config.dromeConfig,
     pools,
     fromToken,
     toToken,
@@ -51,7 +56,7 @@ export async function getQuoteForSwap(
 
   const quoteResponses = await readContracts(config, {
     contracts: paths.map((path) =>
-      getSwapQuoteParams(chainId, path.nodes, amountIn)
+      getSwapQuoteParams(config.dromeConfig, chainId, path.nodes, amountIn)
     ),
   });
 
@@ -76,12 +81,17 @@ export async function getQuoteForSwap(
   return getBestQuote([quotes]);
 }
 
-export async function swap(config: Config, quote: Quote, slippagePct?: string) {
+export async function swap(
+  config: DromeWagmiConfig,
+  quote: Quote,
+  slippagePct?: string
+) {
   const chainId = quote.fromToken.chainId;
   const account = getAccount(config);
   slippagePct ??= quote.path.nodes.some((n) => n.type >= 50) ? "1" : "0.5";
 
   const planner = setupPlanner({
+    config: config.dromeConfig,
     chainId,
     account: account.address,
     quote,
@@ -95,6 +105,7 @@ export async function swap(config: Config, quote: Quote, slippagePct?: string) {
   return await writeContract(
     config,
     executeSwapParams(
+      config.dromeConfig,
       chainId,
       planner.commands as Hex,
       planner.inputs as Hex[],

@@ -3,9 +3,10 @@ import Graph from "graphology";
 import { allSimpleEdgeGroupPaths } from "graphology-simple-path";
 import AbstractGraph from "graphology-types";
 import { Address } from "viem";
-import { getChainConfig, getConfig } from "../../../../../utils.js";
+import { getChainConfig } from "../../../../../utils.js";
 import { PoolForSwap } from "../../../../pools.js";
 import { RouteElement, RoutePath, Token } from "./types.js";
+import { DromeConfig } from "../../../../../config.js";
 
 /**
  * Returns pairs graph and a map of pairs to their addresses
@@ -65,6 +66,8 @@ export function buildGraph(
  */
 // diff function getPaths({
 export function getPaths({
+  // diff+
+  config,
   // diff chain,
   chainId,
   pools,
@@ -74,6 +77,8 @@ export function getPaths({
   mustIncludeTokens,
   mustExcludeTokens,
 }: {
+  // diff+
+  config: DromeConfig
   // diff chain: Superchain;
   chainId: number;
   // diff pools: SwapLp[];
@@ -93,7 +98,7 @@ export function getPaths({
     toToken?.wrappedAddress || toToken.address,
     fromToken?.wrappedAddress || fromToken.address,
     // diff ...chain.superchainConfig.oracleConnectors,
-    ...getChainConfig(chainId).CONNECTOR_TOKENS,
+    ...getChainConfig(config, chainId).CONNECTOR_TOKENS,
   ];
   let [graph, poolsByAddress] = buildGraph(pools, matchTokens);
   if (graph?.size < 1) {
@@ -110,7 +115,7 @@ export function getPaths({
       fromToken?.wrappedAddress || fromToken.address,
       toToken?.wrappedAddress || toToken.address,
       // diff { maxDepth: maxHops ?? MAX_HOPS }
-      { maxDepth: maxHops ?? getConfig().MAX_HOPS }
+      { maxDepth: maxHops ?? config.MAX_HOPS }
     );
   } catch (e) {
     return [];

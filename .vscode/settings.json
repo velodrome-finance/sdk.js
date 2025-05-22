@@ -1,7 +1,0 @@
-{
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": "explicit"
-  },
-  "editor.formatOnSave": true,
-  "typescript.preferences.importModuleSpecifierEnding": "js"
-}

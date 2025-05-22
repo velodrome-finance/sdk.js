@@ -1,4 +1,6 @@
 import { Hex } from "viem";
+
+import { DromeConfig } from "../config.js";
 import { getChainConfig } from "../utils.js";
 import { routeQuoterAbi, universalRouterAbi } from "./abis.js";
 import { packRoute } from "./externals/app/src/hooks/lib.js";
@@ -6,16 +8,17 @@ import { RouteElement } from "./externals/app/src/hooks/types.js";
 import { ContractFunction } from "./utils.js";
 
 export function getSwapQuoteParams<ChainId extends number>(
+  config: DromeConfig,
   chainId: ChainId,
   path: RouteElement[],
   amountIn: bigint
 ) {
   return {
     chainId,
-    address: getChainConfig(chainId).QUOTER_ADDRESS,
+    address: getChainConfig(config, chainId).QUOTER_ADDRESS,
     abi: routeQuoterAbi,
     functionName: "quoteExactInput",
-    args: [packRoute(path), amountIn],
+    args: [packRoute(config, path), amountIn],
   } satisfies ContractFunction<
     typeof routeQuoterAbi,
     "nonpayable",
@@ -24,6 +27,7 @@ export function getSwapQuoteParams<ChainId extends number>(
 }
 
 export function executeSwapParams<ChainId extends number>(
+  config: DromeConfig,
   chainId: ChainId,
   commands: Hex,
   inputs: Hex[],
@@ -31,7 +35,7 @@ export function executeSwapParams<ChainId extends number>(
 ) {
   return {
     chainId,
-    address: getChainConfig(chainId).UNIVERSAL_ROUTER_ADDRESS,
+    address: getChainConfig(config, chainId).UNIVERSAL_ROUTER_ADDRESS,
     abi: universalRouterAbi,
     functionName: "execute",
     args: [commands, inputs],

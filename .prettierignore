@@ -1,1 +1,4 @@
-src/primitives/externals/app
+/dist
+/src/primitives/externals/app
+/src/primitives/abis.ts
+/src/config.ts
