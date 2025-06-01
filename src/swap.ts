@@ -28,11 +28,13 @@ export async function getQuoteForSwap(
 ) {
   const chainId = fromToken.chainId;
 
-  const pools = await depaginate((offset, length) =>
-    readContract(
-      config,
-      getPoolsForSwapParams(config.dromeConfig, chainId, offset, length)
-    )
+  const pools = await depaginate(
+    (offset, length) =>
+      readContract(
+        config,
+        getPoolsForSwapParams(config.dromeConfig, chainId, offset, length)
+      ),
+    config.dromeConfig.POOLS_PAGE_SIZE
   );
 
   const unsafeTokensSet = new Set(

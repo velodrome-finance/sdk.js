@@ -10,15 +10,29 @@ import { Address } from "viem";
 export type Token = Readonly<{
   chainId: number;
   address: Address;
-  // diff- name?: string;
-  // diff- symbol: string;
+  name?: string;
+  symbol: string;
   listed: boolean;
   decimals: number;
-  // diff- balance: bigint;
+  balance: bigint;
   price: bigint;
-  // diff- balanceValue: bigint;
+  balanceValue: bigint;
   wrappedAddress?: Address;
 }>;
+
+export type SuperchainKey = `${number}:${Address}`;
+
+export interface Tokens {
+  [k: SuperchainKey]: Token;
+  all: Record<SuperchainKey, Token>;
+  sorted: Token[];
+  // Native token reference
+  native: Record<number, Token | undefined>;
+  // Wrapped native token reference
+  wrapped: Record<number, Token | undefined>;
+  //grouped by symbol and sorted
+  grouped: Token[][];
+}
 
 /*
   In swaps, RouteElement is derived from a pool. It represents a hop in a chain of conversions
