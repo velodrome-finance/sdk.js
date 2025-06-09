@@ -5,6 +5,8 @@ import {
   ContractFunctionName,
 } from "viem";
 
+import { DromeChainConfig, DromeConfig } from "../config.js";
+
 /**
  * Call a paginated function repeatedly until all records are returned.
  * @param callback Async function that loads the page.
@@ -13,7 +15,7 @@ import {
  * @returns All records.
  */
 export async function depaginate<T>(
-  callback: (offset: number, length: number) => Promise<readonly T[] | T[]>,
+  callback: (offset: number, count: number) => Promise<readonly T[] | T[]>,
   pageLength = 300,
   totalLength?: number
 ) {
@@ -51,3 +53,42 @@ export type ContractFunction<
   args: ContractFunctionArgs<abi, mutability, functionName>;
   [index: string]: unknown;
 };
+
+export function onDromeError(
+  config: DromeConfig,
+  message: string,
+  originalError?: unknown
+) {
+  const error = new DromeError(message, originalError);
+
+  if (config.onError) {
+    config.onError(error);
+  } else {
+    console.log(error);
+  }
+}
+class DromeError extends Error {
+  constructor(
+    message: string,
+    public cause?: unknown
+  ) {
+    super(message);
+    this.name = "DromeError";
+  }
+}
+
+export function getChainConfig(config: DromeConfig, chainId: number) {
+  if (chainId in config.chains) {
+    return config.chains[chainId];
+  }
+
+  if (chainId in config.externalChains) {
+    return config.externalChains[chainId] as DromeChainConfig;
+  }
+
+  throw new Error(`chainId ${chainId} is not part of the current config.`);
+}
+
+export function getDefaultChainConfig(config: DromeConfig) {
+  return getChainConfig(config, config.DEFAULT_CHAIN_ID);
+}
