@@ -3,10 +3,10 @@ import Graph from "graphology";
 import { allSimpleEdgeGroupPaths } from "graphology-simple-path";
 import AbstractGraph from "graphology-types";
 import { Address } from "viem";
-import { getChainConfig } from "../../../../../utils.js";
 import { PoolForSwap } from "../../../../pools.js";
 import { RouteElement, RoutePath, Token } from "./types.js";
 import { DromeConfig } from "../../../../../config.js";
+import { getChainConfig } from "../../../../utils.js";
 
 /**
  * Returns pairs graph and a map of pairs to their addresses
@@ -14,13 +14,10 @@ import { DromeConfig } from "../../../../../config.js";
  * We build the edge keys using the pair address and the direction.
  */
 export function buildGraph(
-  // diff pairs: SwapLp[],
   pairs: PoolForSwap[],
   matchTokens: Address[] = []
-  // diff ): [AbstractGraph, Dictionary<SwapLp>] {
 ): [AbstractGraph, Record<string, PoolForSwap>] {
   const graph = new Graph({ multi: true });
-  // diff const pairsByAddress: Record<Address, SwapLp & { address: Address }> = {};
   const pairsByAddress: Record<Address, PoolForSwap & { address: Address }> = {};
 
   pairs.forEach((pair) => {
@@ -64,11 +61,8 @@ export function buildGraph(
  *    ]
  *  ]
  */
-// diff function getPaths({
 export function getPaths({
-  // diff+
   config,
-  // diff chain,
   chainId,
   pools,
   fromToken,
@@ -77,11 +71,8 @@ export function getPaths({
   mustIncludeTokens,
   mustExcludeTokens,
 }: {
-  // diff+
   config: DromeConfig
-  // diff chain: Superchain;
   chainId: number;
-  // diff pools: SwapLp[];
   pools: PoolForSwap[];
   fromToken: Token;
   toToken: Token;
@@ -89,7 +80,6 @@ export function getPaths({
   mustIncludeTokens?: Set<Address>; // <-- nice for testing
   mustExcludeTokens?: Set<Address>; //     i.e. = new Set(["0x0b2c639c533813f4aa9d7837caf62653d097ff85"])
 }): RoutePath[] {
-  // diff if (isEmpty(pools) || !fromToken || !toToken) {
   if (pools.length === 0 || !fromToken || !toToken) {
     return [];
   }
@@ -97,7 +87,6 @@ export function getPaths({
   const matchTokens: Address[] = [
     toToken?.wrappedAddress || toToken.address,
     fromToken?.wrappedAddress || fromToken.address,
-    // diff ...chain.superchainConfig.oracleConnectors,
     ...getChainConfig(config, chainId).CONNECTOR_TOKENS,
   ];
   let [graph, poolsByAddress] = buildGraph(pools, matchTokens);
@@ -114,7 +103,6 @@ export function getPaths({
       graph,
       fromToken?.wrappedAddress || fromToken.address,
       toToken?.wrappedAddress || toToken.address,
-      // diff { maxDepth: maxHops ?? MAX_HOPS }
       { maxDepth: maxHops ?? config.MAX_HOPS }
     );
   } catch (e) {
@@ -138,7 +126,6 @@ export function getPaths({
           lp: pool.lp,
           factory: pool.factory,
           pool_fee: pool.pool_fee,
-          // diff chainId: chain.id,
           chainId,
         };
         if (dir === "reversed") {

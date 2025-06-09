@@ -1,9 +1,8 @@
 import { ContractFunctionReturnType } from "viem";
 
 import { DromeConfig } from "../config.js";
-import { getChainConfig } from "../utils.js";
 import { lpSugarAbi } from "./abis.js";
-import { ContractFunction } from "./utils.js";
+import { ContractFunction, getChainConfig } from "./utils.js";
 
 /**
  * Gets a section from the list of all pools.
@@ -12,33 +11,43 @@ import { ContractFunction } from "./utils.js";
  * @param length The amount of pools to return.
  * @returns The requested pools.
  */
-export function getPoolsParams<ChainId extends number>(
-  config: DromeConfig,
-  chainId: ChainId,
-  offset: number,
-  length: number
-) {
+export function getPoolsParams<ChainId extends number>({
+  config,
+  chainId,
+  offset,
+  count,
+}: {
+  config: DromeConfig;
+  chainId: ChainId;
+  offset: number;
+  count: number;
+}) {
   return {
     chainId,
     address: getChainConfig(config, chainId).LP_SUGAR_ADDRESS,
     abi: lpSugarAbi,
     functionName: "all",
-    args: [BigInt(length), BigInt(offset)],
+    args: [BigInt(count), BigInt(offset)],
   } satisfies ContractFunction<typeof lpSugarAbi, "view", "all">;
 }
 
-export function getPoolsForSwapParams<ChainId extends number>(
-  config: DromeConfig,
-  chainId: ChainId,
-  offset: number,
-  length: number
-) {
+export function getPoolsForSwapParams<ChainId extends number>({
+  config,
+  chainId,
+  offset,
+  count,
+}: {
+  config: DromeConfig;
+  chainId: ChainId;
+  offset: number;
+  count: number;
+}) {
   return {
     chainId,
     address: getChainConfig(config, chainId).LP_SUGAR_ADDRESS,
     abi: lpSugarAbi,
     functionName: "forSwaps",
-    args: [BigInt(length), BigInt(offset)],
+    args: [BigInt(count), BigInt(offset)],
   } satisfies ContractFunction<typeof lpSugarAbi, "view", "forSwaps">;
 }
 

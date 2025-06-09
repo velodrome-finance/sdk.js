@@ -1,22 +1,21 @@
 import { getAccount, getBalance, readContract } from "@wagmi/core";
-import { mergeAll, splitEvery, uniqBy } from "ramda";
+import { mergeAll } from "ramda";
 import { Address, extractChain, isAddress } from "viem";
 
 import {
   depaginate,
-  getTokenPricesParams,
+  getCustomPricesVars,
+  getTokenPricesParams as getTokenRatesParams,
+  getTokenPricesVars,
   getTokensParams,
-  initTokenPrices,
-  initTokens,
   mergeTokens,
   RawToken,
+  RawTokenRateWithDecimals,
+  transformTokenPrices,
+  transformTokens,
 } from "./primitives/index.js";
-import {
-  DromeWagmiConfig,
-  getChainConfig,
-  getDefaultChainConfig,
-  onDromeError,
-} from "./utils.js";
+import { onDromeError } from "./primitives/utils.js";
+import { DromeWagmiConfig } from "./utils.js";
 
 export async function getListedTokens(config: DromeWagmiConfig) {
   const customPrices = await getCustomPrices(config);
@@ -37,7 +36,8 @@ export async function getListedTokens(config: DromeWagmiConfig) {
     if (result.status === "rejected") {
       onDromeError(
         config.dromeConfig,
-        `Failed to fetch tokens for chain ${chainId}.`
+        `Failed to fetch tokens for chain ${chainId}.`,
+        result.reason
       );
       continue;
     }
@@ -46,7 +46,11 @@ export async function getListedTokens(config: DromeWagmiConfig) {
     tokens.push(result.value);
   }
 
-  return mergeTokens(config.dromeConfig, tokens, chainIds).sorted;
+  return mergeTokens({
+    config: config.dromeConfig,
+    tokensPerChain: tokens,
+    chainIds,
+  }).sorted;
 }
 
 async function getTokensFromChain(
@@ -57,16 +61,16 @@ async function getTokensFromChain(
   const accountAddress = getAccount(config).address;
 
   const rawTokens = await depaginate(
-    (offset, length) =>
+    (offset, count) =>
       readContract(
         config,
-        getTokensParams(
-          config.dromeConfig,
+        getTokensParams({
+          config: config.dromeConfig,
           chainId,
           offset,
-          length,
-          accountAddress
-        )
+          count,
+          accountAddress,
+        })
       ),
     config.dromeConfig.TOKENS_PAGE_SIZE,
     config.dromeConfig.POOLS_COUNT_UPPER_BOUND
@@ -88,48 +92,28 @@ async function getTokensFromChain(
     rawTokens.filter((token) => token.listed)
   );
 
-  return initTokens(
-    config.dromeConfig,
+  return transformTokens({
+    config: config.dromeConfig,
     chainId,
     rawTokens,
-    extractChain({ chains: config.chains, id: chainId }).nativeCurrency,
+    nativeCurrency: extractChain({ chains: config.chains, id: chainId })
+      .nativeCurrency,
     nativeTokenBalance,
-    [],
     prices,
-    customPrices
-  );
+    customPrices,
+  });
 }
 
 async function getCustomPrices(config: DromeWagmiConfig) {
-  const requests = Object.values(config.dromeConfig.PRICE_MAPS).map(
-    (mapping) => {
-      const chainConfig = getChainConfig(config.dromeConfig, mapping.chainId);
-
-      //including 2 more tokens as USD pricing requires both ETH and stablecoin prices in the tokenlist
-      const tokenList = [
-        {
-          token_address: chainConfig.STABLE_TOKEN,
-          decimals: 6,
-        },
-        {
-          token_address:
-            chainConfig.WETH_ADDRESS ??
-            chainConfig.WRAPPED_NATIVE_TOKEN ??
-            getDefaultChainConfig(config.dromeConfig).WRAPPED_NATIVE_TOKEN!,
-          decimals: 18,
-        },
-        { token_address: mapping.substituteToken, decimals: 18 },
-      ];
-
-      return getTokenPrices(config, mapping.chainId, tokenList);
-    }
+  const requests = getCustomPricesVars(config.dromeConfig).map(
+    ({ chainId, tokens }) => getTokenPrices(config, chainId, tokens)
   );
 
   try {
     const prices = await Promise.all(requests);
     return mergeAll(prices);
-  } catch {
-    onDromeError(config.dromeConfig, "Failed to fetch custom prices.");
+  } catch (error) {
+    onDromeError(config.dromeConfig, "Failed to fetch custom prices.", error);
     return {};
   }
 }
@@ -137,52 +121,49 @@ async function getCustomPrices(config: DromeWagmiConfig) {
 async function getTokenPrices(
   config: DromeWagmiConfig,
   chainId: number,
-  tokens: Pick<RawToken, "token_address" | "decimals">[]
+  rawTokens: Pick<RawToken, "token_address" | "decimals">[]
 ) {
-  const chainConfig = getChainConfig(config.dromeConfig, chainId);
-  const stable = chainConfig.STABLE_TOKEN;
-  const connectors = Array.from(
-    new Set(chainConfig.CONNECTOR_TOKENS.concat(stable))
-  );
-  const uniqueTokens = uniqBy((t) => t.token_address, tokens);
-  const tokenChunks = splitEvery(
-    config.dromeConfig.PRICES_CHUNK_SIZE,
-    uniqueTokens
-  );
-  const rawPrices = {} as Record<Address, bigint>;
+  const { tokenChunks, customConnectors, useWrappers, thresholdFilter } =
+    getTokenPricesVars(config.dromeConfig, chainId, rawTokens);
+  const rawRates: RawTokenRateWithDecimals[] = [];
 
   await Promise.all(
     tokenChunks.map(async (tokenChunk) => {
       try {
-        const priceChunk = await readContract(
+        const rateChunk = await readContract(
           config,
-          getTokenPricesParams(
-            config.dromeConfig,
+          getTokenRatesParams({
+            config: config.dromeConfig,
             chainId,
-            tokenChunk.map((t) => t.token_address),
-            false,
-            connectors,
-            config.dromeConfig.PRICE_THRESHOLD_FILTER
-          )
+            tokens: tokenChunk.map((t) => t.token_address),
+            useWrappers,
+            customConnectors,
+            thresholdFilter,
+          })
         );
 
-        Object.assign(
-          rawPrices,
-          Object.fromEntries(
-            priceChunk.map((price, i) => [tokenChunk[i].token_address, price])
-          )
+        rawRates.push(
+          ...rateChunk.map((rate, i) => ({
+            address: tokenChunk[i].token_address,
+            decimals: tokenChunk[i].decimals,
+            rate,
+          }))
         );
       } catch (error) {
-        onDromeError(config.dromeConfig, error);
+        onDromeError(
+          config.dromeConfig,
+          `Failed to get token price chunk.`,
+          error
+        );
       }
     })
   );
 
-  return initTokenPrices(
-    config.dromeConfig,
+  return transformTokenPrices({
+    config: config.dromeConfig,
     chainId,
-    uniqueTokens.filter((t) => t.token_address in rawPrices),
-    rawPrices,
-    extractChain({ chains: config.chains, id: chainId }).nativeCurrency
-  );
+    rawRates,
+    nativeCurrency: extractChain({ chains: config.chains, id: chainId })
+      .nativeCurrency,
+  });
 }

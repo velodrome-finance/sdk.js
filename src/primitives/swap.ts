@@ -1,18 +1,23 @@
-import { Hex } from "viem";
+import { Address, Hex } from "viem";
 
 import { DromeConfig } from "../config.js";
-import { getChainConfig } from "../utils.js";
 import { routeQuoterAbi, universalRouterAbi } from "./abis.js";
 import { packRoute } from "./externals/app/src/hooks/lib.js";
-import { RouteElement } from "./externals/app/src/hooks/types.js";
-import { ContractFunction } from "./utils.js";
+import { setupPlanner } from "./externals/app/src/hooks/swap.js";
+import { Quote, RouteElement, Token } from "./externals/app/src/hooks/types.js";
+import { ContractFunction, getChainConfig } from "./utils.js";
 
-export function getSwapQuoteParams<ChainId extends number>(
-  config: DromeConfig,
-  chainId: ChainId,
-  path: RouteElement[],
-  amountIn: bigint
-) {
+export function getSwapQuoteParams<ChainId extends number>({
+  config,
+  chainId,
+  path,
+  amountIn,
+}: {
+  config: DromeConfig;
+  chainId: ChainId;
+  path: RouteElement[];
+  amountIn: bigint;
+}) {
   return {
     chainId,
     address: getChainConfig(config, chainId).QUOTER_ADDRESS,
@@ -26,13 +31,19 @@ export function getSwapQuoteParams<ChainId extends number>(
   >;
 }
 
-export function executeSwapParams<ChainId extends number>(
-  config: DromeConfig,
-  chainId: ChainId,
-  commands: Hex,
-  inputs: Hex[],
-  value: bigint
-) {
+export function executeSwapParams<ChainId extends number>({
+  config,
+  chainId,
+  commands,
+  inputs,
+  value,
+}: {
+  config: DromeConfig;
+  chainId: ChainId;
+  commands: Hex;
+  inputs: Hex[];
+  value: bigint;
+}) {
   return {
     chainId,
     address: getChainConfig(config, chainId).UNIVERSAL_ROUTER_ADDRESS,
@@ -41,6 +52,47 @@ export function executeSwapParams<ChainId extends number>(
     args: [commands, inputs],
     value,
   } satisfies ContractFunction<typeof universalRouterAbi, "payable", "execute">;
+}
+
+export function getQuoteForSwapVars(
+  config: DromeConfig,
+  fromToken: Token,
+  toToken: Token
+) {
+  const chainId = fromToken.chainId;
+  const unsafeTokensSet = new Set(
+    getChainConfig(config, chainId).UNSAFE_TOKENS ?? []
+  );
+  unsafeTokensSet.delete(fromToken.address);
+  unsafeTokensSet.delete(toToken.address);
+
+  return {
+    chainId,
+    poolsPageSize: config.POOLS_PAGE_SIZE,
+    mustExcludeTokens: unsafeTokensSet,
+  };
+}
+
+export function getSwapVars(
+  config: DromeConfig,
+  quote: Quote,
+  slippagePct = quote.path.nodes.some((n) => n.type >= 50) ? "1" : "0.5",
+  accountAddress?: Address
+) {
+  const chainId = quote.fromToken.chainId;
+  const planner = setupPlanner({
+    config,
+    chainId,
+    account: accountAddress,
+    quote,
+    slippagePct,
+  });
+
+  return {
+    chainId,
+    planner,
+    amount: quote.fromToken.wrappedAddress ? quote.amount : 0n,
+  };
 }
 
 export { packRoute, prepareRoute } from "./externals/app/src/hooks/lib.js";

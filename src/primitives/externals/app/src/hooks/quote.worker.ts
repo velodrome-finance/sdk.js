@@ -29,7 +29,7 @@ function impactTooHigh(q: Quote): boolean {
   return abs >= oneHundredPercent;
 }
 
-export function getBestQuote(quotes: Quote[][]) {
+export function getBestQuote(quotes: Quote[][]): Quote | null {
   const bestQuote: Quote | null = quotes.flat().reduce(
     (best, quote) => {
       if (!best) {

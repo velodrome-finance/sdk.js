@@ -3,7 +3,6 @@ import { Address, encodePacked } from "viem";
 import { RouteElement } from "./types.js";
 import { DromeConfig } from "../../../../../config.js";
 
-// diff export function prepareRoute(nodes: RouteElement[]): {
 export function prepareRoute(config: DromeConfig, nodes: RouteElement[]): {
   types: string[];
   values: (Address | number)[];
@@ -20,9 +19,7 @@ export function prepareRoute(config: DromeConfig, nodes: RouteElement[]): {
         // For basic pools use specific filler values
         let filler =
           Number(pool.type) === 0
-            // diff ? QUOTER_STABLE_POOL_FILLER
             ? config.QUOTER_STABLE_POOL_FILLER
-            // diff : QUOTER_VOLATILE_POOL_FILLER;
             : config.QUOTER_VOLATILE_POOL_FILLER;
 
         // CL pools filler is the same as their type aka tick space...
@@ -39,9 +36,7 @@ export function prepareRoute(config: DromeConfig, nodes: RouteElement[]): {
   };
 }
 
-// diff export function packRoute(nodes: RouteElement[]) {
 export function packRoute(config: DromeConfig, nodes: RouteElement[]) {
-  // diff const { types, values } = prepareRoute(nodes);
   const { types, values } = prepareRoute(config, nodes);
   return encodePacked(types, values);
 }
