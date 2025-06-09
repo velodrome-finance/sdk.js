@@ -16,3 +16,18 @@ export function formatNumber(
     maximumFractionDigits: maxDecimals ?? 16,
   });
 }
+
+/*
+ * Sorts an array of objects by the order of another array.
+ */
+export function sortByIdx<T>(list: T[], a: T, b: T) {
+  const aIndex = list.indexOf(a);
+  const bIndex = list.indexOf(b);
+  const aIn = aIndex !== -1;
+  const bIn = bIndex !== -1;
+  if (aIn && bIn) {
+    if (aIndex !== bIndex) return aIndex - bIndex;
+  } else if (aIn !== bIn) {
+    return aIn ? -1 : 1;
+  }
+}

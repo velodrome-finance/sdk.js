@@ -13,12 +13,13 @@ import {
   getBestQuote,
   getPaths,
   getPoolsForSwapParams,
+  getQuoteForSwapVars,
   getSwapQuoteParams,
+  getSwapVars,
   Quote,
-  setupPlanner,
   Token,
 } from "./primitives/index.js";
-import { DromeWagmiConfig, getChainConfig } from "./utils.js";
+import { DromeWagmiConfig } from "./utils.js";
 
 export async function getQuoteForSwap(
   config: DromeWagmiConfig,
@@ -26,27 +27,32 @@ export async function getQuoteForSwap(
   toToken: Token,
   amountIn: bigint
 ) {
-  const chainId = fromToken.chainId;
-
-  const pools = await depaginate((offset, length) =>
-    readContract(
-      config,
-      getPoolsForSwapParams(config.dromeConfig, chainId, offset, length)
-    )
+  const { chainId, mustExcludeTokens, poolsPageSize } = getQuoteForSwapVars(
+    config.dromeConfig,
+    fromToken,
+    toToken
   );
 
-  const unsafeTokensSet = new Set(
-    getChainConfig(config.dromeConfig, chainId).UNSAFE_TOKENS ?? []
+  const pools = await depaginate(
+    (offset, count) =>
+      readContract(
+        config,
+        getPoolsForSwapParams({
+          config: config.dromeConfig,
+          chainId,
+          offset,
+          count,
+        })
+      ),
+    poolsPageSize
   );
-  unsafeTokensSet.delete(fromToken.address);
-  unsafeTokensSet.delete(toToken.address);
 
   const paths = getPaths({
     config: config.dromeConfig,
     pools,
     fromToken,
     toToken,
-    mustExcludeTokens: unsafeTokensSet,
+    mustExcludeTokens,
     chainId,
   });
 
@@ -56,7 +62,12 @@ export async function getQuoteForSwap(
 
   const quoteResponses = await readContracts(config, {
     contracts: paths.map((path) =>
-      getSwapQuoteParams(config.dromeConfig, chainId, path.nodes, amountIn)
+      getSwapQuoteParams({
+        config: config.dromeConfig,
+        chainId,
+        path: path.nodes,
+        amountIn,
+      })
     ),
   });
 
@@ -86,17 +97,13 @@ export async function swap(
   quote: Quote,
   slippagePct?: string
 ) {
-  const chainId = quote.fromToken.chainId;
   const account = getAccount(config);
-  slippagePct ??= quote.path.nodes.some((n) => n.type >= 50) ? "1" : "0.5";
-
-  const planner = setupPlanner({
-    config: config.dromeConfig,
-    chainId,
-    account: account.address,
+  const { chainId, planner, amount } = getSwapVars(
+    config.dromeConfig,
     quote,
-    slippagePct: slippagePct,
-  });
+    slippagePct,
+    account.address
+  );
 
   if (chainId !== account.chainId) {
     await switchChain(config, { chainId });
@@ -104,12 +111,12 @@ export async function swap(
 
   return await writeContract(
     config,
-    executeSwapParams(
-      config.dromeConfig,
+    executeSwapParams({
+      config: config.dromeConfig,
       chainId,
-      planner.commands as Hex,
-      planner.inputs as Hex[],
-      quote.fromToken.wrappedAddress ? quote.amount : 0n
-    )
+      commands: planner.commands as Hex,
+      inputs: planner.inputs as Hex[],
+      value: amount,
+    })
   );
 }
