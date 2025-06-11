@@ -1,0 +1,39 @@
+{
+  "name": "sugar",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/velodrome-finance/sdk.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/velodrome-finance/sdk.js/issues"
+  },
+  "homepage": "https://github.com/velodrome-finance/sdk.js#readme",
+  "description": "",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./primitives": "./dist/primitives/index.js"
+  },
+  "devDependencies": {
+    "@types/ramda": "^0.30.2",
+    "@wagmi/cli": "2.1.15",
+    "graphology-types": "^0.24.7"
+  },
+  "peerDependencies": {
+    "@wagmi/core": "^2.0.0",
+    "viem": "^2.0.0"
+  },
+  "dependencies": {
+    "graphology": "^0.25.1",
+    "graphology-simple-path": "^0.2.0",
+    "ramda": "^0.30.1"
+  }
+}
