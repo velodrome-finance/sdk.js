@@ -21,7 +21,7 @@
   "homepage": "https://github.com/velodrome-finance/sdk.js#readme",
   "description": "",
   "workspaces": [
-    "packages/sugar",
+    "packages/sugar-sdk",
     "packages/demo"
   ],
   "devDependencies": {
@@ -36,7 +36,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.0.0",
     "prettier": "3.5.3",
-    "typescript": "^5.8.2",
+    "typescript": "5.8.2",
     "typescript-eslint": "^8.26.1"
   },
   "peerDependencies": {},

@@ -1,14 +1,33 @@
 {
   "name": "demo",
-  "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "npx vite"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "postinstall": "flowbite-react patch"
   },
-  "author": "",
-  "license": "UNLICENSED",
-  "description": "",
   "dependencies": {
-    "@wagmi/connectors": "^5.0.0"
+    "@tanstack/react-query": "^5.80.6",
+    "flowbite-react": "^0.11.8",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sugar-sdk": "1.0.0",
+    "viem": "2.28.2",
+    "wagmi": "2.15.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.10",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react-swc": "^3.9.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "tailwindcss": "^4.1.10",
+    "vite": "^6.3.5"
   }
 }

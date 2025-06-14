@@ -1,4 +1,5 @@
-/packages/dist
-/packages/sugar/src/primitives/externals/app
-/packages/sugar/src/primitives/abis.ts
-/packages/sugar/src/config.ts
+/packages/demo/dist
+/packages/sugar-sdk/dist
+/packages/sugar-sdk/src/primitives/externals/app
+/packages/sugar-sdk/src/primitives/abis.ts
+/packages/sugar-sdk/src/config.ts
