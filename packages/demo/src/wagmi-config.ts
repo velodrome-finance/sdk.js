@@ -1,37 +1,93 @@
-import { aerodromeConfig, initDrome } from "sugar-sdk";
+import {
+  aerodromeConfig,
+  type DromeWagmiConfig,
+  initDrome,
+  velodromeConfig,
+} from "sugar-sdk";
 import { createConfig, http, injected } from "wagmi";
-import { base, optimism } from "wagmi/chains";
+import {
+  base,
+  celo,
+  type Chain,
+  fraxtal,
+  ink,
+  lisk,
+  mainnet,
+  metalL2,
+  mode,
+  optimism,
+  soneium,
+  superseed,
+  swellchain,
+  unichain,
+} from "wagmi/chains";
 
-const { VITE_ALCHEMY_API_KEY } = import.meta.env;
+function getTransports(chains: Chain[]) {
+  return Object.fromEntries(
+    chains.map((chain) => {
+      const rpc = import.meta.env["VITE_RPC_" + chain.id];
 
-if (!VITE_ALCHEMY_API_KEY) {
-  throw new Error(
-    "Please pass VITE_ALCHEMY_API_KEY as an environment variable."
+      if (!rpc) {
+        throw new Error(
+          `Missing RPC URL. Please pass VITE_RPC_${chain.id} as an environment variable.`
+        );
+      }
+
+      return [chain.id, http(rpc, { batch: true })];
+    })
   );
 }
 
-export const config = initDrome(
-  createConfig({
-    chains: [base, optimism],
-    connectors: [injected()],
-    transports: {
-      [base.id]: http(
-        "https://base-mainnet.g.alchemy.com/v2/" + VITE_ALCHEMY_API_KEY,
-        { batch: true }
-      ),
-      [optimism.id]: http(
-        "https://opt-mainnet.g.alchemy.com/v2/" + VITE_ALCHEMY_API_KEY,
-        { batch: true }
-      ),
-    },
-  }),
-  {
-    ...aerodromeConfig,
-    onError(error) {
-      console.log(error);
-    },
-  }
-);
+export let config: DromeWagmiConfig;
+
+if (import.meta.env.MODE === "aero") {
+  const aerodromChains = [base, optimism] as [Chain, ...Chain[]];
+
+  config = initDrome(
+    createConfig({
+      chains: aerodromChains,
+      connectors: [injected()],
+      transports: getTransports(aerodromChains),
+    }),
+    {
+      ...aerodromeConfig,
+      onError(error) {
+        console.log(error);
+      },
+    }
+  );
+} else if (import.meta.env.MODE === "velo") {
+  const velodromChains = [
+    optimism,
+    mode,
+    lisk,
+    metalL2,
+    fraxtal,
+    ink,
+    soneium,
+    superseed,
+    swellchain,
+    unichain,
+    celo,
+    mainnet,
+  ] as [Chain, ...Chain[]];
+
+  config = initDrome(
+    createConfig({
+      chains: velodromChains,
+      connectors: [injected()],
+      transports: getTransports(velodromChains),
+    }),
+    {
+      ...velodromeConfig,
+      onError(error) {
+        throw error;
+      },
+    }
+  );
+} else {
+  throw new Error("Vite mode must be set to aero or velo.");
+}
 
 declare module "wagmi" {
   interface Register {

@@ -1,15 +1,65 @@
 # Sugar SDK Demo App
 
-To run this app you need to pass an Alchemy API key to the VITE_ALCHEMY_API_KEY environment variable.
+This is a demo app showcasing the Sugar SDK swapping functionality.
 
-#### Windows (Powershell)
+## Configuration
 
-```powershell
-($env:VITE_ALCHEMY_API_KEY = "...") -and (npm run dev -w demo)
+To run the app you need to put `.env.aero` and/or `.env.velo` in its root directory. They need to contain the RPC URL of every used chain.
+
+Aerodrome uses the following chains:
+
+```
+base
+optimism
 ```
 
-#### Linux, macOS (Bash)
+Velodrome uses the following chains:
+
+```
+optimism
+mode
+lisk
+metalL2
+fraxtal
+ink
+soneium
+superseed
+swellchain
+unichain
+celo
+mainnet
+```
+
+The respective environment variable must be named `VITE_RPC_X` where `X` is the chain id. For example:
+
+```
+VITE_RPC_10=https://opt-mainnet.g.alchemy.com/v2/YOUR_API_KEY
+```
+
+## Running the app
+
+- Open a prompt in the repository root.
+
+- Install the dependencies:
 
 ```shell
-VITE_ALCHEMY_API_KEY=... npm run dev -w demo
+npm i
+```
+
+- Build the SDK:
+
+```shell
+npm run build -w sugar-sdk
+```
+
+- To run the app for Aerodrome use:
+
+```shell
+npm run dev-aero -w demo
+```
+
+- To run the app for Velodrome use:
+
+```shell
+npm run dev-velo -w demo
 ```

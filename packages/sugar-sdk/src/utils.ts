@@ -1,4 +1,4 @@
-import { Config } from "@wagmi/core";
+import { Config, getAccount, switchChain } from "@wagmi/core";
 
 import { DromeConfig } from "./config.js";
 
@@ -28,4 +28,13 @@ export function initDrome<WagmiConfig extends Config>(
   dromeWagmiConfig.dromeConfig = dromeConfig;
 
   return dromeWagmiConfig as WagmiConfig & { dromeConfig: DromeConfig };
+}
+
+export async function ensureConnectedChain(
+  config: DromeWagmiConfig,
+  chainId: number
+) {
+  if (chainId !== getAccount(config).chainId) {
+    await switchChain(config, { chainId });
+  }
 }
