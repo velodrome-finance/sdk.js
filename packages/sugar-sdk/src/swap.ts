@@ -2,7 +2,6 @@ import {
   getAccount,
   readContract,
   readContracts,
-  switchChain,
   writeContract,
 } from "@wagmi/core";
 import { Hex } from "viem";
@@ -19,7 +18,7 @@ import {
   Quote,
   Token,
 } from "./primitives/index.js";
-import { DromeWagmiConfig } from "./utils.js";
+import { DromeWagmiConfig, ensureConnectedChain } from "./utils.js";
 
 export async function getQuoteForSwap(
   config: DromeWagmiConfig,
@@ -105,9 +104,7 @@ export async function swap(
     account.address
   );
 
-  if (chainId !== account.chainId) {
-    await switchChain(config, { chainId });
-  }
+  await ensureConnectedChain(config, chainId);
 
   return await writeContract(
     config,
@@ -120,3 +117,5 @@ export async function swap(
     })
   );
 }
+
+export { Quote } from "./primitives";
