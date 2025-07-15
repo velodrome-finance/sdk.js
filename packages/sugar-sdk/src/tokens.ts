@@ -167,3 +167,5 @@ async function getTokenPrices(
       .nativeCurrency,
   });
 }
+
+export { Token } from "./primitives";
