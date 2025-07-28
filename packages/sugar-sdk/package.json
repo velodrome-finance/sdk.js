@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc"
+    "build": "npx tsc",
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,8 @@
   "devDependencies": {
     "@types/ramda": "^0.30.2",
     "@wagmi/cli": "2.1.15",
-    "graphology-types": "^0.24.7"
+    "graphology-types": "^0.24.7",
+    "vitest": "^2.0.0"
   },
   "peerDependencies": {
     "@wagmi/core": "^2.0.0",
