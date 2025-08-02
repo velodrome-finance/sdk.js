@@ -17,3 +17,17 @@ Make sure the SDK builds correctly:
 ```bash
 cd packages/sugar-sdk && npm run build
 ```
+
+## Tests
+
+Start honey
+
+```
+cd packages/honey && npm start
+```
+
+Run tests
+
+```
+npm test
+```
