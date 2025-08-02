@@ -12,6 +12,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
+    - name: Set up Homebrew
+      id: set-up-homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+      
+    - name: Install Foundry
+      uses: foundry-rs/foundry-toolchain@v1
+      
+    - name: Confirm forge is installed
+      run: forge --version
+
+    - name: Install supersim
+      run: brew install ethereum-optimism/tap/supersim
+    
+    - name: Confirm supersim is installed
+      run: supersim --version
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -20,6 +36,17 @@ jobs:
         
     - name: Install dependencies
       run: npm ci
+  
+    - name: Start honey server in background 
+      run: |
+        cd packages/honey
+        npm run build
+        nohup npm run start > honey.log 2>&1 &
+        sleep 30  # Wait for honey to fully start up
+        echo "Honey server PID: $!"
+
+    - name: Test fork
+      run: cast call 0x7F6D3A4c8a1111DDbFe282794f4D608aB7Cb23A2 "MAX_TOKENS()(uint256)" --rpc-url http://localhost:4444
       
     - name: Run linting checks
       run: npx --yes eslint .
