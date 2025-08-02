@@ -1,0 +1,182 @@
+import { parseUnits } from "viem";
+import { describe, expect, it } from "vitest";
+
+import { initDrome } from "./lib/test-helpers.js";
+import { type Token } from "./primitives";
+import { getQuoteForSwap } from "./swap.js";
+import { getListedTokens } from "./tokens.js";
+
+interface TestContext {
+  config: ReturnType<typeof initDrome>;
+  tokens: {
+    velo: Token;
+    weth: Token;
+    usdc: Token;
+    eth: Token;
+  };
+}
+
+const test = it.extend<TestContext>({
+  // eslint-disable-next-line no-empty-pattern
+  config: async ({}, use) => {
+    const config = initDrome();
+    await use(config);
+  },
+  tokens: async ({ config }, use) => {
+    const allTokens = await getListedTokens(config);
+
+    const findToken = (symbol: string, chainId: number) =>
+      allTokens.find(
+        (token) =>
+          token.symbol.toLowerCase() === symbol.toLowerCase() &&
+          token.chainId === chainId
+      );
+
+    const velo = findToken("velo", 10);
+    const weth = findToken("weth", 10);
+    const usdc = findToken("usdc", 10);
+    const eth = findToken("eth", 10);
+
+    if (!velo) throw new Error("Could not find VELO token for testing");
+    if (!weth) throw new Error("Could not find WETH token for testing");
+    if (!usdc) throw new Error("Could not find USDC token for testing");
+    if (!eth) throw new Error("Could not find ETH token for testing");
+
+    const tokens = { velo, weth, usdc, eth };
+    await use(tokens);
+  },
+});
+
+describe("Test swap functionality", () => {
+  test.concurrent(
+    "should get a quote for a valid swap",
+    async ({ config, tokens }) => {
+      const amountIn = parseUnits("1", tokens.weth.decimals);
+      const quote = await getQuoteForSwap(
+        config,
+        tokens.weth,
+        tokens.usdc,
+        amountIn
+      );
+
+      expect(quote).toBeDefined();
+      expect(quote!.fromToken).toEqual(tokens.weth);
+      expect(quote!.toToken).toEqual(tokens.usdc);
+      expect(quote!.amount).toBe(amountIn);
+      expect(quote!.amountOut).toBeGreaterThan(0n);
+      expect(quote!.path).toBeDefined();
+      expect(quote!.path.nodes).toBeInstanceOf(Array);
+      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    }
+  );
+
+  test.concurrent(
+    "should get a quote for velo to usdc swap",
+    async ({ config, tokens }) => {
+      const amountIn = parseUnits("100", tokens.velo.decimals);
+      const quote = await getQuoteForSwap(
+        config,
+        tokens.velo,
+        tokens.usdc,
+        amountIn
+      );
+
+      expect(quote).toBeDefined();
+      expect(quote!.fromToken).toEqual(tokens.velo);
+      expect(quote!.toToken).toEqual(tokens.usdc);
+      expect(quote!.amount).toBe(amountIn);
+      expect(quote!.amountOut).toBeGreaterThan(0n);
+      expect(quote!.path).toBeDefined();
+      expect(quote!.path.nodes).toBeInstanceOf(Array);
+      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    }
+  );
+
+  test.concurrent(
+    "should get a quote for eth to velo swap",
+    async ({ config, tokens }) => {
+      const amountIn = parseUnits("0.1", tokens.eth.decimals);
+      const quote = await getQuoteForSwap(
+        config,
+        tokens.eth,
+        tokens.velo,
+        amountIn
+      );
+
+      expect(quote).toBeDefined();
+      expect(quote!.fromToken).toEqual(tokens.eth);
+      expect(quote!.toToken).toEqual(tokens.velo);
+      expect(quote!.amount).toBe(amountIn);
+      expect(quote!.amountOut).toBeGreaterThan(0n);
+      expect(quote!.path).toBeDefined();
+      expect(quote!.path.nodes).toBeInstanceOf(Array);
+      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    }
+  );
+
+  test.concurrent(
+    "should get a quote for velo to eth swap",
+    async ({ config, tokens }) => {
+      const amountIn = parseUnits("1000", tokens.velo.decimals);
+      const quote = await getQuoteForSwap(
+        config,
+        tokens.velo,
+        tokens.eth,
+        amountIn
+      );
+
+      expect(quote).toBeDefined();
+      expect(quote!.fromToken).toEqual(tokens.velo);
+      expect(quote!.toToken).toEqual(tokens.eth);
+      expect(quote!.amount).toBe(amountIn);
+      expect(quote!.amountOut).toBeGreaterThan(0n);
+      expect(quote!.path).toBeDefined();
+      expect(quote!.path.nodes).toBeInstanceOf(Array);
+      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    }
+  );
+
+  test.concurrent(
+    "should get a quote for velo to weth swap",
+    async ({ config, tokens }) => {
+      const amountIn = parseUnits("1000", tokens.velo.decimals);
+      const quote = await getQuoteForSwap(
+        config,
+        tokens.velo,
+        tokens.weth,
+        amountIn
+      );
+
+      expect(quote).toBeDefined();
+      expect(quote!.fromToken).toEqual(tokens.velo);
+      expect(quote!.toToken).toEqual(tokens.weth);
+      expect(quote!.amount).toBe(amountIn);
+      expect(quote!.amountOut).toBeGreaterThan(0n);
+      expect(quote!.path).toBeDefined();
+      expect(quote!.path.nodes).toBeInstanceOf(Array);
+      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    }
+  );
+
+  test.concurrent(
+    "should get a quote for weth to velo swap",
+    async ({ config, tokens }) => {
+      const amountIn = parseUnits("1", tokens.weth.decimals);
+      const quote = await getQuoteForSwap(
+        config,
+        tokens.weth,
+        tokens.velo,
+        amountIn
+      );
+
+      expect(quote).toBeDefined();
+      expect(quote!.fromToken).toEqual(tokens.weth);
+      expect(quote!.toToken).toEqual(tokens.velo);
+      expect(quote!.amount).toBe(amountIn);
+      expect(quote!.amountOut).toBeGreaterThan(0n);
+      expect(quote!.path).toBeDefined();
+      expect(quote!.path.nodes).toBeInstanceOf(Array);
+      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    }
+  );
+});
