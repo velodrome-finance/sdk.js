@@ -1,10 +1,42 @@
 import { parseUnits } from "viem";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { initDrome } from "./lib/test-helpers.js";
 import { type Token } from "./primitives";
 import { getQuoteForSwap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
+
+// Honey health check function
+async function checkHoneyStatus(): Promise<boolean> {
+  try {
+    // Check if honey is running by testing connectivity to the expected ports
+    const expectedPorts = [4444, 4445, 4446]; // OP, Lisk, Base based on honey.yaml
+
+    for (const port of expectedPorts) {
+      const response = await fetch(`http://localhost:${port}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "eth_chainId",
+          params: [],
+          id: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        console.warn(`Honey port ${port} not responding`);
+        return false;
+      }
+    }
+
+    console.log("✅ Honey is running correctly on all expected ports");
+    return true;
+  } catch (error) {
+    console.warn("⚠️ Honey connectivity check failed:", error);
+    return false;
+  }
+}
 
 interface TestContext {
   config: ReturnType<typeof initDrome>;
@@ -48,6 +80,15 @@ const test = it.extend<TestContext>({
 });
 
 describe("Test swap functionality", () => {
+  beforeAll(async () => {
+    // Check if honey is running correctly in the test setup phase
+    const honeyStatus = await checkHoneyStatus();
+    if (!honeyStatus) {
+      console.warn(
+        "⚠️ Honey may not be running properly. Tests may fail if they depend on local blockchain nodes."
+      );
+    }
+  }, 30000); // 30 second timeout for honey startup
   test.concurrent(
     "should get a quote for a valid swap",
     async ({ config, tokens }) => {

@@ -1,0 +1,35 @@
+{
+  "name": "honey",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "dev": "npx tsc && node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/velodrome-finance/sdk.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/velodrome-finance/sdk.js/issues"
+  },
+  "homepage": "https://github.com/velodrome-finance/sdk.js#readme",
+  "description": "Honey testing helpers for Sugar SDK",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "20.15.0",
+    "@types/js-yaml": "^4.0.0",
+    "typescript": "5.8.2"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
