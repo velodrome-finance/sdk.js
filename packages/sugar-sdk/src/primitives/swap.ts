@@ -23,7 +23,7 @@ export function getSwapQuoteParams<ChainId extends number>({
     address: getChainConfig(config, chainId).QUOTER_ADDRESS,
     abi: routeQuoterAbi,
     functionName: "quoteExactInput",
-    args: [packRoute(config, path), amountIn],
+    args: [packRoute(config, path, "quote"), amountIn],
   } satisfies ContractFunction<
     typeof routeQuoterAbi,
     "nonpayable",

@@ -63,3 +63,7 @@ export const initDrome = () => {
     }
   );
 };
+
+export const getDromeConfig = () => {
+  return initDrome().dromeConfig;
+};

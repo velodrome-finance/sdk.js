@@ -59,7 +59,7 @@ describe("Test swap functionality", () => {
         amountIn
       );
 
-      expect(quote).toBeDefined();
+      expect(quote).toBeTruthy();
       expect(quote!.fromToken).toEqual(tokens.weth);
       expect(quote!.toToken).toEqual(tokens.usdc);
       expect(quote!.amount).toBe(amountIn);
@@ -81,7 +81,7 @@ describe("Test swap functionality", () => {
         amountIn
       );
 
-      expect(quote).toBeDefined();
+      expect(quote).toBeTruthy();
       expect(quote!.fromToken).toEqual(tokens.velo);
       expect(quote!.toToken).toEqual(tokens.usdc);
       expect(quote!.amount).toBe(amountIn);
@@ -103,7 +103,7 @@ describe("Test swap functionality", () => {
         amountIn
       );
 
-      expect(quote).toBeDefined();
+      expect(quote).toBeTruthy();
       expect(quote!.fromToken).toEqual(tokens.eth);
       expect(quote!.toToken).toEqual(tokens.velo);
       expect(quote!.amount).toBe(amountIn);
@@ -125,7 +125,7 @@ describe("Test swap functionality", () => {
         amountIn
       );
 
-      expect(quote).toBeDefined();
+      expect(quote).toBeTruthy();
       expect(quote!.fromToken).toEqual(tokens.velo);
       expect(quote!.toToken).toEqual(tokens.eth);
       expect(quote!.amount).toBe(amountIn);
@@ -147,7 +147,7 @@ describe("Test swap functionality", () => {
         amountIn
       );
 
-      expect(quote).toBeDefined();
+      expect(quote).toBeTruthy();
       expect(quote!.fromToken).toEqual(tokens.velo);
       expect(quote!.toToken).toEqual(tokens.weth);
       expect(quote!.amount).toBe(amountIn);
@@ -169,7 +169,7 @@ describe("Test swap functionality", () => {
         amountIn
       );
 
-      expect(quote).toBeDefined();
+      expect(quote).toBeTruthy();
       expect(quote!.fromToken).toEqual(tokens.weth);
       expect(quote!.toToken).toEqual(tokens.velo);
       expect(quote!.amount).toBe(amountIn);

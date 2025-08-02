@@ -1,13 +1,7 @@
-import { zeroAddress } from "viem";
-import { describe, expect, test } from "vitest";
-import { initDrome } from "@/lib/test-helpers";
+import { expect, test } from "vitest";
+import { getDromeConfig } from "@/lib/test-helpers";
 import { RouteElement } from "./types.js";
-
-import {
-  
-  prepareRoute,
-  
-} from "./lib";
+import { prepareRoute } from "./lib";
 
 test("Prepare route", () => {
   const v2Nodes: RouteElement[] = [
@@ -30,9 +24,8 @@ test("Prepare route", () => {
       chainId: 10,
     },
   ];
-  console.log(initDrome());
   //for a quote
-  expect(prepareRoute(initDrome(), v2Nodes, "quote")).toEqual({
+  expect(prepareRoute(getDromeConfig(), v2Nodes, "quote")).toEqual({
     types: ["address", "int24", "address", "int24", "address"],
     values: [
       "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
@@ -45,7 +38,7 @@ test("Prepare route", () => {
   //for a quote
   expect(
     prepareRoute(
-      initDrome(),
+      getDromeConfig(),
       [
         {
           from: "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
@@ -99,7 +92,7 @@ test("Prepare route", () => {
   });
 
   //for a v2 swap command
-  expect(prepareRoute(initDrome(), v2Nodes, "swap")).toEqual({
+  expect(prepareRoute(getDromeConfig(), v2Nodes, "swap")).toEqual({
     types: ["address", "bool", "address", "bool", "address"],
     values: [
       "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
