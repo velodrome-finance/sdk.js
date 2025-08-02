@@ -26,7 +26,6 @@ jobs:
       
     - name: Run tests
       run: |
-        cd packages/sugar-sdk
         npm test
         
     - name: Build Sugar SDK
