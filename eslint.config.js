@@ -20,6 +20,14 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   eslintPluginPrettierRecommended,
   {
+    ignores: [
+      "**/dist/**",
+      "**/build/**",
+      "**/coverage/**",
+      "**/node_modules/**",
+    ],
+  },
+  {
     plugins: {},
     rules: {
       "prettier/prettier": ["error", {}, {}],
@@ -68,6 +76,13 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
+    },
+  },
+  {
+    files: ["packages/honey/**/*.{ts,js}"],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
     },
   },
   includeIgnoreFile(ignorePath)
