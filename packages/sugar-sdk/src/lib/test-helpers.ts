@@ -17,24 +17,38 @@ import {
 
 import { initDrome as baseInitDrome, velodromeConfig } from "../index.js";
 
-function getTransports(chains: Chain[]) {
+export function getTransportURL(
+  chainId: number,
+  i: number,
+  withHoney: boolean = false
+): string {
+  if (withHoney) {
+    return `http://localhost:${4444 + i}`;
+  }
+  const rpc = process.env[`VITE_RPC_${chainId}`];
+  if (!rpc) {
+    throw new Error(
+      `Missing RPC URL. Please pass VITE_RPC_${chainId} as an environment variable.`
+    );
+  }
+  return rpc;
+}
+
+function getTransports(chains: Chain[], withHoney: boolean = false) {
+  // sort chains by chain ID to ensure consistent port assignment for honey
+  chains.sort((a, b) => a.id - b.id);
   return Object.fromEntries(
-    chains.map((chain) => {
-      const rpc = process.env["VITE_RPC_" + chain.id];
-
-      if (!rpc) {
-        throw new Error(
-          `Missing RPC URL. Please pass VITE_RPC_${chain.id} as an environment variable.`
-        );
-      }
-
-      return [chain.id, http(rpc, { batch: true })];
+    chains.map((chain, i) => {
+      return [
+        chain.id,
+        http(getTransportURL(chain.id, i, withHoney), { batch: true }),
+      ];
     })
   );
 }
 
-export const initDrome = () => {
-  const velodromChains = [
+export const initDrome = (withHoney: boolean = false) => {
+  const velodromeChains = [
     optimism,
     mode,
     lisk,
@@ -51,9 +65,9 @@ export const initDrome = () => {
 
   return baseInitDrome(
     createConfig({
-      chains: velodromChains,
+      chains: velodromeChains,
       connectors: [injected()],
-      transports: getTransports(velodromChains),
+      transports: getTransports(velodromeChains, withHoney),
     }),
     {
       ...velodromeConfig,
