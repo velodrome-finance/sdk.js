@@ -31,3 +31,11 @@ Run tests
 ```
 npm test
 ```
+
+## Abis
+
+Regenerate 
+
+```
+npx @wagmi/cli generate YOUR_ETHERSCAN_KEY_HERE
+```
