@@ -10,7 +10,7 @@
     "swellchain",
     "unichain",
     "wagmi",
-    "simnet"
+    "supersim"
   ],
   "ignoreWords": [],
   "import": []

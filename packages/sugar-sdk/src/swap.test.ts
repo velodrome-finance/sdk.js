@@ -9,7 +9,7 @@ import { getListedTokens } from "./tokens.js";
 
 interface TestContext {
   config: Awaited<ReturnType<typeof initDrome>>;
-  simnetConfig: Awaited<ReturnType<typeof initDrome>>;
+  supersimConfig: Awaited<ReturnType<typeof initDrome>>;
   tokens: {
     velo: Token;
     weth: Token;
@@ -25,9 +25,9 @@ const test = it.extend<TestContext>({
     await use(config);
   },
   // eslint-disable-next-line no-empty-pattern
-  simnetConfig: async ({}, use) => {
-    const simnetConfig = await initDrome(true);
-    await use(simnetConfig);
+  supersimConfig: async ({}, use) => {
+    const supersimConfig = await initDrome(true);
+    await use(supersimConfig);
   },
   tokens: async ({ config }, use) => {
     const allTokens = await getListedTokens(config);
@@ -67,7 +67,7 @@ describe("Test swap functionality", () => {
 
   test("quote and swap from WETH to USDC", async ({
     config,
-    simnetConfig,
+    supersimConfig,
     tokens,
   }) => {
     const amountIn = parseUnits("1", tokens.weth.decimals);
@@ -87,14 +87,14 @@ describe("Test swap functionality", () => {
     expect(quote!.path.nodes).toBeInstanceOf(Array);
     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-    const r = await swap(simnetConfig, quote!);
+    const r = await swap(supersimConfig, quote!);
     expect(r).toBeDefined();
     expect(r.startsWith("0x")).toBe(true);
   });
 
   test("quote and swap from VELO to USDC", async ({
     config,
-    simnetConfig,
+    supersimConfig,
     tokens,
   }) => {
     const amountIn = parseUnits("100", tokens.velo.decimals);
@@ -114,14 +114,14 @@ describe("Test swap functionality", () => {
     expect(quote!.path.nodes).toBeInstanceOf(Array);
     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-    const r = await swap(simnetConfig, quote!);
+    const r = await swap(supersimConfig, quote!);
     expect(r).toBeDefined();
     expect(r.startsWith("0x")).toBe(true);
   });
 
   test("quote and swap from ETH to VELO", async ({
     config,
-    simnetConfig,
+    supersimConfig,
     tokens,
   }) => {
     const amountIn = parseUnits("0.1", tokens.eth.decimals);
@@ -141,14 +141,14 @@ describe("Test swap functionality", () => {
     expect(quote!.path.nodes).toBeInstanceOf(Array);
     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-    const r = await swap(simnetConfig, quote!);
+    const r = await swap(supersimConfig, quote!);
     expect(r).toBeDefined();
     expect(r.startsWith("0x")).toBe(true);
   });
 
   test("quote and swap from VELO to ETH", async ({
     config,
-    simnetConfig,
+    supersimConfig,
     tokens,
   }) => {
     const amountIn = parseUnits("1000", tokens.velo.decimals);
@@ -168,14 +168,14 @@ describe("Test swap functionality", () => {
     expect(quote!.path.nodes).toBeInstanceOf(Array);
     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-    const r = await swap(simnetConfig, quote!);
+    const r = await swap(supersimConfig, quote!);
     expect(r).toBeDefined();
     expect(r.startsWith("0x")).toBe(true);
   });
 
   test("quote and swap from VELO to WETH", async ({
     config,
-    simnetConfig,
+    supersimConfig,
     tokens,
   }) => {
     const amountIn = parseUnits("1000", tokens.velo.decimals);
@@ -195,14 +195,14 @@ describe("Test swap functionality", () => {
     expect(quote!.path.nodes).toBeInstanceOf(Array);
     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-    const r = await swap(simnetConfig, quote!);
+    const r = await swap(supersimConfig, quote!);
     expect(r).toBeDefined();
     expect(r.startsWith("0x")).toBe(true);
   });
 
   test("quote and swap from WETH to VELO", async ({
     config,
-    simnetConfig,
+    supersimConfig,
     tokens,
   }) => {
     const amountIn = parseUnits("1", tokens.weth.decimals);
@@ -222,7 +222,7 @@ describe("Test swap functionality", () => {
     expect(quote!.path.nodes).toBeInstanceOf(Array);
     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-    const r = await swap(simnetConfig, quote!);
+    const r = await swap(supersimConfig, quote!);
     expect(r).toBeDefined();
     expect(r.startsWith("0x")).toBe(true);
   });

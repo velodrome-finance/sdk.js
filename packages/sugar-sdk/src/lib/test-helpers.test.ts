@@ -15,11 +15,11 @@ describe("getTransportURL", () => {
 });
 
 describe("initDrome", () => {
-  it("works for simnet", async () => {
-    const simnetConfig = await initDrome(true);
-    const account = getAccount(simnetConfig);
+  it("works for supersim", async () => {
+    const supersimConfig = await initDrome(true);
+    const account = getAccount(supersimConfig);
     expect(account.address).toEqual(TEST_ACCOUNT_ADDRESS);
-    expect(simnetConfig.chains[1].rpcUrls.default.http).toEqual([
+    expect(supersimConfig.chains[1].rpcUrls.default.http).toEqual([
       "http://localhost:4444",
     ]);
   });

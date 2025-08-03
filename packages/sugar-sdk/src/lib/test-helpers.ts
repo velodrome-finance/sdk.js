@@ -35,7 +35,7 @@ export function getTransportURL(
 ): string {
   if (withHoney) {
     // Eth mainnet is the first chain in the list of chains
-    // since we currently do not use simnet for it, we skip it
+    // since we currently do not use supersim for it, we skip it
     return `http://localhost:${4444 + i - 1}`;
   }
 
@@ -119,7 +119,7 @@ export const initDrome = async (withHoney: boolean = false) => {
     return config;
   }
 
-  // when using simnet via honey, we need to connect test account
+  // when using supersim via honey, we need to connect test account
   await connect(config, { connector: config.connectors[1] });
   return config;
 };
