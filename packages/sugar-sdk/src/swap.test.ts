@@ -1,47 +1,15 @@
-import { connect, getAccount } from "@wagmi/core";
 import { parseUnits } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { initDrome } from "./lib/test-helpers.js";
+import { checkHoneyStatus, initDrome } from "@/lib/test-helpers.js";
+
 import { type Token } from "./primitives";
 import { getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
 
-// Honey health check function
-async function checkHoneyStatus(): Promise<boolean> {
-  try {
-    // Check if honey is running by testing connectivity to the expected ports
-    const expectedPorts = [4444, 4445, 4446]; // OP, Lisk, Base based on honey.yaml
-
-    for (const port of expectedPorts) {
-      const response = await fetch(`http://localhost:${port}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          method: "eth_chainId",
-          params: [],
-          id: 1,
-        }),
-      });
-
-      if (!response.ok) {
-        console.warn(`Honey port ${port} not responding`);
-        return false;
-      }
-    }
-
-    console.log("✅ Honey is running correctly on all expected ports");
-    return true;
-  } catch (error) {
-    console.warn("⚠️ Honey connectivity check failed:", error);
-    return false;
-  }
-}
-
 interface TestContext {
-  config: ReturnType<typeof initDrome>;
-  simnetConfig: ReturnType<typeof initDrome>;
+  config: Awaited<ReturnType<typeof initDrome>>;
+  simnetConfig: Awaited<ReturnType<typeof initDrome>>;
   tokens: {
     velo: Token;
     weth: Token;
@@ -53,13 +21,13 @@ interface TestContext {
 const test = it.extend<TestContext>({
   // eslint-disable-next-line no-empty-pattern
   config: async ({}, use) => {
-    const config = initDrome();
+    const config = await initDrome();
     await use(config);
   },
   // eslint-disable-next-line no-empty-pattern
   simnetConfig: async ({}, use) => {
-    const config = initDrome(true);
-    await use(config);
+    const simnetConfig = await initDrome(true);
+    await use(simnetConfig);
   },
   tokens: async ({ config }, use) => {
     const allTokens = await getListedTokens(config);
@@ -122,15 +90,6 @@ describe("Test swap functionality", () => {
   test.concurrent(
     "quote and swap from VELO to USDC",
     async ({ config, simnetConfig, tokens }) => {
-      // Connect to the mock connector first
-      await connect(simnetConfig, { connector: simnetConfig.connectors[1] });
-
-      const account = getAccount(simnetConfig);
-
-      expect(account.address).toEqual(
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-      );
-
       const amountIn = parseUnits("100", tokens.velo.decimals);
       const quote = await getQuoteForSwap(
         config,

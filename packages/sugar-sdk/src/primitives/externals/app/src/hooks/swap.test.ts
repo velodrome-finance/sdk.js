@@ -8,7 +8,7 @@ import { RouteElement, Token } from "./types";
 
 import { getDromeConfig } from "@/lib/test-helpers";
 
-const dromeConfig = getDromeConfig();
+const dromeConfig = await getDromeConfig();
 
 vi.mock("./lib", async () => {
   const router = await vi.importActual("./lib");

@@ -3,7 +3,7 @@ import { getDromeConfig } from "@/lib/test-helpers";
 import { RouteElement } from "./types.js";
 import { prepareRoute } from "./lib";
 
-test("Prepare route", () => {
+test("Prepare route", async () => {
   const v2Nodes: RouteElement[] = [
     {
       from: "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
@@ -25,7 +25,7 @@ test("Prepare route", () => {
     },
   ];
   //for a quote
-  expect(prepareRoute(getDromeConfig(), v2Nodes, "quote")).toEqual({
+  expect(prepareRoute(await getDromeConfig(), v2Nodes, "quote")).toEqual({
     types: ["address", "int24", "address", "int24", "address"],
     values: [
       "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
@@ -38,7 +38,7 @@ test("Prepare route", () => {
   //for a quote
   expect(
     prepareRoute(
-      getDromeConfig(),
+      await getDromeConfig(),
       [
         {
           from: "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
@@ -92,7 +92,7 @@ test("Prepare route", () => {
   });
 
   //for a v2 swap command
-  expect(prepareRoute(getDromeConfig(), v2Nodes, "swap")).toEqual({
+  expect(prepareRoute(await getDromeConfig(), v2Nodes, "swap")).toEqual({
     types: ["address", "bool", "address", "bool", "address"],
     values: [
       "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
