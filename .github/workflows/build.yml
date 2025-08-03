@@ -21,12 +21,12 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Run Honey 🍯
-      uses: ./.github/actions/honey
-      
     - name: Run linting checks
       run: npx --yes eslint .
-      
+
+    - name: Run Honey 🍯
+      uses: ./.github/actions/honey
+
     - name: Run tests
       run: npm test
 
