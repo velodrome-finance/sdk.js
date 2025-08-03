@@ -12,7 +12,7 @@ export const poolTypes = {
 
 export function prepareRoute(config: DromeConfig, nodes: RouteElement[],  type: "swap" | "quote"): {
   types: string[];
-  values: (Address | number)[];
+  values: (Address | number | boolean)[];
 } {
   // in each swap command, nodes are always grouped by pool type
   const isV2Swap =
