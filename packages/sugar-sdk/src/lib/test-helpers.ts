@@ -25,7 +25,9 @@ export function getTransportURL(
   withHoney: boolean = false
 ): string {
   if (withHoney) {
-    return `http://localhost:${4444 + i}`;
+    // Eth mainnet is the first chain in the list of chains
+    // since we currently do not use simnet for it, we skip it
+    return `http://localhost:${4444 + i - 1}`;
   }
   const rpc = process.env[`VITE_RPC_${chainId}`];
   if (!rpc) {
@@ -37,8 +39,6 @@ export function getTransportURL(
 }
 
 function getTransports(chains: Chain[], withHoney: boolean = false) {
-  // sort chains by chain ID to ensure consistent port assignment for honey
-  chains.sort((a, b) => a.id - b.id);
   return Object.fromEntries(
     chains.map((chain, i) => {
       return [
@@ -65,9 +65,26 @@ export const initDrome = (withHoney: boolean = false) => {
     mainnet,
   ] as [Chain, ...Chain[]];
 
+  // sort chains by chain ID to ensure consistent port assignment for honey
+  velodromeChains.sort((a, b) => a.id - b.id);
+
+  // When honey is enabled, modify chain RPC URLs to use localhost
+  const chainsToUse = withHoney
+    ? velodromeChains.map((chain, i) => ({
+        ...chain,
+        rpcUrls: {
+          ...chain.rpcUrls,
+          default: {
+            ...chain.rpcUrls.default,
+            http: [getTransportURL(chain.id, i, true)],
+          },
+        },
+      }))
+    : velodromeChains;
+
   return baseInitDrome(
     createConfig({
-      chains: velodromeChains,
+      chains: chainsToUse as [Chain, ...Chain[]],
       connectors: [
         injected(),
         ...(withHoney
@@ -85,7 +102,7 @@ export const initDrome = (withHoney: boolean = false) => {
             ]
           : []),
       ],
-      transports: getTransports(velodromeChains, withHoney),
+      transports: getTransports(chainsToUse, withHoney),
     }),
     {
       ...velodromeConfig,

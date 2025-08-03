@@ -4,7 +4,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { initDrome } from "./lib/test-helpers.js";
 import { type Token } from "./primitives";
-import { getQuoteForSwap } from "./swap.js";
+import { getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
 
 // Honey health check function
@@ -152,9 +152,9 @@ describe("Test swap functionality", () => {
         "http://localhost:4444",
       ]);
 
-      // const r = await swap(simnetConfig, quote!);
-      // console.log("Swap result:", r);
-      // expect(r).toBeDefined();
+      const r = await swap(simnetConfig, quote!);
+      expect(r).toBeDefined();
+      expect(r.startsWith("0x")).toBe(true);
     }
   );
 
