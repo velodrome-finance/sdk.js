@@ -65,159 +65,165 @@ describe("Test swap functionality", () => {
     }
   }, 30000); // 30 second timeout for honey startup
 
-  test.concurrent(
-    "quote and swap from WETH to USDC",
-    async ({ config, simnetConfig, tokens }) => {
-      const amountIn = parseUnits("1", tokens.weth.decimals);
-      const quote = await getQuoteForSwap(
-        config,
-        tokens.weth,
-        tokens.usdc,
-        amountIn
-      );
+  test("quote and swap from WETH to USDC", async ({
+    config,
+    simnetConfig,
+    tokens,
+  }) => {
+    const amountIn = parseUnits("1", tokens.weth.decimals);
+    const quote = await getQuoteForSwap(
+      config,
+      tokens.weth,
+      tokens.usdc,
+      amountIn
+    );
 
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.weth);
-      expect(quote!.toToken).toEqual(tokens.usdc);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    expect(quote).toBeTruthy();
+    expect(quote!.fromToken).toEqual(tokens.weth);
+    expect(quote!.toToken).toEqual(tokens.usdc);
+    expect(quote!.amount).toBe(amountIn);
+    expect(quote!.amountOut).toBeGreaterThan(0n);
+    expect(quote!.path).toBeDefined();
+    expect(quote!.path.nodes).toBeInstanceOf(Array);
+    expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap(simnetConfig, quote!);
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
+    const r = await swap(simnetConfig, quote!);
+    expect(r).toBeDefined();
+    expect(r.startsWith("0x")).toBe(true);
+  });
 
-  test.concurrent(
-    "quote and swap from VELO to USDC",
-    async ({ config, simnetConfig, tokens }) => {
-      const amountIn = parseUnits("100", tokens.velo.decimals);
-      const quote = await getQuoteForSwap(
-        config,
-        tokens.velo,
-        tokens.usdc,
-        amountIn
-      );
+  test("quote and swap from VELO to USDC", async ({
+    config,
+    simnetConfig,
+    tokens,
+  }) => {
+    const amountIn = parseUnits("100", tokens.velo.decimals);
+    const quote = await getQuoteForSwap(
+      config,
+      tokens.velo,
+      tokens.usdc,
+      amountIn
+    );
 
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.velo);
-      expect(quote!.toToken).toEqual(tokens.usdc);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    expect(quote).toBeTruthy();
+    expect(quote!.fromToken).toEqual(tokens.velo);
+    expect(quote!.toToken).toEqual(tokens.usdc);
+    expect(quote!.amount).toBe(amountIn);
+    expect(quote!.amountOut).toBeGreaterThan(0n);
+    expect(quote!.path).toBeDefined();
+    expect(quote!.path.nodes).toBeInstanceOf(Array);
+    expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap(simnetConfig, quote!);
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
+    const r = await swap(simnetConfig, quote!);
+    expect(r).toBeDefined();
+    expect(r.startsWith("0x")).toBe(true);
+  });
 
-  test.concurrent(
-    "quote and swap from ETH to VELO",
-    async ({ config, simnetConfig, tokens }) => {
-      const amountIn = parseUnits("0.1", tokens.eth.decimals);
-      const quote = await getQuoteForSwap(
-        config,
-        tokens.eth,
-        tokens.velo,
-        amountIn
-      );
+  test("quote and swap from ETH to VELO", async ({
+    config,
+    simnetConfig,
+    tokens,
+  }) => {
+    const amountIn = parseUnits("0.1", tokens.eth.decimals);
+    const quote = await getQuoteForSwap(
+      config,
+      tokens.eth,
+      tokens.velo,
+      amountIn
+    );
 
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.eth);
-      expect(quote!.toToken).toEqual(tokens.velo);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    expect(quote).toBeTruthy();
+    expect(quote!.fromToken).toEqual(tokens.eth);
+    expect(quote!.toToken).toEqual(tokens.velo);
+    expect(quote!.amount).toBe(amountIn);
+    expect(quote!.amountOut).toBeGreaterThan(0n);
+    expect(quote!.path).toBeDefined();
+    expect(quote!.path.nodes).toBeInstanceOf(Array);
+    expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap(simnetConfig, quote!);
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
+    const r = await swap(simnetConfig, quote!);
+    expect(r).toBeDefined();
+    expect(r.startsWith("0x")).toBe(true);
+  });
 
-  test.concurrent(
-    "quote and swap from VELO to ETH",
-    async ({ config, simnetConfig, tokens }) => {
-      const amountIn = parseUnits("1000", tokens.velo.decimals);
-      const quote = await getQuoteForSwap(
-        config,
-        tokens.velo,
-        tokens.eth,
-        amountIn
-      );
+  test("quote and swap from VELO to ETH", async ({
+    config,
+    simnetConfig,
+    tokens,
+  }) => {
+    const amountIn = parseUnits("1000", tokens.velo.decimals);
+    const quote = await getQuoteForSwap(
+      config,
+      tokens.velo,
+      tokens.eth,
+      amountIn
+    );
 
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.velo);
-      expect(quote!.toToken).toEqual(tokens.eth);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    expect(quote).toBeTruthy();
+    expect(quote!.fromToken).toEqual(tokens.velo);
+    expect(quote!.toToken).toEqual(tokens.eth);
+    expect(quote!.amount).toBe(amountIn);
+    expect(quote!.amountOut).toBeGreaterThan(0n);
+    expect(quote!.path).toBeDefined();
+    expect(quote!.path.nodes).toBeInstanceOf(Array);
+    expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap(simnetConfig, quote!);
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
+    const r = await swap(simnetConfig, quote!);
+    expect(r).toBeDefined();
+    expect(r.startsWith("0x")).toBe(true);
+  });
 
-  test.concurrent(
-    "quote and swap from VELO to WETH",
-    async ({ config, simnetConfig, tokens }) => {
-      const amountIn = parseUnits("1000", tokens.velo.decimals);
-      const quote = await getQuoteForSwap(
-        config,
-        tokens.velo,
-        tokens.weth,
-        amountIn
-      );
+  test("quote and swap from VELO to WETH", async ({
+    config,
+    simnetConfig,
+    tokens,
+  }) => {
+    const amountIn = parseUnits("1000", tokens.velo.decimals);
+    const quote = await getQuoteForSwap(
+      config,
+      tokens.velo,
+      tokens.weth,
+      amountIn
+    );
 
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.velo);
-      expect(quote!.toToken).toEqual(tokens.weth);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    expect(quote).toBeTruthy();
+    expect(quote!.fromToken).toEqual(tokens.velo);
+    expect(quote!.toToken).toEqual(tokens.weth);
+    expect(quote!.amount).toBe(amountIn);
+    expect(quote!.amountOut).toBeGreaterThan(0n);
+    expect(quote!.path).toBeDefined();
+    expect(quote!.path.nodes).toBeInstanceOf(Array);
+    expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap(simnetConfig, quote!);
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
+    const r = await swap(simnetConfig, quote!);
+    expect(r).toBeDefined();
+    expect(r.startsWith("0x")).toBe(true);
+  });
 
-  test.concurrent(
-    "quote and swap from WETH to VELO",
-    async ({ config, simnetConfig, tokens }) => {
-      const amountIn = parseUnits("1", tokens.weth.decimals);
-      const quote = await getQuoteForSwap(
-        config,
-        tokens.weth,
-        tokens.velo,
-        amountIn
-      );
+  test("quote and swap from WETH to VELO", async ({
+    config,
+    simnetConfig,
+    tokens,
+  }) => {
+    const amountIn = parseUnits("1", tokens.weth.decimals);
+    const quote = await getQuoteForSwap(
+      config,
+      tokens.weth,
+      tokens.velo,
+      amountIn
+    );
 
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.weth);
-      expect(quote!.toToken).toEqual(tokens.velo);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    expect(quote).toBeTruthy();
+    expect(quote!.fromToken).toEqual(tokens.weth);
+    expect(quote!.toToken).toEqual(tokens.velo);
+    expect(quote!.amount).toBe(amountIn);
+    expect(quote!.amountOut).toBeGreaterThan(0n);
+    expect(quote!.path).toBeDefined();
+    expect(quote!.path.nodes).toBeInstanceOf(Array);
+    expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap(simnetConfig, quote!);
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
+    const r = await swap(simnetConfig, quote!);
+    expect(r).toBeDefined();
+    expect(r.startsWith("0x")).toBe(true);
+  });
 });
