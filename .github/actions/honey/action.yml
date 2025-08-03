@@ -12,6 +12,7 @@ runs:
       uses: foundry-rs/foundry-toolchain@v1
       
     - name: Confirm forge is installed
+      shell: bash
       run: forge --version
 
     - name: Install supersim
