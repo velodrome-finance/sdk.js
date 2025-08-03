@@ -15,6 +15,7 @@ import {
   swellchain,
   unichain,
 } from "wagmi/chains";
+import { mock } from "wagmi/connectors";
 
 import { initDrome as baseInitDrome, velodromeConfig } from "../index.js";
 
@@ -74,9 +75,13 @@ export const initDrome = (withHoney: boolean = false) => {
               // OMG, there are private keys in this file. What is this amateur hour?
               // Calm down, these are presets from Anvil. No need to panic.
               // see https://getfoundry.sh/anvil/overview#getting-started
-              privateKeyToAccount(
-                "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
-              ),
+              mock({
+                accounts: [
+                  privateKeyToAccount(
+                    "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+                  ).address,
+                ],
+              }),
             ]
           : []),
       ],
