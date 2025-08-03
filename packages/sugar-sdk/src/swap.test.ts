@@ -148,6 +148,10 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
+      expect(simnetConfig.chains[1].rpcUrls.default.http).toEqual([
+        "http://localhost:4444",
+      ]);
+
       // const r = await swap(simnetConfig, quote!);
       // console.log("Swap result:", r);
       // expect(r).toBeDefined();
