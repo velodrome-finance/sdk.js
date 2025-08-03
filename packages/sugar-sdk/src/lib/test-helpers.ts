@@ -69,7 +69,7 @@ export const initDrome = (withHoney: boolean = false) => {
       chains: velodromeChains,
       connectors: [
         injected(),
-        ...(withHoney && process.env.PRIVATE_KEY
+        ...(withHoney
           ? [
               // OMG, there are private keys in this file. What is this amateur hour?
               // Calm down, these are presets from Anvil. No need to panic.

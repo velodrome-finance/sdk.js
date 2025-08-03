@@ -1,3 +1,4 @@
+import { getAccount } from "@wagmi/core";
 import { parseUnits } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 
@@ -121,6 +122,12 @@ describe("Test swap functionality", () => {
   test.concurrent(
     "quote and swap from VELO to USDC",
     async ({ config, simnetConfig, tokens }) => {
+      const account = getAccount(config);
+
+      expect(account.address).toEqual(
+        "0x0000000000000000000000000000000000000001"
+      );
+
       const amountIn = parseUnits("100", tokens.velo.decimals);
       const quote = await getQuoteForSwap(
         config,

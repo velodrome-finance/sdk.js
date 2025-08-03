@@ -88,37 +88,6 @@ export const setupPlanner = ({
     const nodes = groupedNodes[0];
     const isV2Pool = Number(nodes[0].type) < 1;
 
-    console.log(">>>>>>>>>>>>> add command", isV2Pool ? CommandType.V2_SWAP_EXACT_IN : CommandType.V3_SWAP_EXACT_IN,
-      [
-        // where should money go?
-        // normally to the customer's wallet, unless we need to do some ETH unwrapping at the end
-        quote.toToken.wrappedAddress ? routerAddress : account,
-        quote.amount,
-        minAmountOut,
-        packRoute(config, nodes),
-        !tokensComeFromContract,
-        false,
-      ] as const);
-      console.log(
-
-        "quote.toToken.wrappedAddress", quote.toToken.wrappedAddress,
-        "router address", routerAddress,
-        "account", account,
-      );
-
-      /* 
-      
-      >>>>>>>>>>>>> add command 8 [
-  undefined,
-  100000000000000000000n,
-  4607087n,
-  '0x9560e827af36c94d2ac33a39bce1fe78631088db000a7b751fcdbbaa8bb988b9217ad5fb5cfe7bf7a0000b2c639c533813f4aa9d7837caf62653d097ff85',
-  true,
-  false
-]
-quote.toToken.wrappedAddress undefined router address 0x4bF3E32de155359D1D75e8B474b66848221142fc account undefined
-      */
-
     routePlanner.addCommand(
       isV2Pool ? CommandType.V2_SWAP_EXACT_IN : CommandType.V3_SWAP_EXACT_IN,
       [
