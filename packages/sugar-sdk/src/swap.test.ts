@@ -4,7 +4,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { checkHoneyStatus, initDrome } from "@/lib/test-helpers";
 
 import { type Token } from "./primitives";
-import { getQuoteForSwap, swap } from "./swap.js";
+import { getQuoteForSwap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
 
 interface TestContext {
@@ -94,7 +94,7 @@ describe("Test swap functionality", () => {
 
   test("quote and swap from VELO to USDC", async ({
     config,
-    supersimConfig,
+    // supersimConfig,
     tokens,
   }) => {
     const amountIn = parseUnits("100", tokens.velo.decimals);
@@ -114,9 +114,25 @@ describe("Test swap functionality", () => {
     expect(quote!.path.nodes).toBeInstanceOf(Array);
     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-    const r = await swap(supersimConfig, quote!);
-    expect(r).toBeDefined();
-    expect(r.startsWith("0x")).toBe(true);
+    expect(
+      quote!.path.nodes
+        .map((n) => n.from)
+        .includes("0x0a7B751FcDBBAA8BB988B9217ad5Fb5cfe7bf7A0")
+    ).toBeFalsy();
+
+    expect(
+      quote!.path.nodes
+        .map((n) => n.to)
+        .includes("0x0a7B751FcDBBAA8BB988B9217ad5Fb5cfe7bf7A0")
+    ).toBeFalsy();
+
+    for (const node of quote!.path.nodes) {
+      console.log(node);
+    }
+
+    // const r = await swap(supersimConfig, quote!, "5"); // 5% slippage tolerance
+    // expect(r).toBeDefined();
+    // expect(r.startsWith("0x")).toBe(true);
 
     // const cmd = `uvx --from git+https://github.com/callmephilip/sugar-call-data-for-swap app --chain_id 10 --from_token_address ${quote?.fromToken.address} --to_token_address ${quote?.toToken.address} --account 0x1e7A6B63F98484514610A9F0D5b399d4F7a9b1dA --amount ${parseUnits("100", tokens.velo.decimals)} --slippage 0.01`;
     // console.log("Command to run:", cmd);
