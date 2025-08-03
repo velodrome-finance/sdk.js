@@ -83,7 +83,8 @@ export function getSwapVars(
   const planner = setupPlanner({
     config,
     chainId,
-    account: accountAddress,
+    // TODO: look into this
+    account: accountAddress!,
     quote,
     slippagePct,
   });

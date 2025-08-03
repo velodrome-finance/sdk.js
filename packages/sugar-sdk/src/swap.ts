@@ -88,7 +88,7 @@ export async function getQuoteForSwap(
     })
     .filter((quote) => quote !== null);
 
-  return getBestQuote(quotes);
+  return getBestQuote([quotes]);
 }
 
 export async function swap(

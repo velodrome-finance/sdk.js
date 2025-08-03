@@ -1,40 +1,42 @@
-// src commit efc754bec699419b901397e63d23efe996ff4ca0
+// src commit 662bd2cea30a9abc97d86dd3715619e388f5f286
 import { Address, hexToBigInt } from "viem";
 import { CommandType, RoutePlanner } from "../lib/router.js";
 import { packRoute } from "./lib";
 import { applyPct } from "./math";
 import { Quote, RouteElement } from "./types";
-import { DromeConfig } from "../../../../../config.js";
 import { getChainConfig } from "../../../../utils.js";
+import { DromeConfig } from "@/config";
 
-// this is used to indicate "all available funds" for in-between trades with v3 pools
+// this is used to indicate "all available funds" for v2 and v3 swaps
 export const CONTRACT_BALANCE_FOR_V3_SWAPS = hexToBigInt(
   "0x8000000000000000000000000000000000000000000000000000000000000000"
 );
 
 export const setupPlanner = ({
-  config,
   chainId,
+  config,
   account,
   quote,
   slippagePct,
   routePlanner = new RoutePlanner(),
 }: {
-  config: DromeConfig
+  config: DromeConfig;
   chainId: number;
-  account?: Address;
+  account: Address;
   quote: Quote;
   slippagePct: string;
   routePlanner?: RoutePlanner;
 }): RoutePlanner => {
+  console.log("Setting up route planner with quote", quote, "and account", account);
+
+
   const routerAddress = getChainConfig(config, chainId).UNIVERSAL_ROUTER_ADDRESS;
   const minAmountOut = applyPct(
     quote.amountOut,
     quote.toToken.decimals,
     slippagePct
   );
-  // be default money comes from contract
-  let tokensComeFromContract = false;
+  let tokensComeFromContract = quote.amount === CONTRACT_BALANCE_FOR_V3_SWAPS;
 
   if (quote.fromToken.wrappedAddress) {
     // when trading from native token
@@ -86,6 +88,37 @@ export const setupPlanner = ({
     const nodes = groupedNodes[0];
     const isV2Pool = Number(nodes[0].type) < 1;
 
+    console.log(">>>>>>>>>>>>> add command", isV2Pool ? CommandType.V2_SWAP_EXACT_IN : CommandType.V3_SWAP_EXACT_IN,
+      [
+        // where should money go?
+        // normally to the customer's wallet, unless we need to do some ETH unwrapping at the end
+        quote.toToken.wrappedAddress ? routerAddress : account,
+        quote.amount,
+        minAmountOut,
+        packRoute(config, nodes),
+        !tokensComeFromContract,
+        false,
+      ] as const);
+      console.log(
+
+        "quote.toToken.wrappedAddress", quote.toToken.wrappedAddress,
+        "router address", routerAddress,
+        "account", account,
+      );
+
+      /* 
+      
+      >>>>>>>>>>>>> add command 8 [
+  undefined,
+  100000000000000000000n,
+  4607087n,
+  '0x9560e827af36c94d2ac33a39bce1fe78631088db000a7b751fcdbbaa8bb988b9217ad5fb5cfe7bf7a0000b2c639c533813f4aa9d7837caf62653d097ff85',
+  true,
+  false
+]
+quote.toToken.wrappedAddress undefined router address 0x4bF3E32de155359D1D75e8B474b66848221142fc account undefined
+      */
+
     routePlanner.addCommand(
       isV2Pool ? CommandType.V2_SWAP_EXACT_IN : CommandType.V3_SWAP_EXACT_IN,
       [
@@ -94,15 +127,10 @@ export const setupPlanner = ({
         quote.toToken.wrappedAddress ? routerAddress : account,
         quote.amount,
         minAmountOut,
-        isV2Pool
-          ? nodes.map((n) => ({
-              from: n.from,
-              to: n.to,
-              stable: Number(n.type) === 0,
-            }))
-          : packRoute(config, nodes),
+        packRoute(config, nodes),
         !tokensComeFromContract,
-      ]
+        false,
+      ] as const
     );
   } else {
     // ok, things are about to get ugly
@@ -131,14 +159,9 @@ export const setupPlanner = ({
         quote.amount,
         // no expectations on the min amount out
         0n,
-        isFirstBatchV2
-          ? firstBatch.map((n) => ({
-              from: n.from,
-              to: n.to,
-              stable: Number(n.type) === 0,
-            }))
-          : packRoute(config, firstBatch),
+        packRoute(config, firstBatch),
         !tokensComeFromContract,
+        false,
       ]
     );
 
@@ -162,14 +185,9 @@ export const setupPlanner = ({
             isBatchV2 ? 0n : CONTRACT_BALANCE_FOR_V3_SWAPS,
             // no idea how much money is coming out, so no expectations
             0n,
-            isBatchV2
-              ? batch.map((n) => ({
-                  from: n.from,
-                  to: n.to,
-                  stable: Number(n.type) === 0,
-                }))
-              : packRoute(config, batch),
-            // money comes from the contract
+            packRoute(config, batch),
+            // `false` means money comes from the contract
+            false,
             false,
           ]
         );
@@ -192,13 +210,8 @@ export const setupPlanner = ({
         isLastBatchV2 ? 0n : CONTRACT_BALANCE_FOR_V3_SWAPS,
         // we want at least minAmount out back
         minAmountOut,
-        isLastBatchV2
-          ? lastBatch.map((n) => ({
-              from: n.from,
-              to: n.to,
-              stable: Number(n.type) === 0,
-            }))
-          : packRoute(config, lastBatch),
+        packRoute(config, lastBatch),
+        false,
         false,
       ]
     );
