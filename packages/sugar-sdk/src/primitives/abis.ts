@@ -6,11 +6,11 @@
  * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xC8229d65581afE8f04344A6706FF45faECC426f9)
  * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20)
  * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1)
- * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0xee717411f6E44F9feE011835C8E6FAaC5dEfF166)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x1443c0757f77c04bd514427d2bE356A5834E4167)
  * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x471C34138D06001AEe399af9EBEbbdF680b966B3)
  * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x0771B5B979230E29140774C1dc441a9fDddD28bD)
  * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20)
- * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xcaa7d54453964773FE04B5aD32D06322Fc9d9fE4)
  * - [__View Contract on Base Basescan__](https://basescan.org/address/0x73ffd28DFde56704F832163e6cD432FCbbD607a1)
  * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x6eA93e8d5059D4bd986F24a46546E930e0d0Fa82)
  * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1)
@@ -376,11 +376,11 @@ export const lpSugarAbi = [
  * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xC8229d65581afE8f04344A6706FF45faECC426f9)
  * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20)
  * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1)
- * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0xee717411f6E44F9feE011835C8E6FAaC5dEfF166)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x1443c0757f77c04bd514427d2bE356A5834E4167)
  * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x471C34138D06001AEe399af9EBEbbdF680b966B3)
  * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x0771B5B979230E29140774C1dc441a9fDddD28bD)
  * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20)
- * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xcaa7d54453964773FE04B5aD32D06322Fc9d9fE4)
  * - [__View Contract on Base Basescan__](https://basescan.org/address/0x73ffd28DFde56704F832163e6cD432FCbbD607a1)
  * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x6eA93e8d5059D4bd986F24a46546E930e0d0Fa82)
  * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1)
@@ -390,11 +390,11 @@ export const lpSugarAddress = {
   10: '0xC8229d65581afE8f04344A6706FF45faECC426f9',
   130: '0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20',
   252: '0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1',
-  1135: '0xee717411f6E44F9feE011835C8E6FAaC5dEfF166',
+  1135: '0x1443c0757f77c04bd514427d2bE356A5834E4167',
   1750: '0x471C34138D06001AEe399af9EBEbbdF680b966B3',
   1868: '0x0771B5B979230E29140774C1dc441a9fDddD28bD',
   1923: '0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20',
-  5330: '0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20',
+  5330: '0xcaa7d54453964773FE04B5aD32D06322Fc9d9fE4',
   8453: '0x73ffd28DFde56704F832163e6cD432FCbbD607a1',
   34443: '0x6eA93e8d5059D4bd986F24a46546E930e0d0Fa82',
   42220: '0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1',
@@ -405,11 +405,11 @@ export const lpSugarAddress = {
  * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xC8229d65581afE8f04344A6706FF45faECC426f9)
  * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20)
  * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1)
- * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0xee717411f6E44F9feE011835C8E6FAaC5dEfF166)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x1443c0757f77c04bd514427d2bE356A5834E4167)
  * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x471C34138D06001AEe399af9EBEbbdF680b966B3)
  * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x0771B5B979230E29140774C1dc441a9fDddD28bD)
  * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20)
- * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0xcaa7d54453964773FE04B5aD32D06322Fc9d9fE4)
  * - [__View Contract on Base Basescan__](https://basescan.org/address/0x73ffd28DFde56704F832163e6cD432FCbbD607a1)
  * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x6eA93e8d5059D4bd986F24a46546E930e0d0Fa82)
  * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1)
@@ -3664,17 +3664,17 @@ export const tokenBridgeConfig = {
 
 /**
  * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
- * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
  * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x9A7defE617e05BdB66063026eD601D3Ed906Ba47)
- * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
  * - [__View Contract on Base Basescan__](https://basescan.org/address/0x6Cb442acF35158D5eDa88fe602221b67B400Be3E)
- * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
  */
 export const universalRouterAbi = [
   {
@@ -3881,46 +3881,46 @@ export const universalRouterAbi = [
 
 /**
  * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
- * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
  * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x9A7defE617e05BdB66063026eD601D3Ed906Ba47)
- * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
  * - [__View Contract on Base Basescan__](https://basescan.org/address/0x6Cb442acF35158D5eDa88fe602221b67B400Be3E)
- * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
  */
 export const universalRouterAddress = {
   10: '0x4bF3E32de155359D1D75e8B474b66848221142fc',
-  130: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  130: '0x01D40099fCD87C018969B0e8D4aB1633Fb34763C',
   252: '0x9A7defE617e05BdB66063026eD601D3Ed906Ba47',
-  1135: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
-  1750: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
-  1868: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
-  1923: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
-  5330: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  1135: '0x01D40099fCD87C018969B0e8D4aB1633Fb34763C',
+  1750: '0x01D40099fCD87C018969B0e8D4aB1633Fb34763C',
+  1868: '0x01D40099fCD87C018969B0e8D4aB1633Fb34763C',
+  1923: '0x01D40099fCD87C018969B0e8D4aB1633Fb34763C',
+  5330: '0x01D40099fCD87C018969B0e8D4aB1633Fb34763C',
   8453: '0x6Cb442acF35158D5eDa88fe602221b67B400Be3E',
-  34443: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
-  42220: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
-  57073: '0x652e53C6a4FE39B6B30426d9c96376a105C89A95',
+  34443: '0x01D40099fCD87C018969B0e8D4aB1633Fb34763C',
+  42220: '0x01D40099fCD87C018969B0e8D4aB1633Fb34763C',
+  57073: '0x01D40099fCD87C018969B0e8D4aB1633Fb34763C',
 } as const
 
 /**
  * - [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x4bF3E32de155359D1D75e8B474b66848221142fc)
- * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Unichain Uniscan__](https://uniscan.xyz/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
  * - [__View Contract on Fraxtal Fraxscan__](https://fraxscan.com/address/0x9A7defE617e05BdB66063026eD601D3Ed906Ba47)
- * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Lisk Blockscout__](https://blockscout.lisk.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Metal L2 Explorer__](https://explorer.metall2.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Soneium Mainnet Blockscout__](https://soneium.blockscout.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Swellchain Swell Explorer__](https://explorer.swellnetwork.io/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Superseed Superseed Explorer__](https://explorer.superseed.xyz/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
  * - [__View Contract on Base Basescan__](https://basescan.org/address/0x6Cb442acF35158D5eDa88fe602221b67B400Be3E)
- * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
- * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x652e53C6a4FE39B6B30426d9c96376a105C89A95)
+ * - [__View Contract on Mode Mainnet Modescan__](https://modescan.io/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Celo Celo Explorer__](https://celoscan.io/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
+ * - [__View Contract on Ink Blockscout__](https://explorer.inkonchain.com/address/0x01D40099fCD87C018969B0e8D4aB1633Fb34763C)
  */
 export const universalRouterConfig = {
   address: universalRouterAddress,
