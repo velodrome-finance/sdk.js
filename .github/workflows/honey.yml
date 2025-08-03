@@ -1,0 +1,55 @@
+name: 'Start Honey Server'
+description: 'Starts the honey server in background and waits for it to be ready'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Homebrew
+      id: set-up-homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+      
+    - name: Install Foundry
+      uses: foundry-rs/foundry-toolchain@v1
+      
+    - name: Confirm forge is installed
+      run: forge --version
+
+    - name: Install supersim
+      shell: bash
+      run: brew install ethereum-optimism/tap/supersim
+    
+    - name: Confirm supersim is installed
+      shell: bash
+      run: supersim --version
+
+    - name: Start honey server in background 
+      shell: bash
+      run: |
+        cd packages/honey
+        npm run build
+        nohup npm run start > honey.log 2>&1 &
+        echo "Honey server PID: $!"
+        
+        # Wait for "Honey is running" message in logs
+        timeout=300  # 5 minutes timeout
+        elapsed=0
+        while [ $elapsed -lt $timeout ]; do
+          if grep -q "Honey is running" honey.log; then
+            echo "✅ Honey server is ready!"
+            break
+          fi
+          sleep 5
+          elapsed=$((elapsed + 5))
+          echo "Waiting for honey server... (${elapsed}s/${timeout}s)"
+        done
+        
+        if [ $elapsed -ge $timeout ]; then
+          echo "❌ Timeout waiting for honey server to start"
+          echo "Last 50 lines of honey.log:"
+          tail -50 honey.log
+          exit 1
+        fi
+
+    - name: Test fork
+      shell: bash
+      run: cast call 0x7F6D3A4c8a1111DDbFe282794f4D608aB7Cb23A2 "MAX_TOKENS()(uint256)" --rpc-url http://localhost:4444
