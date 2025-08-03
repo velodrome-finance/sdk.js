@@ -2,6 +2,7 @@ import {
   getAccount,
   readContract,
   readContracts,
+  waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
 import { Hex } from "viem";
@@ -106,7 +107,7 @@ export async function swap(
 
   await ensureConnectedChain(config, chainId);
 
-  return await writeContract(
+  const hash = await writeContract(
     config,
     executeSwapParams({
       config: config.dromeConfig,
@@ -116,6 +117,11 @@ export async function swap(
       value: amount,
     })
   );
+
+  const receipt = await waitForTransactionReceipt(config, { hash });
+  console.log("Transaction receipt:", receipt);
+
+  return hash;
 }
 
 export { Quote } from "./primitives";
