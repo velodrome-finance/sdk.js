@@ -609,6 +609,8 @@ async function main() {
     // Check final balances (ETH + tokens)
     await checkTokenBalancesAllChains(walletAddress, honeyConfig);
 
+    console.log("🍯 Honey is running");
+
     // Keep the process running
     global.process.on("SIGINT", () => {
       console.log("Shutting down supersim...");
