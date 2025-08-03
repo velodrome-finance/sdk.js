@@ -27,9 +27,6 @@ export const setupPlanner = ({
   slippagePct: string;
   routePlanner?: RoutePlanner;
 }): RoutePlanner => {
-  console.log("Setting up route planner with quote", quote, "and account", account);
-
-
   const routerAddress = getChainConfig(config, chainId).UNIVERSAL_ROUTER_ADDRESS;
   const minAmountOut = applyPct(
     quote.amountOut,
