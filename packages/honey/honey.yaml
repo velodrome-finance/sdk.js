@@ -22,6 +22,10 @@ honey:
             address: "0x1217bfe6c773eec6cc4a38b5dc45b92292b6e189"
             amount: "100000000" # 100 oUSDT
             holder: "0x48A5A6a01bA89cDdF97D2D552923d5a11401Ed19"
+          - token: "weth"
+            address: "0x4200000000000000000000000000000000000006"
+            amount: "1000000000000000000000" # 1000 WETH
+            holder: "0x86Bb63148d17d445Ed5398ef26Aa05Bf76dD5b59"
       - name: "Lisk"
         id: "1135"
         balance:

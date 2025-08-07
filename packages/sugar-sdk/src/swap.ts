@@ -7,12 +7,11 @@ import {
 } from "@wagmi/core";
 import { Hex, maxUint256 } from "viem";
 
+import { fetchPoolsForSwaps } from "./pools.js";
 import {
-  depaginate,
   executeSwapParams,
   getBestQuote,
   getPaths,
-  getPoolsForSwapParams,
   getQuoteForSwapVars,
   getSwapQuoteParams,
   getSwapVars,
@@ -58,25 +57,14 @@ export async function getQuoteForSwap(
   toToken: Token,
   amountIn: bigint
 ) {
-  const { chainId, mustExcludeTokens, poolsPageSize } = getQuoteForSwapVars(
+  const { chainId, mustExcludeTokens } = getQuoteForSwapVars(
     config.dromeConfig,
     fromToken,
     toToken
   );
+  const pools = await fetchPoolsForSwaps(chainId, config);
 
-  const pools = await depaginate(
-    (offset, count) =>
-      readContract(
-        config,
-        getPoolsForSwapParams({
-          config: config.dromeConfig,
-          chainId,
-          offset,
-          count,
-        })
-      ),
-    poolsPageSize
-  );
+  console.log("pools for swap:", pools.length);
 
   const paths = getPaths({
     config: config.dromeConfig,
@@ -216,16 +204,6 @@ export async function swap(
     commands: planner.commands as Hex,
     inputs: planner.inputs as Hex[],
     value: amount,
-  });
-
-  console.log(`Swap params:`, {
-    address: swapParams.address,
-    commands: planner.commands,
-    inputs: planner.inputs,
-    value: amount,
-    fromToken: quote.fromToken.symbol,
-    toToken: quote.toToken.symbol,
-    amount: quote.amount,
   });
 
   // For ERC20 tokens (not native ETH), ensure approval before swap
