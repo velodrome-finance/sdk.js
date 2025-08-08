@@ -8,7 +8,6 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest",
     "quote": "tsx quote.ts"
   },
   "dependencies": {
