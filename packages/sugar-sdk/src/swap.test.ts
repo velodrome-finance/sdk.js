@@ -54,8 +54,6 @@ const test = it.extend<TestContext>({
   },
 });
 
-// Web: pools for swaps 1322
-
 describe("Test swap functionality", () => {
   beforeAll(async () => {
     // Check if honey is running correctly in the test setup phase
@@ -67,32 +65,32 @@ describe("Test swap functionality", () => {
     }
   }, 30000); // 30 second timeout for honey startup
 
-  // test("quote and swap from WETH to USDC", async ({
-  //   config,
-  //   supersimConfig,
-  //   tokens,
-  // }) => {
-  //   const amountIn = parseUnits("1", tokens.weth.decimals);
-  //   const quote = await getQuoteForSwap(
-  //     config,
-  //     tokens.weth,
-  //     tokens.usdc,
-  //     amountIn
-  //   );
+  test("quote and swap from WETH to USDC", async ({
+    config,
+    supersimConfig,
+    tokens,
+  }) => {
+    const amountIn = parseUnits("1", tokens.weth.decimals);
+    const quote = await getQuoteForSwap(
+      config,
+      tokens.weth,
+      tokens.usdc,
+      amountIn
+    );
 
-  //   expect(quote).toBeTruthy();
-  //   expect(quote!.fromToken).toEqual(tokens.weth);
-  //   expect(quote!.toToken).toEqual(tokens.usdc);
-  //   expect(quote!.amount).toBe(amountIn);
-  //   expect(quote!.amountOut).toBeGreaterThan(0n);
-  //   expect(quote!.path).toBeDefined();
-  //   expect(quote!.path.nodes).toBeInstanceOf(Array);
-  //   expect(quote!.path.nodes.length).toBeGreaterThan(0);
+    expect(quote).toBeTruthy();
+    expect(quote!.fromToken).toEqual(tokens.weth);
+    expect(quote!.toToken).toEqual(tokens.usdc);
+    expect(quote!.amount).toBe(amountIn);
+    expect(quote!.amountOut).toBeGreaterThan(0n);
+    expect(quote!.path).toBeDefined();
+    expect(quote!.path.nodes).toBeInstanceOf(Array);
+    expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-  //   const r = await swap(supersimConfig, quote!);
-  //   expect(r).toBeDefined();
-  //   expect(r.startsWith("0x")).toBe(true);
-  // });
+    const r = await swap(supersimConfig, quote!);
+    expect(r).toBeDefined();
+    expect(r.startsWith("0x")).toBe(true);
+  }, 30000);
 
   test("quote and swap from VELO to USDC", async ({
     config,

@@ -63,8 +63,6 @@ export async function getQuoteForSwap(
   );
   const pools = await fetchPoolsForSwaps(chainId, config);
 
-  console.log("pools for swap:", pools.length);
-
   const paths = getPaths({
     config: config.dromeConfig,
     pools,
@@ -110,15 +108,7 @@ export async function getQuoteForSwap(
     `Generated ${quotes.length} valid quotes from ${quoteResponses.length} paths`
   );
 
-  const bestQuote = getBestQuote([quotes]);
-
-  if (bestQuote) {
-    console.log(
-      `Best quote: AmountOut=${bestQuote.amountOut}, Path length=${bestQuote.path.nodes.length}`
-    );
-  }
-
-  return bestQuote;
+  return getBestQuote([quotes]);
 }
 
 async function ensureTokenApproval(
@@ -128,9 +118,7 @@ async function ensureTokenApproval(
   amount: bigint,
   chainId: number
 ) {
-  const account = getAccount(config);
-  console.log(`Checking allowance for account: ${account.address}`);
-  // Approve maximum amount to avoid frequent approvals
+  // TODO: check if approval is already sufficient
   const approveHash = await writeContract(config, {
     chainId,
     address: tokenAddress as Hex,
@@ -138,11 +126,7 @@ async function ensureTokenApproval(
     functionName: "approve",
     args: [spenderAddress as Hex, amount],
   });
-
-  console.log(`Approval transaction hash: ${approveHash}`);
-  // Wait for approval transaction to be mined
   await waitForTransactionReceipt(config, { hash: approveHash });
-  console.log("Approval transaction mined");
 }
 
 export async function swap(
@@ -178,9 +162,11 @@ export async function swap(
   );
 
   const hash = await writeContract(config, swapParams);
-
   const receipt = await waitForTransactionReceipt(config, { hash });
-  console.log("Transaction receipt:", receipt);
+
+  if (receipt.status !== "success") {
+    throw new Error(`Swap transaction failed: ${receipt.status}`);
+  }
 
   return hash;
 }
