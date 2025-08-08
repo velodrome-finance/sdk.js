@@ -1,11 +1,10 @@
 import {
   getAccount,
-  readContract,
   readContracts,
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { Hex, maxUint256 } from "viem";
+import { Hex } from "viem";
 
 import { fetchPoolsForSwaps } from "./pools.js";
 import {
@@ -131,49 +130,13 @@ async function ensureTokenApproval(
 ) {
   const account = getAccount(config);
   console.log(`Checking allowance for account: ${account.address}`);
-
-  // Check token balance first
-  const balance = await readContract(config, {
-    chainId,
-    address: tokenAddress as Hex,
-    abi: erc20Abi,
-    functionName: "balanceOf",
-    args: [account.address!],
-  });
-
-  console.log(`Account balance: ${balance}, Required: ${amount}`);
-
-  if (balance < amount) {
-    throw new Error(
-      `Insufficient token balance. Have ${balance}, need ${amount}`
-    );
-  }
-
-  // Check current allowance
-  const currentAllowance = await readContract(config, {
-    chainId,
-    address: tokenAddress as Hex,
-    abi: erc20Abi,
-    functionName: "allowance",
-    args: [account.address!, spenderAddress as Hex],
-  });
-
-  console.log(`Current allowance: ${currentAllowance}, Required: ${amount}`);
-
-  // If allowance is sufficient, no need to approve
-  if (currentAllowance >= amount) {
-    console.log("Allowance is sufficient, skipping approval");
-    return;
-  }
-
-  console.log("Allowance insufficient, approving...");
   // Approve maximum amount to avoid frequent approvals
   const approveHash = await writeContract(config, {
     chainId,
     address: tokenAddress as Hex,
     abi: erc20Abi,
     functionName: "approve",
-    args: [spenderAddress as Hex, maxUint256],
+    args: [spenderAddress as Hex, amount],
   });
 
   console.log(`Approval transaction hash: ${approveHash}`);
@@ -206,21 +169,13 @@ export async function swap(
     value: amount,
   });
 
-  // For ERC20 tokens (not native ETH), ensure approval before swap
-  if (!quote.fromToken.wrappedAddress) {
-    console.log(
-      `Ensuring approval for ${quote.fromToken.symbol} (${quote.fromToken.address}) to Universal Router (${swapParams.address})`
-    );
-    console.log(`Amount: ${quote.amount}`);
-    await ensureTokenApproval(
-      config,
-      quote.fromToken.address,
-      swapParams.address,
-      quote.amount,
-      chainId
-    );
-    console.log("Approval completed successfully");
-  }
+  await ensureTokenApproval(
+    config,
+    quote.fromToken.wrappedAddress || quote.fromToken.address,
+    swapParams.address,
+    quote.amount,
+    chainId
+  );
 
   const hash = await writeContract(config, swapParams);
 
