@@ -4,4 +4,6 @@
 
 # Claudius
 
-Automation helpers for sugar sdk built on top of Claude
+Automation helpers for sugar sdk built on top of Claude. Supported tasks:
+
+- quote comparison (`tasks/quotes.md`)

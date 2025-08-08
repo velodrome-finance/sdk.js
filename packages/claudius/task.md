@@ -1,3 +1,0 @@
-- head to https://velodrome.finance/swap?from=eth&to=0x9560e827af36c94d2ac33a39bce1fe78631088db&chain0=10&chain1=10
-- request to sell 100 of coin 1 
-- wait for the quote to load and report how much of coin 2 we would get

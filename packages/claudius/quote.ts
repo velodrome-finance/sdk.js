@@ -9,19 +9,7 @@ import {
 } from "sugar-sdk";
 import { parseArgs } from "util";
 import { parseUnits } from "viem";
-import {
-  bob,
-  celo,
-  fraxtal,
-  fuse,
-  ink,
-  lisk,
-  optimism,
-  polygon,
-  soneiumMinato,
-  sonic,
-  unichain,
-} from "viem/chains";
+import { optimism } from "viem/chains";
 
 const USAGE = `
 Usage: tsx quote.ts --fromToken <address> --toToken <address> --amount <amount> [--chainId <chainId>]
@@ -70,31 +58,34 @@ async function main() {
     const wagmiConfig = createConfig({
       chains: [
         optimism,
-        fraxtal,
-        bob,
-        lisk,
-        celo,
-        polygon,
-        soneiumMinato,
-        unichain,
-        ink,
-        fuse,
-        sonic,
+        // fraxtal,
+        // bob,
+        // lisk,
+        // celo,
+        // polygon,
+        // soneiumMinato,
+        // unichain,
+        // ink,
+        // fuse,
+        // sonic,
       ],
       transports: {
         [optimism.id]: http(),
-        [fraxtal.id]: http(),
-        [bob.id]: http(),
-        [lisk.id]: http(),
-        [celo.id]: http(),
-        [polygon.id]: http(),
-        [soneiumMinato.id]: http(),
-        [unichain.id]: http(),
-        [ink.id]: http(),
-        [fuse.id]: http(),
-        [sonic.id]: http(),
+        // [fraxtal.id]: http(),
+        // [bob.id]: http(),
+        // [lisk.id]: http(),
+        // [celo.id]: http(),
+        // [polygon.id]: http(),
+        // [soneiumMinato.id]: http(),
+        // [unichain.id]: http(),
+        // [ink.id]: http(),
+        // [fuse.id]: http(),
+        // [sonic.id]: http(),
       },
     });
+
+    // TODO: fix this
+    velodromeConfig.CHAIN_IDS = [10];
 
     // Initialize Drome config
     const config = initDrome(wagmiConfig, velodromeConfig);
