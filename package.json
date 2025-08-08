@@ -27,7 +27,8 @@
   "workspaces": [
     "packages/sugar-sdk",
     "packages/demo",
-    "packages/honey"
+    "packages/honey",
+    "packages/claudius"
   ],
   "devDependencies": {
     "@eslint/compat": "^1.2.7",
