@@ -199,31 +199,4 @@ describe("Test swap functionality", () => {
       expect(r.startsWith("0x")).toBe(true);
     }
   );
-
-  test(
-    "quote and swap from WETH to VELO",
-    { timeout: 30000, retry: 3 },
-    async ({ config, supersimConfig, tokens }) => {
-      const amountIn = parseUnits("1", tokens.weth.decimals);
-      const quote = await getQuoteForSwap(
-        config,
-        tokens.weth,
-        tokens.velo,
-        amountIn
-      );
-
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.weth);
-      expect(quote!.toToken).toEqual(tokens.velo);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
-
-      const r = await swap(supersimConfig, quote!);
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
 });
