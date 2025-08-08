@@ -104,10 +104,6 @@ export async function getQuoteForSwap(
     })
     .filter((quote) => quote !== null);
 
-  console.log(
-    `Generated ${quotes.length} valid quotes from ${quoteResponses.length} paths`
-  );
-
   return getBestQuote([quotes]);
 }
 
