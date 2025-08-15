@@ -3,7 +3,7 @@ import { readContract } from "@wagmi/core";
 import { getPoolsForSwapParams, PoolForSwap } from "./primitives/index.js";
 import { DromeWagmiConfig } from "./utils.js";
 
-export async function fetchPoolsForSwaps(
+export async function getPoolsForSwaps(
   chainId: number,
   config: DromeWagmiConfig
 ) {

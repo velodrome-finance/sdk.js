@@ -6,7 +6,7 @@ import {
 } from "@wagmi/core";
 import { Hex } from "viem";
 
-import { fetchPoolsForSwaps } from "./pools.js";
+import { getPoolsForSwaps } from "./pools.js";
 import {
   executeSwapParams,
   getBestQuote,
@@ -61,7 +61,7 @@ export async function getQuoteForSwap(
     fromToken,
     toToken
   );
-  const pools = await fetchPoolsForSwaps(chainId, config);
+  const pools = await getPoolsForSwaps(chainId, config);
 
   const paths = getPaths({
     config: config.dromeConfig,
