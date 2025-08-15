@@ -92,9 +92,7 @@ export const initDrome = async (withHoney: boolean = false) => {
 
   const config = baseInitDrome(
     createConfig({
-      // TODO: look into what is going on here
-      // @ts-ignore yolo
-      chains: chainsToUse as [Chain, ...Chain[]],
+      chains: chainsToUse as unknown as [Chain, ...Chain[]],
       connectors: [
         injected(),
         ...(withHoney
