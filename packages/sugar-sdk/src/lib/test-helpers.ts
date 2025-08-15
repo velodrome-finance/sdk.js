@@ -1,6 +1,4 @@
-import { connect } from "@wagmi/core";
-import { privateKeyToAccount } from "viem/accounts";
-import { createConfig, http, injected } from "wagmi";
+import { connect, createConfig, http, injected, mock } from "@wagmi/core";
 import {
   celo,
   type Chain,
@@ -15,8 +13,8 @@ import {
   superseed,
   swellchain,
   unichain,
-} from "wagmi/chains";
-import { mock } from "wagmi/connectors";
+} from "@wagmi/core/chains";
+import { privateKeyToAccount } from "viem/accounts";
 
 import { initDrome as baseInitDrome, velodromeConfig } from "../index.js";
 

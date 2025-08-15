@@ -31,7 +31,6 @@
   },
   "peerDependencies": {
     "@wagmi/core": "^2.0.0",
-    "wagmi": "2.15.6",
     "viem": "^2.0.0"
   },
   "dependencies": {
