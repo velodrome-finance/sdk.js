@@ -3,7 +3,7 @@ import { etherscan } from "@wagmi/cli/plugins";
 import type { Address } from "viem";
 import { optimism } from "viem/chains";
 
-import { aerodromeConfig, velodromeConfig } from "./src";
+import { aerodromeConfig, DromeConfig, velodromeConfig } from "./src";
 
 function etherscanWithRetries({
   maxAttempts,
@@ -57,7 +57,7 @@ export default defineConfig(() => {
   const chainId = optimism.id;
 
   const getAddresses = (configKey: string) => {
-    const getAddressesFromConfig = (config: any) => {
+    const getAddressesFromConfig = (config: DromeConfig) => {
       const addresses = {} as Record<number, Address>;
 
       // Check if it's a top-level config property (like TOKEN_BRIDGE)
