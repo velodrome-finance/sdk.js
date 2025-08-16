@@ -42,34 +42,19 @@ jobs:
           mv sugar-sdk-*.tgz ../../release-artifacts/sugar-sdk.tgz
         
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
+          files: ./release-artifacts/sugar-sdk.tgz
           body: |
             Sugar SDK release ${{ github.ref_name }}
             
-            Install via npm:
+            Install the packaged SDK (requires GitHub token for private repo):
             ```
-            npm install https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/sugar-sdk.tgz
-            ```
-            
-            Or install from git:
-            ```
-            npm install git+https://github.com/${{ github.repository }}.git#${{ github.ref_name }}
+            npm install https://${GITHUB_TOKEN}@github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/sugar-sdk.tgz
             ```
             
-      - name: Upload sugar-sdk package
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release-artifacts/sugar-sdk.tgz
-          asset_name: sugar-sdk.tgz
-          asset_content_type: application/gzip
+            Or download and install locally:
+            ```
+            curl -H "Authorization: token ${GITHUB_TOKEN}" -L -o sugar-sdk.tgz https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/sugar-sdk.tgz
+            npm install ./sugar-sdk.tgz
+            ```
