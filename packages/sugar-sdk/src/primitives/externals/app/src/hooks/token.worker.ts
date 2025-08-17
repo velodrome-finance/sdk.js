@@ -2,9 +2,9 @@
 import { groupBy, sortBy, uniq, uniqBy } from "ramda";
 import { Address, zeroAddress, Chain } from "viem";
 
-import { sortByIdx } from "../lib/helpers";
+import { sortByIdx } from "../lib/helpers.js";
 
-import { SuperchainKey, Token, Tokens } from "./types";
+import { SuperchainKey, Token, Tokens } from "./types.js";
 import { mulUnsafe } from "./math.js";
 import { RawTokenRateWithDecimals, RawToken } from "../../../../tokens.js";
 import { DromeConfig } from "../../../../../config.js";
