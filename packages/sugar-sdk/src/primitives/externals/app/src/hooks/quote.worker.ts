@@ -18,7 +18,7 @@ function calcPriceImpact(quote: Quote) {
   // Bring quoted amount to the same decimals base aka 18, eg. for USDC
   const execAmount = parseEther(formatUnits(amountOut, toToken.decimals));
 
-  return pctOf(estAmount, estAmount - execAmount, 18);
+  return pctOf(estAmount, estAmount - execAmount, 18, true);
 }
 
 const oneHundredPercent = 100n * 10n ** 18n;
