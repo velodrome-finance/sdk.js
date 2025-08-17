@@ -21,7 +21,8 @@ function calcPriceImpact(quote: Quote) {
   return pctOf(estAmount, estAmount - execAmount, 18, true);
 }
 
-const oneHundredPercent = 100n * 10n ** 18n;
+// 100% in decimal points (1.0)
+const oneHundredPercent = 1n * 10n ** 18n;
 function impactTooHigh(q: Quote): boolean {
   if (!q.toToken.listed || !q.fromToken.listed) return false;
   const impact = calcPriceImpact(q);
