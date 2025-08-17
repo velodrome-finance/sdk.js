@@ -37,24 +37,27 @@ jobs:
       - name: Create sugar-sdk release package
         run: |
           cd packages/sugar-sdk
+          VERSION=$(node -p "require('./package.json').version")
           npm pack
           mkdir -p ../../release-artifacts
-          mv sugar-sdk-*.tgz ../../release-artifacts/sugar-sdk.tgz
+          mv sugar-sdk-*.tgz ../../release-artifacts/sugar-sdk-${VERSION}.tgz
         
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ./release-artifacts/sugar-sdk.tgz
-          body: |
-            Sugar SDK release ${{ github.ref_name }}
-            
-            Install the packaged SDK (requires GitHub token for private repo):
-            ```
-            npm install https://${GITHUB_TOKEN}@github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/sugar-sdk.tgz
-            ```
-            
-            Or download and install locally:
-            ```
-            curl -H "Authorization: token ${GITHUB_TOKEN}" -L -o sugar-sdk.tgz https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/sugar-sdk.tgz
-            npm install ./sugar-sdk.tgz
-            ```
+        run: |
+          cd packages/sugar-sdk
+          VERSION=$(node -p "require('./package.json').version")
+          cd ../..
+          gh release create ${{ github.ref_name }} ./release-artifacts/sugar-sdk-${VERSION}.tgz --title "Sugar SDK release ${{ github.ref_name }}" --notes "Sugar SDK release ${{ github.ref_name }}
+
+          Install the packaged SDK (requires GitHub token for private repo):
+          \`\`\`
+          npm install https://\${GITHUB_TOKEN}@github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/sugar-sdk-${VERSION}.tgz
+          \`\`\`
+          
+          Or download and install locally:
+          \`\`\`
+          curl -H \"Authorization: token \${GITHUB_TOKEN}\" -L -o sugar-sdk-${VERSION}.tgz https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/sugar-sdk-${VERSION}.tgz
+          npm install ./sugar-sdk-${VERSION}.tgz
+          \`\`\`"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
