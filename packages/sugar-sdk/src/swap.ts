@@ -7,6 +7,7 @@ import {
 import { Address, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
+import { applyPct } from "./primitives/externals/app/src/hooks/math.js";
 import {
   executeSwapParams,
   getBestQuote,
@@ -149,7 +150,11 @@ export async function getCallDataForSwap({
   return {
     commands: planner.commands as Hex,
     inputs: planner.inputs as Hex[],
-    minAmountOut: quote.amountOut,
+    minAmountOut: applyPct(
+      quote.amountOut,
+      quote.toToken.decimals,
+      slippage * 100
+    ),
     priceImpact: quote.priceImpact,
   };
 }

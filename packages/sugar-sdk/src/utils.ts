@@ -1,6 +1,15 @@
-import { Config, getAccount, switchChain } from "@wagmi/core";
+import {
+  Config,
+  createConfig,
+  getAccount,
+  http,
+  injected,
+  switchChain,
+} from "@wagmi/core";
+import { type Chain, optimism } from "@wagmi/core/chains";
 
 import { DromeConfig } from "./config.js";
+import { velodromeConfig } from "./config.js";
 
 export type DromeWagmiConfig = Config & { dromeConfig: DromeConfig };
 
@@ -37,4 +46,42 @@ export async function ensureConnectedChain(
   if (chainId !== getAccount(config).chainId) {
     await switchChain(config, { chainId });
   }
+}
+
+export function getDefaultDrome() {
+  const chains = [optimism] as [Chain, ...Chain[]];
+
+  return initDrome(
+    createConfig({
+      chains,
+      connectors: [injected()],
+      transports: Object.fromEntries(
+        chains.map((chain) => {
+          const rpc = process.env[`VITE_RPC_${chain.id}`];
+          if (!rpc) {
+            throw new Error(
+              `Missing RPC URL. Please pass VITE_RPC_${chain.id} as an environment variable.`
+            );
+          }
+          return [chain.id, http(rpc, { batch: true })];
+        })
+      ),
+    }),
+    {
+      ...velodromeConfig,
+      CHAIN_IDS: chains.map((c) => c.id),
+      chains: Object.entries(velodromeConfig.chains)
+        .filter(([k]) => k === "10")
+        .reduce(
+          (acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+          },
+          {} as Record<string, any>
+        ),
+      onError(error: any) {
+        throw error;
+      },
+    }
+  );
 }
