@@ -1,5 +1,5 @@
 import { parseUnits } from "viem";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { checkHoneyStatus, initDrome } from "@/lib/test-helpers";
 
@@ -54,7 +54,7 @@ const test = it.extend<TestContext>({
   },
 });
 
-describe.sequential("Test swap functionality", () => {
+describe("Test swap functionality", () => {
   beforeAll(async () => {
     // Check if honey is running correctly in the test setup phase
     const honeyStatus = await checkHoneyStatus();
@@ -64,12 +64,6 @@ describe.sequential("Test swap functionality", () => {
       );
     }
   }, 30000); // 30 second timeout for honey startup
-
-  afterEach(async () => {
-    // Global delay after each test - swap sometimes get flaky with errors like
-    // Error: CallExecutionError: Nonce provided for the transaction (19696) is higher than the next one expected.
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-  });
 
   test(
     "quote and swap from WETH to USDC",
