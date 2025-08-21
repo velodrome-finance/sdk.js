@@ -19,17 +19,11 @@ runs:
       shell: bash
       run: |
         # Detect OS and architecture
-        OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+        OS=$(uname -s)
         ARCH=$(uname -m)
         
-        # Map architecture names
-        case $ARCH in
-          x86_64) ARCH="amd64" ;;
-          arm64|aarch64) ARCH="arm64" ;;
-        esac
-        
         # Download and install supersim
-        SUPERSIM_URL="https://github.com/ethereum-optimism/supersim/releases/download/0.1.0-alpha.55/supersim_0.1.0-alpha.55_${OS}_${ARCH}.tar.gz"
+        SUPERSIM_URL="https://github.com/ethereum-optimism/supersim/releases/download/0.1.0-alpha.55/supersim_${OS}_${ARCH}.tar.gz"
         echo "Downloading supersim from: $SUPERSIM_URL"
         curl -L -o supersim.tar.gz "$SUPERSIM_URL"
         tar -xzf supersim.tar.gz
