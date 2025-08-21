@@ -4,7 +4,6 @@ import { DromeConfig } from "./config.js";
 
 export type DromeWagmiConfig = Config & { dromeConfig: DromeConfig };
 
-// Common parameter interfaces for refactored functions
 export interface BaseParams {
   config: DromeWagmiConfig;
 }
