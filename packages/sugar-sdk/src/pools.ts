@@ -1,12 +1,9 @@
 import { readContract } from "@wagmi/core";
 
 import { getPoolsForSwapParams, PoolForSwap } from "./primitives/index.js";
-import { DromeWagmiConfig } from "./utils.js";
+import { ChainParams } from "./utils.js";
 
-export async function getPoolsForSwaps(
-  chainId: number,
-  config: DromeWagmiConfig
-) {
+export async function getPoolsForSwaps({ config, chainId }: ChainParams) {
   let offset = 0;
   let result: PoolForSwap[] = [];
   let finished = false;

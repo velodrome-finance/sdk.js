@@ -17,7 +17,7 @@ import {
   Quote,
   Token,
 } from "./primitives/index.js";
-import { DromeWagmiConfig, ensureConnectedChain } from "./utils.js";
+import { BaseParams, ChainParams, ensureConnectedChain } from "./utils.js";
 
 // ERC20 ABI for approve and allowance functions
 const erc20Abi = [
@@ -50,18 +50,22 @@ const erc20Abi = [
   },
 ] as const;
 
-export async function getQuoteForSwap(
-  config: DromeWagmiConfig,
-  fromToken: Token,
-  toToken: Token,
-  amountIn: bigint
-) {
+export async function getQuoteForSwap({
+  config,
+  fromToken,
+  toToken,
+  amountIn,
+}: BaseParams & {
+  fromToken: Token;
+  toToken: Token;
+  amountIn: bigint;
+}) {
   const { chainId, mustExcludeTokens } = getQuoteForSwapVars(
     config.dromeConfig,
     fromToken,
     toToken
   );
-  const pools = await getPoolsForSwaps(chainId, config);
+  const pools = await getPoolsForSwaps({ config, chainId });
 
   const paths = getPaths({
     config: config.dromeConfig,
@@ -107,13 +111,17 @@ export async function getQuoteForSwap(
   return getBestQuote([quotes]);
 }
 
-async function ensureTokenApproval(
-  config: DromeWagmiConfig,
-  tokenAddress: string,
-  spenderAddress: string,
-  amount: bigint,
-  chainId: number
-) {
+async function ensureTokenApproval({
+  config,
+  tokenAddress,
+  spenderAddress,
+  amount,
+  chainId,
+}: ChainParams & {
+  tokenAddress: string;
+  spenderAddress: string;
+  amount: bigint;
+}) {
   // TODO: check if approval is already sufficient
   const approveHash = await writeContract(config, {
     chainId,
@@ -125,11 +133,14 @@ async function ensureTokenApproval(
   await waitForTransactionReceipt(config, { hash: approveHash });
 }
 
-export async function swap(
-  config: DromeWagmiConfig,
-  quote: Quote,
-  slippagePct?: string
-) {
+export async function swap({
+  config,
+  quote,
+  slippagePct,
+}: BaseParams & {
+  quote: Quote;
+  slippagePct?: string;
+}) {
   const account = getAccount(config);
   const { chainId, planner, amount } = getSwapVars(
     config.dromeConfig,
@@ -138,7 +149,7 @@ export async function swap(
     account.address
   );
 
-  await ensureConnectedChain(config, chainId);
+  await ensureConnectedChain({ config, chainId });
 
   // Get the Universal Router address from the execute params
   const swapParams = executeSwapParams({
@@ -149,13 +160,13 @@ export async function swap(
     value: amount,
   });
 
-  await ensureTokenApproval(
+  await ensureTokenApproval({
     config,
-    quote.fromToken.wrappedAddress || quote.fromToken.address,
-    swapParams.address,
-    quote.amount,
-    chainId
-  );
+    tokenAddress: quote.fromToken.wrappedAddress || quote.fromToken.address,
+    spenderAddress: swapParams.address,
+    amount: quote.amount,
+    chainId,
+  });
 
   const hash = await writeContract(config, swapParams);
   const receipt = await waitForTransactionReceipt(config, { hash });

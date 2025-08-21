@@ -5,7 +5,7 @@ import { getListedTokens } from "./tokens.js";
 
 describe("Test fetching tokens", () => {
   it("should be able to fetch", async () => {
-    const tokens = await getListedTokens(await initDrome());
+    const tokens = await getListedTokens({ config: await initDrome() });
     expect(tokens).toBeDefined();
     expect(tokens.length).toBeGreaterThan(200);
   });
