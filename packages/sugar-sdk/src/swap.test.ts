@@ -54,7 +54,7 @@ const test = it.extend<TestContext>({
   },
 });
 
-describe("Test swap functionality", () => {
+describe.sequential("Test swap functionality", () => {
   beforeAll(async () => {
     // Check if honey is running correctly in the test setup phase
     const honeyStatus = await checkHoneyStatus();
