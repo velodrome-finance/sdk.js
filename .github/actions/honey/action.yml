@@ -17,7 +17,7 @@ runs:
 
     - name: Install supersim
       shell: bash
-      run: brew install ethereum-optimism/tap/supersim
+      run: brew install ethereum-optimism/tap/supersim@0.1.0-alpha.55
     
     - name: Confirm supersim is installed
       shell: bash
