@@ -23,7 +23,7 @@ runs:
         ARCH=$(uname -m)
         
         # Download and install supersim
-        SUPERSIM_URL="https://github.com/ethereum-optimism/supersim/releases/download/0.1.0-alpha.59/supersim_${OS}_${ARCH}.tar.gz"
+        SUPERSIM_URL="https://github.com/ethereum-optimism/supersim/releases/download/0.1.0-alpha.55/supersim_${OS}_${ARCH}.tar.gz"
         echo "Downloading supersim from: $SUPERSIM_URL"
         curl -L -o supersim.tar.gz "$SUPERSIM_URL"
         tar -xzf supersim.tar.gz
