@@ -15,6 +15,7 @@ import {
   unichain,
 } from "@wagmi/core/chains";
 import { privateKeyToAccount } from "viem/accounts";
+import { createNonceManager, jsonRpc } from "viem/nonce";
 
 import { initDrome as baseInitDrome, velodromeConfig } from "../index.js";
 
@@ -96,7 +97,13 @@ export const initDrome = async (withHoney: boolean = false) => {
         ...(withHoney
           ? [
               mock({
-                accounts: [privateKeyToAccount(TEST_ACCOUNT_PK).address],
+                accounts: [
+                  privateKeyToAccount(TEST_ACCOUNT_PK, {
+                    nonceManager: createNonceManager({
+                      source: jsonRpc(),
+                    }),
+                  }).address,
+                ],
               }),
             ]
           : []),
