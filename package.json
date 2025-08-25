@@ -4,7 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "cleanup": "npx eslint --fix",
+    "test": "npm run test --workspaces --if-present",
+    "honey": "cd packages/honey && npm run dev"
   },
   "lint-staged": {
     "*": "eslint --no-warn-ignored"
@@ -23,7 +26,9 @@
   "description": "",
   "workspaces": [
     "packages/sugar-sdk",
-    "packages/demo"
+    "packages/demo",
+    "packages/honey",
+    "packages/claudius"
   ],
   "devDependencies": {
     "@eslint/compat": "^1.2.7",

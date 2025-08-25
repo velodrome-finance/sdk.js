@@ -1,50 +1,71 @@
 import {
   getAccount,
-  readContract,
   readContracts,
+  waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
 import { Hex } from "viem";
 
+import { getPoolsForSwaps } from "./pools.js";
 import {
-  depaginate,
   executeSwapParams,
   getBestQuote,
   getPaths,
-  getPoolsForSwapParams,
   getQuoteForSwapVars,
   getSwapQuoteParams,
   getSwapVars,
   Quote,
   Token,
 } from "./primitives/index.js";
-import { DromeWagmiConfig, ensureConnectedChain } from "./utils.js";
+import { BaseParams, ChainParams, ensureConnectedChain } from "./utils.js";
 
-export async function getQuoteForSwap(
-  config: DromeWagmiConfig,
-  fromToken: Token,
-  toToken: Token,
-  amountIn: bigint
-) {
-  const { chainId, mustExcludeTokens, poolsPageSize } = getQuoteForSwapVars(
+// ERC20 ABI for approve and allowance functions
+const erc20Abi = [
+  {
+    type: "function",
+    name: "approve",
+    inputs: [
+      { name: "spender", type: "address" },
+      { name: "amount", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "allowance",
+    inputs: [
+      { name: "owner", type: "address" },
+      { name: "spender", type: "address" },
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "balanceOf",
+    inputs: [{ name: "account", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+] as const;
+
+export async function getQuoteForSwap({
+  config,
+  fromToken,
+  toToken,
+  amountIn,
+}: BaseParams & {
+  fromToken: Token;
+  toToken: Token;
+  amountIn: bigint;
+}) {
+  const { chainId, mustExcludeTokens } = getQuoteForSwapVars(
     config.dromeConfig,
     fromToken,
     toToken
   );
-
-  const pools = await depaginate(
-    (offset, count) =>
-      readContract(
-        config,
-        getPoolsForSwapParams({
-          config: config.dromeConfig,
-          chainId,
-          offset,
-          count,
-        })
-      ),
-    poolsPageSize
-  );
+  const pools = await getPoolsForSwaps({ config, chainId });
 
   const paths = getPaths({
     config: config.dromeConfig,
@@ -73,7 +94,6 @@ export async function getQuoteForSwap(
   const quotes = quoteResponses
     .map((response, i) => {
       const amountOut = response.result?.[0];
-
       // also filters out 0n
       return !amountOut
         ? null
@@ -91,11 +111,36 @@ export async function getQuoteForSwap(
   return getBestQuote([quotes]);
 }
 
-export async function swap(
-  config: DromeWagmiConfig,
-  quote: Quote,
-  slippagePct?: string
-) {
+async function ensureTokenApproval({
+  config,
+  tokenAddress,
+  spenderAddress,
+  amount,
+  chainId,
+}: ChainParams & {
+  tokenAddress: string;
+  spenderAddress: string;
+  amount: bigint;
+}) {
+  // TODO: check if approval is already sufficient
+  const approveHash = await writeContract(config, {
+    chainId,
+    address: tokenAddress as Hex,
+    abi: erc20Abi,
+    functionName: "approve",
+    args: [spenderAddress as Hex, amount],
+  });
+  await waitForTransactionReceipt(config, { hash: approveHash });
+}
+
+export async function swap({
+  config,
+  quote,
+  slippagePct,
+}: BaseParams & {
+  quote: Quote;
+  slippagePct?: string;
+}) {
   const account = getAccount(config);
   const { chainId, planner, amount } = getSwapVars(
     config.dromeConfig,
@@ -104,18 +149,33 @@ export async function swap(
     account.address
   );
 
-  await ensureConnectedChain(config, chainId);
+  await ensureConnectedChain({ config, chainId });
 
-  return await writeContract(
+  // Get the Universal Router address from the execute params
+  const swapParams = executeSwapParams({
+    config: config.dromeConfig,
+    chainId,
+    commands: planner.commands as Hex,
+    inputs: planner.inputs as Hex[],
+    value: amount,
+  });
+
+  await ensureTokenApproval({
     config,
-    executeSwapParams({
-      config: config.dromeConfig,
-      chainId,
-      commands: planner.commands as Hex,
-      inputs: planner.inputs as Hex[],
-      value: amount,
-    })
-  );
+    tokenAddress: quote.fromToken.wrappedAddress || quote.fromToken.address,
+    spenderAddress: swapParams.address,
+    amount: quote.amount,
+    chainId,
+  });
+
+  const hash = await writeContract(config, swapParams);
+  const receipt = await waitForTransactionReceipt(config, { hash });
+
+  if (receipt.status !== "success") {
+    throw new Error(`Swap transaction failed: ${receipt.status}`);
+  }
+
+  return hash;
 }
 
 export { Quote } from "./primitives";
