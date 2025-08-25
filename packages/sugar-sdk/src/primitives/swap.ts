@@ -23,7 +23,7 @@ export function getSwapQuoteParams<ChainId extends number>({
     address: getChainConfig(config, chainId).QUOTER_ADDRESS,
     abi: routeQuoterAbi,
     functionName: "quoteExactInput",
-    args: [packRoute(config, path), amountIn],
+    args: [packRoute(config, path, "quote"), amountIn],
   } satisfies ContractFunction<
     typeof routeQuoterAbi,
     "nonpayable",
@@ -83,7 +83,8 @@ export function getSwapVars(
   const planner = setupPlanner({
     config,
     chainId,
-    account: accountAddress,
+    // TODO: look into this
+    account: accountAddress!,
     quote,
     slippagePct,
   });

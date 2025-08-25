@@ -9,20 +9,20 @@ import {
   getTokenPricesVars,
   getTokensParams,
   mergeTokens,
-  RawToken,
   RawTokenRateWithDecimals,
   transformTokenPrices,
   transformTokens,
 } from "./primitives/index.js";
 import { onDromeError } from "./primitives/utils.js";
-import { DromeWagmiConfig } from "./utils.js";
+import { BaseParams, ChainParams } from "./utils.js";
 
-export async function getListedTokens(config: DromeWagmiConfig) {
-  const customPrices = await getCustomPrices(config);
+export async function getListedTokens(params: BaseParams) {
+  const { config } = params;
+  const customPrices = await getCustomPrices({ config });
 
   const results = await Promise.allSettled(
     config.dromeConfig.CHAIN_IDS.map((chainId) =>
-      getTokensFromChain(config, chainId, customPrices)
+      getTokensFromChain({ config, chainId, customPrices })
     )
   );
 
@@ -53,11 +53,13 @@ export async function getListedTokens(config: DromeWagmiConfig) {
   }).sorted;
 }
 
-async function getTokensFromChain(
-  config: DromeWagmiConfig,
-  chainId: number,
-  customPrices: Record<Address, bigint>
-) {
+async function getTokensFromChain({
+  config,
+  chainId,
+  customPrices,
+}: ChainParams & {
+  customPrices: Record<Address, bigint>;
+}) {
   const accountAddress = getAccount(config).address;
 
   const rawTokens = await depaginate(
@@ -86,11 +88,11 @@ async function getTokensFromChain(
         ).value
       : 0n;
 
-  const prices = await getTokenPrices(
+  const prices = await getTokenPrices({
     config,
     chainId,
-    rawTokens.filter((token) => token.listed)
-  );
+    rawTokens: rawTokens.filter((token) => token.listed),
+  });
 
   return transformTokens({
     config: config.dromeConfig,
@@ -104,9 +106,10 @@ async function getTokensFromChain(
   });
 }
 
-async function getCustomPrices(config: DromeWagmiConfig) {
+async function getCustomPrices({ config }: BaseParams) {
   const requests = getCustomPricesVars(config.dromeConfig).map(
-    ({ chainId, tokens }) => getTokenPrices(config, chainId, tokens)
+    ({ chainId, tokens }) =>
+      getTokenPrices({ config, chainId, rawTokens: tokens })
   );
 
   try {
@@ -118,11 +121,13 @@ async function getCustomPrices(config: DromeWagmiConfig) {
   }
 }
 
-async function getTokenPrices(
-  config: DromeWagmiConfig,
-  chainId: number,
-  rawTokens: Pick<RawToken, "token_address" | "decimals">[]
-) {
+async function getTokenPrices({
+  config,
+  chainId,
+  rawTokens,
+}: ChainParams & {
+  rawTokens: Array<{ token_address: Address; decimals: number }>;
+}) {
   const { tokenChunks, customConnectors, useWrappers, thresholdFilter } =
     getTokenPricesVars(config.dromeConfig, chainId, rawTokens);
   const rawRates: RawTokenRateWithDecimals[] = [];

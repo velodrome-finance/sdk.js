@@ -11,6 +11,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - before running commands, make sure to activate appropriate node env using `nvm use`
 - to build SDK use `cd packages/sugar-sdk && npm run build`
+- to run tests use `npm test`
+
+## Claude's workflow
+
+- carefully study the task that is given to you
+- come up with a plan
+- execute the plan
+- try to confirm if results look good
+- run tests to verify the integrity of the system
+- if test fails, iterate on the solution until all tests pass
 
 ## Tech stack
 
