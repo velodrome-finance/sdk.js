@@ -92,7 +92,7 @@ async function main() {
 
     // Get all tokens for the specified chain
     console.log(`Fetching tokens for chain ID ${chainId}...`);
-    const allTokens = await getListedTokens(config);
+    const allTokens = await getListedTokens({ config });
 
     // Find tokens by address
     const findToken = (address: string) =>
@@ -144,7 +144,12 @@ async function main() {
 
     // Get quote
     console.log("\nFetching quote...");
-    const quote = await getQuoteForSwap(config, fromToken, toToken, amountIn);
+    const quote = await getQuoteForSwap({
+      config,
+      fromToken,
+      toToken,
+      amountIn,
+    });
 
     if (!quote) {
       console.log("❌ No quote available for this swap");

@@ -1,6 +1,6 @@
 {
   "name": "sugar-sdk",
-  "version": "1.0.0",
+  "version": "0.1.5",
   "main": "index.js",
   "scripts": {
     "check": "npx tsc --noEmit",
@@ -21,6 +21,11 @@
   "homepage": "https://github.com/velodrome-finance/sdk.js#readme",
   "description": "",
   "type": "module",
+  "files": [
+    "dist/**/*",
+    "package.json",
+    "README.md"
+  ],
   "exports": {
     ".": "./dist/index.js",
     "./primitives": "./dist/primitives/index.js"

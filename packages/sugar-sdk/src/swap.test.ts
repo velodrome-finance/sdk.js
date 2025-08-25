@@ -1,7 +1,7 @@
 import { parseUnits } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { checkHoneyStatus, initDrome } from "@/lib/test-helpers";
+import { checkHoneyStatus, initDrome } from "@/lib/test-helpers.js";
 
 import { type Token } from "./primitives";
 import { getQuoteForSwap, swap } from "./swap.js";
