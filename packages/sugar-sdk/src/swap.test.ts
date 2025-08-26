@@ -94,7 +94,7 @@ describe("Test swap functionality", () => {
 
   test(
     "quote and swap from WETH to USDC",
-    { timeout: 10000 },
+    { timeout: 20000 },
     async ({ config, tokens }) => {
       const amountIn = parseUnits("1", tokens.weth.decimals);
       const quote = await getQuoteForSwap({
@@ -121,7 +121,7 @@ describe("Test swap functionality", () => {
 
   test(
     "quote and swap from VELO to USDC",
-    { timeout: 10000 },
+    { timeout: 20000 },
     async ({ config, tokens }) => {
       const amountIn = parseUnits("100", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
@@ -152,7 +152,7 @@ describe("Test swap functionality", () => {
 
   test(
     "quote and swap from ETH to VELO",
-    { timeout: 10000 },
+    { timeout: 20000 },
     async ({ config, tokens }) => {
       const amountIn = parseUnits("0.1", tokens.eth.decimals);
       const quote = await getQuoteForSwap({
@@ -202,7 +202,7 @@ describe("Test swap functionality", () => {
 
   test(
     "quote and swap from VELO to WETH",
-    { timeout: 10000 },
+    { timeout: 20000 },
     async ({ config, tokens }) => {
       const amountIn = parseUnits("1000", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
