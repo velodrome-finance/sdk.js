@@ -17,7 +17,18 @@ runs:
 
     - name: Install supersim
       shell: bash
-      run: brew install ethereum-optimism/tap/supersim
+      run: |
+        # Detect OS and architecture
+        OS=$(uname -s)
+        ARCH=$(uname -m)
+        
+        # Download and install supersim
+        SUPERSIM_URL="https://github.com/ethereum-optimism/supersim/releases/download/0.1.0-alpha.55/supersim_${OS}_${ARCH}.tar.gz"
+        echo "Downloading supersim from: $SUPERSIM_URL"
+        curl -L -o supersim.tar.gz "$SUPERSIM_URL"
+        tar -xzf supersim.tar.gz
+        chmod +x supersim
+        sudo mv supersim /usr/local/bin/
     
     - name: Confirm supersim is installed
       shell: bash

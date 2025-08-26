@@ -13,6 +13,14 @@ import { velodromeConfig } from "./config.js";
 
 export type DromeWagmiConfig = Config & { dromeConfig: DromeConfig };
 
+export interface BaseParams {
+  config: DromeWagmiConfig;
+}
+
+export interface ChainParams extends BaseParams {
+  chainId: number;
+}
+
 export function initDrome<WagmiConfig extends Config>(
   wagmiConfig: WagmiConfig,
   dromeConfig: DromeConfig
@@ -39,10 +47,8 @@ export function initDrome<WagmiConfig extends Config>(
   return dromeWagmiConfig as WagmiConfig & { dromeConfig: DromeConfig };
 }
 
-export async function ensureConnectedChain(
-  config: DromeWagmiConfig,
-  chainId: number
-) {
+export async function ensureConnectedChain(params: ChainParams) {
+  const { config, chainId } = params;
   if (chainId !== getAccount(config).chainId) {
     await switchChain(config, { chainId });
   }

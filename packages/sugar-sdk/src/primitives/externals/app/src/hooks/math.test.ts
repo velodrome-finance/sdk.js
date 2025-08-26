@@ -1,4 +1,4 @@
-import { formatEther, formatUnits, parseEther, parseUnits } from "viem";
+import { parseEther, parseUnits } from "viem";
 import { expect, test } from "vitest";
 
 import {
