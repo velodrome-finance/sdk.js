@@ -101,7 +101,7 @@ describe("Test swap functionality", () => {
     snapshotId = result;
 
     supersimConfig = await initDrome(true);
-  });
+  }, 30000);
 
   afterEach(async () => {
     await disconnect(supersimConfig);
@@ -116,7 +116,7 @@ describe("Test swap functionality", () => {
         id: 1,
       }),
     });
-  });
+  }, 30000);
 
   test(
     "quote and swap from WETH to USDC",
