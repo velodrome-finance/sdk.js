@@ -1,4 +1,4 @@
-import { connect, disconnect } from "@wagmi/core";
+import { disconnect } from "@wagmi/core";
 import { formatUnits, parseUnits } from "viem";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
@@ -74,7 +74,7 @@ import { getDefaultDrome } from "./utils.js";
 
 interface TestContext {
   config: Awaited<ReturnType<typeof initDrome>>;
-  supersimConfig: Awaited<ReturnType<typeof initDrome>>;
+  // supersimConfig: Awaited<ReturnType<typeof initDrome>>;
   tokens: {
     velo: Token;
     weth: Token;
@@ -89,11 +89,11 @@ const test = it.extend<TestContext>({
     const config = await initDrome();
     await use(config);
   },
-  // eslint-disable-next-line no-empty-pattern
-  supersimConfig: async ({}, use) => {
-    const supersimConfig = await initDrome(true);
-    await use(supersimConfig);
-  },
+
+  // supersimConfig: async ({}, use) => {
+  //   const supersimConfig = await initDrome(true);
+  //   await use(supersimConfig);
+  // },
   tokens: async ({ config }, use) => {
     const allTokens = await getListedTokens({ config });
 
@@ -136,7 +136,6 @@ describe("getCallDataForSwap", () => {
 });
 
 describe("Test swap functionality", () => {
-  let snapshotId: string;
   let supersimConfig: Awaited<ReturnType<typeof initDrome>>;
 
   beforeAll(async () => {
@@ -151,43 +150,50 @@ describe("Test swap functionality", () => {
 
   beforeEach(async () => {
     // 1. Take blockchain snapshot
-    const response = await fetch("http://localhost:4444", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "evm_snapshot",
-        params: [],
-        id: 1,
-      }),
-    });
-    const { result } = await response.json();
-    snapshotId = result;
+    // const response = await fetch("http://localhost:4444", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     jsonrpc: "2.0",
+    //     method: "evm_snapshot",
+    //     params: [],
+    //     id: 1,
+    //   }),
+    // });
+
+    // const { result } = await response.json();
+    // snapshotId = result;
+
+    // const automine = await fetch("http://localhost:4444", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     jsonrpc: "2.0",
+    //     method: "evm_setAutomine",
+    //     params: [true],
+    //     id: 2,
+    //   }),
+    // });
 
     // 2. Create fresh config with new nonce manager
     supersimConfig = await initDrome(true);
-
-    // 3. Ensure account is connected
-    await connect(supersimConfig, {
-      connector: supersimConfig.connectors[1],
-    });
   });
 
   afterEach(async () => {
     // 1. Disconnect account
     await disconnect(supersimConfig);
 
-    // 2. Revert blockchain state
-    await fetch("http://localhost:4444", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "evm_revert",
-        params: [snapshotId],
-        id: 1,
-      }),
-    });
+    // // 2. Revert blockchain state
+    // await fetch("http://localhost:4444", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     jsonrpc: "2.0",
+    //     method: "evm_revert",
+    //     params: [snapshotId],
+    //     id: 1,
+    //   }),
+    // });
   });
 
   test(

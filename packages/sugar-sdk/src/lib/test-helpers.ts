@@ -1,4 +1,4 @@
-import { createConfig, http, injected, mock } from "@wagmi/core";
+import { connect, createConfig, http, injected, mock } from "@wagmi/core";
 import {
   celo,
   type Chain,
@@ -123,7 +123,19 @@ export const initDrome = async (withHoney: boolean = false) => {
   }
 
   // when using supersim via honey, we need to connect test account
-  // await connect(config, { connector: config.connectors[1] });
+  await connect(config, { connector: config.connectors[1] });
+
+  await fetch("http://localhost:4444", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      method: "evm_setAutomine",
+      params: [true],
+      id: 2,
+    }),
+  });
+
   return config;
 };
 
