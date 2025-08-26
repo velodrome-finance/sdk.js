@@ -72,6 +72,7 @@ describe("getCallDataForSwap", () => {
 
 describe("Test swap functionality", () => {
   let supersimConfig: Awaited<ReturnType<typeof initDrome>>;
+  let snapshotId: string;
 
   beforeAll(async () => {
     // Check if honey is running correctly in the test setup phase
@@ -85,11 +86,36 @@ describe("Test swap functionality", () => {
 
   beforeEach(async () => {
     // fresh config
+
+    const response = await fetch("http://localhost:4444", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "evm_snapshot",
+        params: [],
+        id: 1,
+      }),
+    });
+    const { result } = await response.json();
+    snapshotId = result;
+
     supersimConfig = await initDrome(true);
   });
 
   afterEach(async () => {
     await disconnect(supersimConfig);
+    // 2. Revert blockchain state
+    await fetch("http://localhost:4444", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "evm_revert",
+        params: [snapshotId],
+        id: 1,
+      }),
+    });
   });
 
   test(
