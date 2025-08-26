@@ -132,7 +132,7 @@ export const initDrome = async (withHoney: boolean = false) => {
       jsonrpc: "2.0",
       method: "evm_setAutomine",
       params: [true],
-      id: 2,
+      id: 1,
     }),
   });
 
