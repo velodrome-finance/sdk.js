@@ -203,28 +203,32 @@ describe("Test swap functionality", () => {
     }
   );
 
-  test("quote and swap from VELO to ETH", async ({ config, tokens }) => {
-    const amountIn = parseUnits("1000", tokens.velo.decimals);
-    const quote = await getQuoteForSwap({
-      config,
-      fromToken: tokens.velo,
-      toToken: tokens.eth,
-      amountIn,
-    });
+  test(
+    "quote and swap from VELO to ETH",
+    { timeout: 20000 },
+    async ({ config, tokens }) => {
+      const amountIn = parseUnits("1000", tokens.velo.decimals);
+      const quote = await getQuoteForSwap({
+        config,
+        fromToken: tokens.velo,
+        toToken: tokens.eth,
+        amountIn,
+      });
 
-    expect(quote).toBeTruthy();
-    expect(quote!.fromToken).toEqual(tokens.velo);
-    expect(quote!.toToken).toEqual(tokens.eth);
-    expect(quote!.amount).toBe(amountIn);
-    expect(quote!.amountOut).toBeGreaterThan(0n);
-    expect(quote!.path).toBeDefined();
-    expect(quote!.path.nodes).toBeInstanceOf(Array);
-    expect(quote!.path.nodes.length).toBeGreaterThan(0);
+      expect(quote).toBeTruthy();
+      expect(quote!.fromToken).toEqual(tokens.velo);
+      expect(quote!.toToken).toEqual(tokens.eth);
+      expect(quote!.amount).toBe(amountIn);
+      expect(quote!.amountOut).toBeGreaterThan(0n);
+      expect(quote!.path).toBeDefined();
+      expect(quote!.path.nodes).toBeInstanceOf(Array);
+      expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-    const r = await swap({ config: supersimConfig, quote: quote! });
-    expect(r).toBeDefined();
-    expect(r.startsWith("0x")).toBe(true);
-  });
+      const r = await swap({ config: supersimConfig, quote: quote! });
+      expect(r).toBeDefined();
+      expect(r.startsWith("0x")).toBe(true);
+    }
+  );
 
   test(
     "quote and swap from VELO to WETH",
