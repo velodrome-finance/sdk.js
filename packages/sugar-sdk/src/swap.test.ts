@@ -1,11 +1,16 @@
-import { parseUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { checkHoneyStatus, initDrome } from "@/lib/test-helpers";
+import {
+  checkHoneyStatus,
+  initDrome,
+  TEST_ACCOUNT_ADDRESS,
+} from "@/lib/test-helpers.js";
 
 import { type Token } from "./primitives";
-import { getQuoteForSwap, swap } from "./swap.js";
+import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
+import { getDefaultDrome } from "./utils.js";
 
 interface TestContext {
   config: Awaited<ReturnType<typeof initDrome>>;
@@ -52,6 +57,22 @@ const test = it.extend<TestContext>({
     const tokens = { velo, weth, usdc, eth };
     await use(tokens);
   },
+});
+
+describe("getCallDataForSwap", () => {
+  test("works", async ({ tokens }) => {
+    const callData = await getCallDataForSwap({
+      config: getDefaultDrome(),
+      fromToken: tokens.usdc,
+      toToken: tokens.velo,
+      amountIn: parseUnits("100", tokens.usdc.decimals),
+      account: TEST_ACCOUNT_ADDRESS,
+      slippage: 0.01,
+    });
+    const pi = formatUnits(callData.priceImpact, 18);
+    // make sure price impact is in decimals for % (ie 2% is 0.02 not 2.0)
+    expect(parseFloat(pi)).toBeLessThan(0.01);
+  });
 });
 
 describe("Test swap functionality", () => {

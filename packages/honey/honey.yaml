@@ -17,11 +17,11 @@ honey:
           - token: "usdc"
             address: "0x0b2c639c533813f4aa9d7837caf62653d097ff85"
             amount: "1000000000" # 1000 USDC
-            holder: "0xf89d7b9c864f589bbF53a82105107622B35EaA40"
+            holder: "0xc0E17AD342AFABD36b3971F8305fF147006962ae"
           - token: "ousdt"
             address: "0x1217bfe6c773eec6cc4a38b5dc45b92292b6e189"
             amount: "100000000" # 100 oUSDT
-            holder: "0x48A5A6a01bA89cDdF97D2D552923d5a11401Ed19"
+            holder: "0x966e944dad4ca785EB67358eCa79133D7dcD2AE9"
           - token: "weth"
             address: "0x4200000000000000000000000000000000000006"
             amount: "1000000000000000000000" # 1000 WETH

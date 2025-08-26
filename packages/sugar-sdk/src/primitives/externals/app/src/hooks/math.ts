@@ -40,9 +40,9 @@ export function applyPct(
 /**
  * Returns the percentage of two numbers
  */
-export function pctOf(base: bigint, amount: bigint, wad: number): bigint {
+export function pctOf(base: bigint, amount: bigint, wad: number, decimals: Boolean = false): bigint {
   if (base === 0n) return 0n;
-  const numerator = amount * 100n * 10n ** BigInt(wad);
+  const numerator = amount * (decimals? 1n : 100n) * 10n ** BigInt(wad);
   return numerator / base;
 }
 

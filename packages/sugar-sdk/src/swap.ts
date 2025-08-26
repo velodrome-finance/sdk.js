@@ -4,9 +4,10 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { Hex } from "viem";
+import { Address, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
+import { applyPct } from "./primitives/externals/app/src/hooks/math.js";
 import {
   executeSwapParams,
   getBestQuote,
@@ -49,6 +50,56 @@ const erc20Abi = [
     stateMutability: "view",
   },
 ] as const;
+
+interface CallDataForSwap {
+  commands: Hex;
+  inputs: Hex[];
+  minAmountOut: bigint;
+  priceImpact: bigint;
+}
+
+export async function getCallDataForSwap({
+  config,
+  fromToken,
+  toToken,
+  amountIn,
+  account,
+  slippage,
+}: BaseParams & {
+  fromToken: Token;
+  toToken: Token;
+  amountIn: bigint;
+  account: Address;
+  slippage: number;
+}): Promise<CallDataForSwap> {
+  if (slippage < 0 || slippage > 1) {
+    throw new Error("Invalid slippage value. Should be between 0 and 1.");
+  }
+
+  const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
+
+  if (!quote) {
+    throw new Error("No valid quote found");
+  }
+
+  const { planner } = getSwapVars(
+    config.dromeConfig,
+    quote,
+    `${slippage * 100}`,
+    account
+  );
+
+  return {
+    commands: planner.commands as Hex,
+    inputs: planner.inputs as Hex[],
+    minAmountOut: applyPct(
+      quote.amountOut,
+      quote.toToken.decimals,
+      slippage * 100
+    ),
+    priceImpact: quote.priceImpact,
+  };
+}
 
 export async function getQuoteForSwap({
   config,

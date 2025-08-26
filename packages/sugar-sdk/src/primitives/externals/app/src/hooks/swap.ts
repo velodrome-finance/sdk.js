@@ -1,9 +1,9 @@
 // src commit 662bd2cea30a9abc97d86dd3715619e388f5f286
 import { Address, hexToBigInt } from "viem";
 import { CommandType, RoutePlanner } from "../lib/router.js";
-import { packRoute } from "./lib";
-import { applyPct } from "./math";
-import { Quote, RouteElement } from "./types";
+import { packRoute } from "./lib.js";
+import { applyPct } from "./math.js";
+import { Quote, RouteElement } from "./types.js";
 import { getChainConfig } from "../../../../utils.js";
 import { DromeConfig } from "@/config";
 
