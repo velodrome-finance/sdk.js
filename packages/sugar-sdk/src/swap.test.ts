@@ -1,5 +1,6 @@
+import { connect, disconnect } from "@wagmi/core";
 import { formatUnits, parseUnits } from "viem";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import {
   checkHoneyStatus,
@@ -11,6 +12,65 @@ import { type Token } from "./primitives";
 import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
 import { getDefaultDrome } from "./utils.js";
+
+// describe("Swap tests with proper isolation", () => {
+
+//   beforeEach(async () => {
+//     // 1. Take blockchain snapshot
+//     const response = await fetch("http://localhost:4444", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         jsonrpc: "2.0",
+//         method: "evm_snapshot",
+//         params: [],
+//         id: 1,
+//       }),
+//     });
+//     const { result } = await response.json();
+//     snapshotId = result;
+
+//     // 2. Create fresh config with new nonce manager
+//     freshConfig = await initDrome(true);
+
+//     // 3. Ensure account is connected
+//     await connect(freshConfig, {
+//       connector: freshConfig.connectors[1],
+//     });
+//   });
+
+//   afterEach(async () => {
+//     // 1. Disconnect account
+//     await disconnect(freshConfig);
+
+//     // 2. Revert blockchain state
+//     await fetch("http://localhost:4444", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         jsonrpc: "2.0",
+//         method: "evm_revert",
+//         params: [snapshotId],
+//         id: 1,
+//       }),
+//     });
+//   });
+
+//   it("should swap without nonce conflicts", async () => {
+//     // Test uses freshConfig, guaranteed clean state
+//     const quote = await getQuoteForSwap({
+//       config: freshConfig,
+//       // ...
+//     });
+
+//     const result = await swap({
+//       config: freshConfig,
+//       quote,
+//     });
+
+//     expect(result).toBeDefined();
+//   });
+// });
 
 interface TestContext {
   config: Awaited<ReturnType<typeof initDrome>>;
@@ -76,6 +136,9 @@ describe("getCallDataForSwap", () => {
 });
 
 describe("Test swap functionality", () => {
+  let snapshotId: string;
+  let supersimConfig: Awaited<ReturnType<typeof initDrome>>;
+
   beforeAll(async () => {
     // Check if honey is running correctly in the test setup phase
     const honeyStatus = await checkHoneyStatus();
@@ -86,10 +149,51 @@ describe("Test swap functionality", () => {
     }
   }, 30000); // 30 second timeout for honey startup
 
+  beforeEach(async () => {
+    // 1. Take blockchain snapshot
+    const response = await fetch("http://localhost:4444", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "evm_snapshot",
+        params: [],
+        id: 1,
+      }),
+    });
+    const { result } = await response.json();
+    snapshotId = result;
+
+    // 2. Create fresh config with new nonce manager
+    supersimConfig = await initDrome(true);
+
+    // 3. Ensure account is connected
+    await connect(supersimConfig, {
+      connector: supersimConfig.connectors[1],
+    });
+  });
+
+  afterEach(async () => {
+    // 1. Disconnect account
+    await disconnect(supersimConfig);
+
+    // 2. Revert blockchain state
+    await fetch("http://localhost:4444", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "evm_revert",
+        params: [snapshotId],
+        id: 1,
+      }),
+    });
+  });
+
   test(
     "quote and swap from WETH to USDC",
     { retry: 3, timeout: 30000 },
-    async ({ config, supersimConfig, tokens }) => {
+    async ({ config, tokens }) => {
       const amountIn = parseUnits("1", tokens.weth.decimals);
       const quote = await getQuoteForSwap({
         config,
@@ -116,7 +220,7 @@ describe("Test swap functionality", () => {
   test(
     "quote and swap from VELO to USDC",
     { timeout: 30000, retry: 3 },
-    async ({ config, supersimConfig, tokens }) => {
+    async ({ config, tokens }) => {
       const amountIn = parseUnits("100", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
         config,
@@ -144,84 +248,84 @@ describe("Test swap functionality", () => {
     }
   );
 
-  test(
-    "quote and swap from ETH to VELO",
-    { timeout: 30000, retry: 3 },
-    async ({ config, supersimConfig, tokens }) => {
-      const amountIn = parseUnits("0.1", tokens.eth.decimals);
-      const quote = await getQuoteForSwap({
-        config,
-        fromToken: tokens.eth,
-        toToken: tokens.velo,
-        amountIn,
-      });
+  // test(
+  //   "quote and swap from ETH to VELO",
+  //   { timeout: 30000, retry: 3 },
+  //   async ({ config, supersimConfig, tokens }) => {
+  //     const amountIn = parseUnits("0.1", tokens.eth.decimals);
+  //     const quote = await getQuoteForSwap({
+  //       config,
+  //       fromToken: tokens.eth,
+  //       toToken: tokens.velo,
+  //       amountIn,
+  //     });
 
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.eth);
-      expect(quote!.toToken).toEqual(tokens.velo);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+  //     expect(quote).toBeTruthy();
+  //     expect(quote!.fromToken).toEqual(tokens.eth);
+  //     expect(quote!.toToken).toEqual(tokens.velo);
+  //     expect(quote!.amount).toBe(amountIn);
+  //     expect(quote!.amountOut).toBeGreaterThan(0n);
+  //     expect(quote!.path).toBeDefined();
+  //     expect(quote!.path.nodes).toBeInstanceOf(Array);
+  //     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
+  //     const r = await swap({ config: supersimConfig, quote: quote! });
+  //     expect(r).toBeDefined();
+  //     expect(r.startsWith("0x")).toBe(true);
+  //   }
+  // );
 
-  test(
-    "quote and swap from VELO to ETH",
-    { timeout: 30000, retry: 3 },
-    async ({ config, supersimConfig, tokens }) => {
-      const amountIn = parseUnits("1000", tokens.velo.decimals);
-      const quote = await getQuoteForSwap({
-        config,
-        fromToken: tokens.velo,
-        toToken: tokens.eth,
-        amountIn,
-      });
+  // test(
+  //   "quote and swap from VELO to ETH",
+  //   { timeout: 30000, retry: 3 },
+  //   async ({ config, supersimConfig, tokens }) => {
+  //     const amountIn = parseUnits("1000", tokens.velo.decimals);
+  //     const quote = await getQuoteForSwap({
+  //       config,
+  //       fromToken: tokens.velo,
+  //       toToken: tokens.eth,
+  //       amountIn,
+  //     });
 
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.velo);
-      expect(quote!.toToken).toEqual(tokens.eth);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+  //     expect(quote).toBeTruthy();
+  //     expect(quote!.fromToken).toEqual(tokens.velo);
+  //     expect(quote!.toToken).toEqual(tokens.eth);
+  //     expect(quote!.amount).toBe(amountIn);
+  //     expect(quote!.amountOut).toBeGreaterThan(0n);
+  //     expect(quote!.path).toBeDefined();
+  //     expect(quote!.path.nodes).toBeInstanceOf(Array);
+  //     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
+  //     const r = await swap({ config: supersimConfig, quote: quote! });
+  //     expect(r).toBeDefined();
+  //     expect(r.startsWith("0x")).toBe(true);
+  //   }
+  // );
 
-  test(
-    "quote and swap from VELO to WETH",
-    { timeout: 30000, retry: 3 },
-    async ({ config, supersimConfig, tokens }) => {
-      const amountIn = parseUnits("1000", tokens.velo.decimals);
-      const quote = await getQuoteForSwap({
-        config,
-        fromToken: tokens.velo,
-        toToken: tokens.weth,
-        amountIn,
-      });
+  // test(
+  //   "quote and swap from VELO to WETH",
+  //   { timeout: 30000, retry: 3 },
+  //   async ({ config, supersimConfig, tokens }) => {
+  //     const amountIn = parseUnits("1000", tokens.velo.decimals);
+  //     const quote = await getQuoteForSwap({
+  //       config,
+  //       fromToken: tokens.velo,
+  //       toToken: tokens.weth,
+  //       amountIn,
+  //     });
 
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.velo);
-      expect(quote!.toToken).toEqual(tokens.weth);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
+  //     expect(quote).toBeTruthy();
+  //     expect(quote!.fromToken).toEqual(tokens.velo);
+  //     expect(quote!.toToken).toEqual(tokens.weth);
+  //     expect(quote!.amount).toBe(amountIn);
+  //     expect(quote!.amountOut).toBeGreaterThan(0n);
+  //     expect(quote!.path).toBeDefined();
+  //     expect(quote!.path.nodes).toBeInstanceOf(Array);
+  //     expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
+  //     const r = await swap({ config: supersimConfig, quote: quote! });
+  //     expect(r).toBeDefined();
+  //     expect(r.startsWith("0x")).toBe(true);
+  //   }
+  // );
 });

@@ -4,7 +4,7 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { Address, Hex } from "viem";
+import { Address, erc20Abi, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
 import { applyPct } from "./primitives/externals/app/src/hooks/math.js";
@@ -19,37 +19,6 @@ import {
   Token,
 } from "./primitives/index.js";
 import { BaseParams, ChainParams, ensureConnectedChain } from "./utils.js";
-
-// ERC20 ABI for approve and allowance functions
-const erc20Abi = [
-  {
-    type: "function",
-    name: "approve",
-    inputs: [
-      { name: "spender", type: "address" },
-      { name: "amount", type: "uint256" },
-    ],
-    outputs: [{ name: "", type: "bool" }],
-    stateMutability: "nonpayable",
-  },
-  {
-    type: "function",
-    name: "allowance",
-    inputs: [
-      { name: "owner", type: "address" },
-      { name: "spender", type: "address" },
-    ],
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
-    name: "balanceOf",
-    inputs: [{ name: "account", type: "address" }],
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-  },
-] as const;
 
 interface CallDataForSwap {
   commands: Hex;
