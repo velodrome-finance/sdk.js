@@ -69,7 +69,6 @@ describe("getCallDataForSwap", () => {
       account: TEST_ACCOUNT_ADDRESS,
       slippage: 0.01,
     });
-    console.log(callData);
     const pi = formatUnits(callData.priceImpact, 18);
     // make sure price impact is in decimals for % (ie 2% is 0.02 not 2.0)
     expect(parseFloat(pi)).toBeLessThan(0.01);
