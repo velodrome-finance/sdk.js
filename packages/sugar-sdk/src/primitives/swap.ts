@@ -1,29 +1,27 @@
 import { Address, Hex } from "viem";
 
-import { DromeConfig } from "../config.js";
+import { ChainParams } from "../utils.js";
 import { routeQuoterAbi, universalRouterAbi } from "./abis.js";
 import { packRoute } from "./externals/app/src/hooks/lib.js";
 import { setupPlanner } from "./externals/app/src/hooks/swap.js";
 import { Quote, RouteElement, Token } from "./externals/app/src/hooks/types.js";
 import { ContractFunction, getChainConfig } from "./utils.js";
 
-export function getSwapQuoteParams<ChainId extends number>({
+export function getSwapQuoteParams({
   config,
   chainId,
   path,
   amountIn,
-}: {
-  config: DromeConfig;
-  chainId: ChainId;
+}: ChainParams & {
   path: RouteElement[];
   amountIn: bigint;
 }) {
   return {
     chainId,
-    address: getChainConfig(config, chainId).QUOTER_ADDRESS,
+    address: getChainConfig(config.dromeConfig, chainId).QUOTER_ADDRESS,
     abi: routeQuoterAbi,
     functionName: "quoteExactInput",
-    args: [packRoute(config, path, "quote"), amountIn],
+    args: [packRoute(config.dromeConfig, path, "quote"), amountIn],
   } satisfies ContractFunction<
     typeof routeQuoterAbi,
     "nonpayable",
@@ -31,22 +29,21 @@ export function getSwapQuoteParams<ChainId extends number>({
   >;
 }
 
-export function executeSwapParams<ChainId extends number>({
+export function executeSwapParams({
   config,
   chainId,
   commands,
   inputs,
   value,
-}: {
-  config: DromeConfig;
-  chainId: ChainId;
+}: ChainParams & {
   commands: Hex;
   inputs: Hex[];
   value: bigint;
 }) {
   return {
     chainId,
-    address: getChainConfig(config, chainId).UNIVERSAL_ROUTER_ADDRESS,
+    address: getChainConfig(config.dromeConfig, chainId)
+      .UNIVERSAL_ROUTER_ADDRESS,
     abi: universalRouterAbi,
     functionName: "execute",
     args: [commands, inputs],
@@ -54,34 +51,47 @@ export function executeSwapParams<ChainId extends number>({
   } satisfies ContractFunction<typeof universalRouterAbi, "payable", "execute">;
 }
 
-export function getQuoteForSwapVars(
-  config: DromeConfig,
-  fromToken: Token,
-  toToken: Token
-) {
-  const chainId = fromToken.chainId;
+export function getQuoteForSwapVars({
+  config,
+  chainId,
+  fromToken,
+  toToken,
+}: ChainParams & {
+  fromToken: Token;
+  toToken: Token;
+}) {
+  if (fromToken.chainId !== chainId || toToken.chainId !== chainId) {
+    throw new Error("Incompatible token chain IDs");
+  }
+
   const unsafeTokensSet = new Set(
-    getChainConfig(config, chainId).UNSAFE_TOKENS ?? []
+    getChainConfig(config.dromeConfig, chainId).UNSAFE_TOKENS ?? []
   );
   unsafeTokensSet.delete(fromToken.address);
   unsafeTokensSet.delete(toToken.address);
 
   return {
     chainId,
-    poolsPageSize: config.POOLS_PAGE_SIZE,
+    poolsPageSize: config.dromeConfig.POOLS_PAGE_SIZE,
     mustExcludeTokens: unsafeTokensSet,
   };
 }
 
-export function getSwapVars(
-  config: DromeConfig,
-  quote: Quote,
-  slippagePct = quote.path.nodes.some((n) => n.type >= 50) ? "1" : "0.5",
-  accountAddress?: Address
-) {
-  const chainId = quote.fromToken.chainId;
+export function getSwapVars({
+  config,
+  chainId,
+  quote,
+  slippagePct,
+  accountAddress,
+}: ChainParams & {
+  quote: Quote;
+  slippagePct?: string;
+  accountAddress?: Address;
+}) {
+  slippagePct =
+    slippagePct ?? (quote.path.nodes.some((n) => n.type >= 50) ? "1" : "0.5");
   const planner = setupPlanner({
-    config,
+    config: config.dromeConfig,
     chainId,
     // TODO: look into this
     account: accountAddress!,

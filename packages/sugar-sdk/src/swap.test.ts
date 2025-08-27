@@ -23,6 +23,8 @@ interface TestContext {
   };
 }
 
+const chainId = 10;
+
 const test = it.extend<TestContext>({
   // eslint-disable-next-line no-empty-pattern
   config: async ({}, use) => {
@@ -44,10 +46,10 @@ const test = it.extend<TestContext>({
           token.chainId === chainId
       );
 
-    const velo = findToken("velo", 10);
-    const weth = findToken("weth", 10);
-    const usdc = findToken("usdc", 10);
-    const eth = findToken("eth", 10);
+    const velo = findToken("velo", chainId);
+    const weth = findToken("weth", chainId);
+    const usdc = findToken("usdc", chainId);
+    const eth = findToken("eth", chainId);
 
     if (!velo) throw new Error("Could not find VELO token for testing");
     if (!weth) throw new Error("Could not find WETH token for testing");
@@ -63,6 +65,7 @@ describe("getCallDataForSwap", () => {
   test("works", async ({ tokens }) => {
     const callData = await getCallDataForSwap({
       config: getDefaultDrome(),
+      chainId,
       fromToken: tokens.usdc,
       toToken: tokens.velo,
       amountIn: parseUnits("100", tokens.usdc.decimals),
@@ -93,6 +96,7 @@ describe("Test swap functionality", () => {
       const amountIn = parseUnits("1", tokens.weth.decimals);
       const quote = await getQuoteForSwap({
         config,
+        chainId,
         fromToken: tokens.weth,
         toToken: tokens.usdc,
         amountIn,
@@ -107,7 +111,7 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
+      const r = await swap({ config: supersimConfig, chainId, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
     }
@@ -120,6 +124,7 @@ describe("Test swap functionality", () => {
       const amountIn = parseUnits("100", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
         config,
+        chainId,
         fromToken: tokens.velo,
         toToken: tokens.usdc,
         amountIn,
@@ -136,6 +141,7 @@ describe("Test swap functionality", () => {
 
       const r = await swap({
         config: supersimConfig,
+        chainId,
         quote: quote!,
         slippagePct: "5",
       }); // 5% slippage tolerance
@@ -151,6 +157,7 @@ describe("Test swap functionality", () => {
       const amountIn = parseUnits("0.1", tokens.eth.decimals);
       const quote = await getQuoteForSwap({
         config,
+        chainId,
         fromToken: tokens.eth,
         toToken: tokens.velo,
         amountIn,
@@ -165,7 +172,7 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
+      const r = await swap({ config: supersimConfig, chainId, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
     }
@@ -178,6 +185,7 @@ describe("Test swap functionality", () => {
       const amountIn = parseUnits("1000", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
         config,
+        chainId,
         fromToken: tokens.velo,
         toToken: tokens.eth,
         amountIn,
@@ -192,7 +200,7 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
+      const r = await swap({ config: supersimConfig, chainId, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
     }
@@ -205,6 +213,7 @@ describe("Test swap functionality", () => {
       const amountIn = parseUnits("1000", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
         config,
+        chainId,
         fromToken: tokens.velo,
         toToken: tokens.weth,
         amountIn,
@@ -219,7 +228,7 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
+      const r = await swap({ config: supersimConfig, chainId, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
     }

@@ -18,7 +18,7 @@ import {
   Quote,
   Token,
 } from "./primitives/index.js";
-import { BaseParams, ChainParams, ensureConnectedChain } from "./utils.js";
+import { ChainParams, ensureConnectedChain } from "./utils.js";
 
 // ERC20 ABI for approve and allowance functions
 const erc20Abi = [
@@ -60,12 +60,13 @@ interface CallDataForSwap {
 
 export async function getCallDataForSwap({
   config,
+  chainId,
   fromToken,
   toToken,
   amountIn,
   account,
   slippage,
-}: BaseParams & {
+}: ChainParams & {
   fromToken: Token;
   toToken: Token;
   amountIn: bigint;
@@ -76,18 +77,25 @@ export async function getCallDataForSwap({
     throw new Error("Invalid slippage value. Should be between 0 and 1.");
   }
 
-  const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
+  const quote = await getQuoteForSwap({
+    config,
+    chainId,
+    fromToken,
+    toToken,
+    amountIn,
+  });
 
   if (!quote) {
     throw new Error("No valid quote found");
   }
 
-  const { planner } = getSwapVars(
-    config.dromeConfig,
+  const { planner } = getSwapVars({
+    config,
+    chainId,
     quote,
-    `${slippage * 100}`,
-    account
-  );
+    slippagePct: `${slippage * 100}`,
+    accountAddress: account,
+  });
 
   return {
     commands: planner.commands as Hex,
@@ -103,19 +111,21 @@ export async function getCallDataForSwap({
 
 export async function getQuoteForSwap({
   config,
+  chainId,
   fromToken,
   toToken,
   amountIn,
-}: BaseParams & {
+}: ChainParams & {
   fromToken: Token;
   toToken: Token;
   amountIn: bigint;
 }) {
-  const { chainId, mustExcludeTokens } = getQuoteForSwapVars(
-    config.dromeConfig,
+  const { mustExcludeTokens } = getQuoteForSwapVars({
+    config,
+    chainId,
     fromToken,
-    toToken
-  );
+    toToken,
+  });
   const pools = await getPoolsForSwaps({ config, chainId });
 
   const paths = getPaths({
@@ -134,7 +144,7 @@ export async function getQuoteForSwap({
   const quoteResponses = await readContracts(config, {
     contracts: paths.map((path) =>
       getSwapQuoteParams({
-        config: config.dromeConfig,
+        config,
         chainId,
         path: path.nodes,
         amountIn,
@@ -186,25 +196,27 @@ async function ensureTokenApproval({
 
 export async function swap({
   config,
+  chainId,
   quote,
   slippagePct,
-}: BaseParams & {
+}: ChainParams & {
   quote: Quote;
   slippagePct?: string;
 }) {
   const account = getAccount(config);
-  const { chainId, planner, amount } = getSwapVars(
-    config.dromeConfig,
+  const { planner, amount } = getSwapVars({
+    config,
+    chainId,
     quote,
     slippagePct,
-    account.address
-  );
+    accountAddress: account.address,
+  });
 
   await ensureConnectedChain({ config, chainId });
 
   // Get the Universal Router address from the execute params
   const swapParams = executeSwapParams({
-    config: config.dromeConfig,
+    config,
     chainId,
     commands: planner.commands as Hex,
     inputs: planner.inputs as Hex[],
