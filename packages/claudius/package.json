@@ -11,7 +11,7 @@
     "quote": "tsx quote.ts"
   },
   "dependencies": {
-    "sugar-sdk": "1.0.0",
+    "sugar-sdk": "^0.1.0",
     "viem": "2.28.2",
     "@wagmi/core": "^2.15.6"
   },
