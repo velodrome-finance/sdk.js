@@ -59,6 +59,10 @@ export function getQuoteForSwapVars(
   fromToken: Token,
   toToken: Token
 ) {
+  if (fromToken.chainId !== toToken.chainId) {
+    throw new Error("Incompatible token chains");
+  }
+
   const chainId = fromToken.chainId;
   const unsafeTokensSet = new Set(
     getChainConfig(config, chainId).UNSAFE_TOKENS ?? []
