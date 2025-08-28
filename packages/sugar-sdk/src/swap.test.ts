@@ -1,4 +1,6 @@
+import { optimism } from "@wagmi/core/chains";
 import { formatUnits, parseUnits } from "viem";
+import { createTestClient, http } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
@@ -8,9 +10,22 @@ import {
 } from "@/lib/test-helpers.js";
 
 import { type Token } from "./primitives";
-import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
+import { getChainConfig } from "./primitives/utils.js";
+import {
+  ensureTokenApproval,
+  getCallDataForSwap,
+  getQuoteForSwap,
+  swap,
+} from "./swap.js";
 import { getListedTokens } from "./tokens.js";
 import { getDefaultDrome } from "./utils.js";
+
+export const optimismTestClient = createTestClient({
+  mode: "anvil",
+  cacheTime: 0,
+  chain: optimism,
+  transport: http("http://localhost:4444"),
+});
 
 interface TestContext {
   config: Awaited<ReturnType<typeof initDrome>>;
@@ -107,6 +122,18 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
+      await ensureTokenApproval({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: getChainConfig(supersimConfig.dromeConfig, 10)
+          .UNIVERSAL_ROUTER_ADDRESS,
+        amount: quote!.amount,
+        chainId: 10,
+      });
+
+      await optimismTestClient.mine({ blocks: 1 });
+
       const r = await swap({ config: supersimConfig, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
@@ -133,6 +160,18 @@ describe("Test swap functionality", () => {
       expect(quote!.path).toBeDefined();
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
+
+      await ensureTokenApproval({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: getChainConfig(supersimConfig.dromeConfig, 10)
+          .UNIVERSAL_ROUTER_ADDRESS,
+        amount: quote!.amount,
+        chainId: 10,
+      });
+
+      await optimismTestClient.mine({ blocks: 1 });
 
       const r = await swap({
         config: supersimConfig,
@@ -165,6 +204,18 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
+      await ensureTokenApproval({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: getChainConfig(supersimConfig.dromeConfig, 10)
+          .UNIVERSAL_ROUTER_ADDRESS,
+        amount: quote!.amount,
+        chainId: 10,
+      });
+
+      await optimismTestClient.mine({ blocks: 1 });
+
       const r = await swap({ config: supersimConfig, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
@@ -192,6 +243,18 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
+      await ensureTokenApproval({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: getChainConfig(supersimConfig.dromeConfig, 10)
+          .UNIVERSAL_ROUTER_ADDRESS,
+        amount: quote!.amount,
+        chainId: 10,
+      });
+
+      await optimismTestClient.mine({ blocks: 1 });
+
       const r = await swap({ config: supersimConfig, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
@@ -218,6 +281,18 @@ describe("Test swap functionality", () => {
       expect(quote!.path).toBeDefined();
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
+
+      await ensureTokenApproval({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: getChainConfig(supersimConfig.dromeConfig, 10)
+          .UNIVERSAL_ROUTER_ADDRESS,
+        amount: quote!.amount,
+        chainId: 10,
+      });
+
+      await optimismTestClient.mine({ blocks: 1 });
 
       const r = await swap({ config: supersimConfig, quote: quote! });
       expect(r).toBeDefined();

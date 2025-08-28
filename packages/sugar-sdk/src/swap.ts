@@ -162,7 +162,7 @@ export async function getQuoteForSwap({
   return getBestQuote([quotes]);
 }
 
-async function ensureTokenApproval({
+export async function ensureTokenApproval({
   config,
   tokenAddress,
   spenderAddress,
@@ -173,6 +173,8 @@ async function ensureTokenApproval({
   spenderAddress: string;
   amount: bigint;
 }) {
+  await ensureConnectedChain({ config, chainId });
+
   // TODO: check if approval is already sufficient
   const approveHash = await writeContract(config, {
     chainId,
@@ -209,14 +211,6 @@ export async function swap({
     commands: planner.commands as Hex,
     inputs: planner.inputs as Hex[],
     value: amount,
-  });
-
-  await ensureTokenApproval({
-    config,
-    tokenAddress: quote.fromToken.wrappedAddress || quote.fromToken.address,
-    spenderAddress: swapParams.address,
-    amount: quote.amount,
-    chainId,
   });
 
   const hash = await writeContract(config, swapParams);
