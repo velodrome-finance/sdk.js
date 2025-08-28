@@ -1,3 +1,4 @@
+import { waitForTransactionReceipt } from "@wagmi/core";
 import { optimism } from "@wagmi/core/chains";
 import { formatUnits, parseUnits } from "viem";
 import { createTestClient, http } from "viem";
@@ -26,6 +27,10 @@ export const optimismTestClient = createTestClient({
   chain: optimism,
   transport: http("http://localhost:4444"),
 });
+
+async function wait(time: number) {
+  return new Promise((res) => setTimeout(res, time));
+}
 
 interface TestContext {
   config: Awaited<ReturnType<typeof initDrome>>;
@@ -134,9 +139,19 @@ describe("Test swap functionality", () => {
 
       await optimismTestClient.mine({ blocks: 1 });
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
+      await wait(200);
+
+      const hash = await swap({ config: supersimConfig, quote: quote! });
+      expect(hash).toBeDefined();
+      expect(hash.startsWith("0x")).toBe(true);
+
+      await optimismTestClient.mine({ blocks: 1 });
+
+      await wait(200);
+
+      const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
+
+      expect(receipt.status).toBe("success");
     }
   );
 
@@ -173,13 +188,21 @@ describe("Test swap functionality", () => {
 
       await optimismTestClient.mine({ blocks: 1 });
 
-      const r = await swap({
+      const hash = await swap({
         config: supersimConfig,
         quote: quote!,
         slippagePct: "5",
       }); // 5% slippage tolerance
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
+      expect(hash).toBeDefined();
+      expect(hash.startsWith("0x")).toBe(true);
+
+      await optimismTestClient.mine({ blocks: 1 });
+
+      await wait(200);
+
+      const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
+
+      expect(receipt.status).toBe("success");
     }
   );
 
@@ -216,9 +239,17 @@ describe("Test swap functionality", () => {
 
       await optimismTestClient.mine({ blocks: 1 });
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
+      const hash = await swap({ config: supersimConfig, quote: quote! });
+      expect(hash).toBeDefined();
+      expect(hash.startsWith("0x")).toBe(true);
+
+      await optimismTestClient.mine({ blocks: 1 });
+
+      await wait(200);
+
+      const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
+
+      expect(receipt.status).toBe("success");
     }
   );
 
@@ -255,9 +286,17 @@ describe("Test swap functionality", () => {
 
       await optimismTestClient.mine({ blocks: 1 });
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
+      const hash = await swap({ config: supersimConfig, quote: quote! });
+      expect(hash).toBeDefined();
+      expect(hash.startsWith("0x")).toBe(true);
+
+      await optimismTestClient.mine({ blocks: 1 });
+
+      await wait(200);
+
+      const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
+
+      expect(receipt.status).toBe("success");
     }
   );
 
@@ -294,9 +333,17 @@ describe("Test swap functionality", () => {
 
       await optimismTestClient.mine({ blocks: 1 });
 
-      const r = await swap({ config: supersimConfig, quote: quote! });
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
+      const hash = await swap({ config: supersimConfig, quote: quote! });
+      expect(hash).toBeDefined();
+      expect(hash.startsWith("0x")).toBe(true);
+
+      await optimismTestClient.mine({ blocks: 1 });
+
+      await wait(200);
+
+      const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
+
+      expect(receipt.status).toBe("success");
     }
   );
 });

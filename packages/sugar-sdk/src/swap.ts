@@ -213,14 +213,7 @@ export async function swap({
     value: amount,
   });
 
-  const hash = await writeContract(config, swapParams);
-  const receipt = await waitForTransactionReceipt(config, { hash });
-
-  if (receipt.status !== "success") {
-    throw new Error(`Swap transaction failed: ${receipt.status}`);
-  }
-
-  return hash;
+  return writeContract(config, swapParams);
 }
 
 export { Quote } from "./primitives";
