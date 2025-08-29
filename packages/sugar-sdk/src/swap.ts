@@ -71,7 +71,7 @@ export async function getCallDataForSwap({
   amountIn: bigint;
   account: Address;
   slippage: number;
-}): Promise<CallDataForSwap> {
+}): Promise<CallDataForSwap | null> {
   if (slippage < 0 || slippage > 1) {
     throw new Error("Invalid slippage value. Should be between 0 and 1.");
   }
@@ -79,7 +79,7 @@ export async function getCallDataForSwap({
   const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
 
   if (!quote) {
-    throw new Error("No valid quote found");
+    return null;
   }
 
   const { planner } = getSwapVars(

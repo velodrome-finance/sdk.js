@@ -8,6 +8,7 @@ import {
 } from "@/lib/test-helpers.js";
 
 import { type Token } from "./primitives";
+// Import the swap functions
 import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
 import { getDefaultDrome } from "./utils.js";
@@ -69,9 +70,48 @@ describe("getCallDataForSwap", () => {
       account: TEST_ACCOUNT_ADDRESS,
       slippage: 0.01,
     });
-    const pi = formatUnits(callData.priceImpact, 18);
+    const pi = formatUnits(callData!.priceImpact, 18);
     // make sure price impact is in decimals for % (ie 2% is 0.02 not 2.0)
     expect(parseFloat(pi)).toBeLessThan(0.01);
+  });
+
+  test("handles invalid slippage values", async ({ tokens }) => {
+    await expect(
+      getCallDataForSwap({
+        config: getDefaultDrome(),
+        fromToken: tokens.usdc,
+        toToken: tokens.velo,
+        amountIn: parseUnits("100", tokens.usdc.decimals),
+        account: TEST_ACCOUNT_ADDRESS,
+        slippage: -0.01, // Invalid slippage (negative)
+      })
+    ).rejects.toThrow("Invalid slippage value. Should be between 0 and 1.");
+
+    await expect(
+      getCallDataForSwap({
+        config: getDefaultDrome(),
+        fromToken: tokens.usdc,
+        toToken: tokens.velo,
+        amountIn: parseUnits("100", tokens.usdc.decimals),
+        account: TEST_ACCOUNT_ADDRESS,
+        slippage: 1.1, // Invalid slippage (> 1)
+      })
+    ).rejects.toThrow("Invalid slippage value. Should be between 0 and 1.");
+  });
+
+  test("handles missing quotes", async ({ tokens }) => {
+    const d = await getCallDataForSwap({
+      config: getDefaultDrome(),
+      fromToken: Object.assign({}, tokens.usdc, {
+        // not a real token
+        address: "0x7f9adfbd38b669f03d1d11000bc76b9aaea28a81",
+      }),
+      toToken: tokens.velo,
+      amountIn: parseUnits("100", tokens.usdc.decimals),
+      account: TEST_ACCOUNT_ADDRESS,
+      slippage: 0.01,
+    });
+    expect(d).toBeNull();
   });
 });
 
