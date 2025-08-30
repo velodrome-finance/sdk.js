@@ -1,124 +1,15 @@
-import { connect, createConfig, http, injected, mock } from "@wagmi/core";
-import {
-  celo,
-  type Chain,
-  fraxtal,
-  ink,
-  lisk,
-  mainnet,
-  metalL2,
-  mode,
-  optimism,
-  soneium,
-  superseed,
-  swellchain,
-  unichain,
-} from "@wagmi/core/chains";
-import { privateKeyToAccount } from "viem/accounts";
-import { createNonceManager, jsonRpc } from "viem/nonce";
+import { connect } from "@wagmi/core";
 
-import { initDrome as baseInitDrome, velodromeConfig } from "../index.js";
+import { getDefaultDrome } from "../utils.js";
 
 export const TEST_ACCOUNT_ADDRESS =
   "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
-// OMG, there are private keys in this file. What is this amateur hour?
-// Calm down, these are presets from Anvil. No need to panic.
-// see https://getfoundry.sh/anvil/overview#getting-started
-const TEST_ACCOUNT_PK =
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
-export function getTransportURL(
-  chainId: number,
-  i: number,
-  withHoney: boolean = false
-): string {
-  if (withHoney) {
-    // Eth mainnet is the first chain in the list of chains
-    // since we currently do not use supersim for it, we skip it
-    return `http://localhost:${4444 + i - 1}`;
-  }
-
-  const rpc = process.env[`VITE_RPC_${chainId}`];
-  if (!rpc) {
-    throw new Error(
-      `Missing RPC URL. Please pass VITE_RPC_${chainId} as an environment variable.`
-    );
-  }
-  return rpc;
-}
-
-function getTransports(chains: Chain[], withHoney: boolean = false) {
-  return Object.fromEntries(
-    chains.map((chain, i) => {
-      return [
-        chain.id,
-        http(getTransportURL(chain.id, i, withHoney), { batch: true }),
-      ];
-    })
-  );
-}
-
-export const initDrome = async (withHoney: boolean = false) => {
-  const velodromeChains = [
-    optimism,
-    mode,
-    lisk,
-    metalL2,
-    fraxtal,
-    ink,
-    soneium,
-    superseed,
-    swellchain,
-    unichain,
-    celo,
-    mainnet,
-  ] as [Chain, ...Chain[]];
-
-  // sort chains by chain ID to ensure consistent port assignment for honey
-  velodromeChains.sort((a, b) => a.id - b.id);
-
+export const initDrome = async (testMode: boolean = false) => {
   // When honey is enabled, modify chain RPC URLs to use localhost
-  const chainsToUse = velodromeChains.map((chain, i) => ({
-    ...chain,
-    rpcUrls: {
-      ...chain.rpcUrls,
-      default: {
-        ...chain.rpcUrls.default,
-        http: [getTransportURL(chain.id, i, withHoney)],
-      },
-    },
-  }));
+  const config = getDefaultDrome(testMode);
 
-  const config = baseInitDrome(
-    createConfig({
-      chains: chainsToUse as unknown as [Chain, ...Chain[]],
-      connectors: [
-        injected(),
-        ...(withHoney
-          ? [
-              mock({
-                accounts: [
-                  privateKeyToAccount(TEST_ACCOUNT_PK, {
-                    nonceManager: createNonceManager({
-                      source: jsonRpc(),
-                    }),
-                  }).address,
-                ],
-              }),
-            ]
-          : []),
-      ],
-      transports: getTransports(chainsToUse, withHoney),
-    }),
-    {
-      ...velodromeConfig,
-      onError(error) {
-        throw error;
-      },
-    }
-  );
-
-  if (!withHoney) {
+  if (!testMode) {
     return config;
   }
 
@@ -127,8 +18,8 @@ export const initDrome = async (withHoney: boolean = false) => {
   return config;
 };
 
-export const getDromeConfig = async (withHoney: boolean = false) => {
-  const d = await initDrome(withHoney);
+export const getDromeConfig = async (testMode: boolean = false) => {
+  const d = await initDrome(testMode);
   return d.dromeConfig;
 };
 
@@ -136,7 +27,7 @@ export const getDromeConfig = async (withHoney: boolean = false) => {
 export async function checkHoneyStatus(): Promise<boolean> {
   try {
     // Check if honey is running by testing connectivity to the expected ports
-    const expectedPorts = [4444, 4445, 4446]; // OP, Lisk, Base based on honey.yaml
+    const expectedPorts = [4444, 4445]; // OP, Base based on honey.yaml
 
     for (const port of expectedPorts) {
       const response = await fetch(`http://localhost:${port}`, {

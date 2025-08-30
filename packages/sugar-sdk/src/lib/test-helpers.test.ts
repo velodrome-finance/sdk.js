@@ -1,18 +1,7 @@
 import { getAccount } from "@wagmi/core";
 import { describe, expect, it } from "vitest";
 
-import {
-  getTransportURL,
-  initDrome,
-  TEST_ACCOUNT_ADDRESS,
-} from "@/lib/test-helpers";
-
-describe("getTransportURL", () => {
-  it("should map to local honey server instance when withHoney is true", () => {
-    expect(getTransportURL(10, 0, true)).toBe("http://localhost:4443");
-    expect(getTransportURL(10, 0, false)).not.toBe("http://localhost:4445");
-  });
-});
+import { initDrome, TEST_ACCOUNT_ADDRESS } from "@/lib/test-helpers";
 
 describe("initDrome", () => {
   it("works for supersim", async () => {
