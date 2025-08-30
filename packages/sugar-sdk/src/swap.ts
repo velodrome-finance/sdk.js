@@ -4,6 +4,7 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
+import { splitEvery } from "ramda";
 import { Address, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
@@ -131,16 +132,29 @@ export async function getQuoteForSwap({
     return null;
   }
 
-  const quoteResponses = await readContracts(config, {
-    contracts: paths.map((path) =>
-      getSwapQuoteParams({
-        config: config.dromeConfig,
-        chainId,
-        path: path.nodes,
-        amountIn,
+  const pathsBatches = splitEvery(50, paths);
+  const concurrentBatchSize = 10; // Process 10 batches at a time
+
+  const quoteResponses = [];
+
+  for (let i = 0; i < pathsBatches.length; i += concurrentBatchSize) {
+    const batchGroup = pathsBatches.slice(i, i + concurrentBatchSize);
+    const batchPromises = batchGroup.map((batch) =>
+      readContracts(config, {
+        contracts: batch.map((path) =>
+          getSwapQuoteParams({
+            config: config.dromeConfig,
+            chainId,
+            path: path.nodes,
+            amountIn,
+          })
+        ),
       })
-    ),
-  });
+    );
+
+    const batchResults = await Promise.all(batchPromises);
+    quoteResponses.push(...batchResults.flat());
+  }
 
   const quotes = quoteResponses
     .map((response, i) => {
