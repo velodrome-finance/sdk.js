@@ -1,6 +1,6 @@
 {
   "name": "sugar-sdk",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "main": "index.js",
   "scripts": {
     "check": "npx tsc --noEmit",
