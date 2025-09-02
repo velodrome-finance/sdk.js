@@ -117,8 +117,6 @@ function getClient(chains: Chain[], withHoney: boolean = false) {
     })
   );
   return ({ chain }: { chain: Chain }) => {
-    console.log(`Getting test client for chain ${chain}`);
-    console.log();
     const testClient = testClients.get(chain.id);
     if (!testClient) {
       throw new Error(

@@ -229,6 +229,22 @@ describe("Test swap functionality", () => {
     { timeout: 30000, retry: 3 },
     async ({ config, supersimConfig, tokens }) => {
       const supersim = getTestClientForChain(10);
+      const c = supersimConfig
+        .getClient({ chainId: 10 })
+        .extend(testActions({ mode: "anvil" }))
+        .extend(publicActions);
+
+      console.log(
+        "initial tx pool status",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
 
       const amountIn = parseUnits("100", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
@@ -257,7 +273,33 @@ describe("Test swap functionality", () => {
         chainId: 10,
       });
 
+      console.log(
+        "token approved",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
       await supersim.mine({ blocks: 1 });
+
+      console.log(
+        "mined after approval",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
+      await wait(200);
 
       const hash = await swap({
         config: supersimConfig,
@@ -267,11 +309,44 @@ describe("Test swap functionality", () => {
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
+      console.log(
+        "after swap",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
       await supersim.mine({ blocks: 1 });
 
-      await wait(200);
+      console.log(
+        "mined after swap",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
+      await wait(2000);
 
       const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
+
+      console.log(
+        "after wait for transaction",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
+      );
 
       expect(receipt.status).toBe("success");
     }
@@ -282,6 +357,22 @@ describe("Test swap functionality", () => {
     { timeout: 30000, retry: 3 },
     async ({ config, supersimConfig, tokens }) => {
       const supersim = getTestClientForChain(10);
+      const c = supersimConfig
+        .getClient({ chainId: 10 })
+        .extend(testActions({ mode: "anvil" }))
+        .extend(publicActions);
+
+      console.log(
+        "initial tx pool status",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
 
       const amountIn = parseUnits("0.1", tokens.eth.decimals);
       const quote = await getQuoteForSwap({
@@ -310,17 +401,76 @@ describe("Test swap functionality", () => {
         chainId: 10,
       });
 
+      console.log(
+        "token approved",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
       await supersim.mine({ blocks: 1 });
+
+      console.log(
+        "mined after approval",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
+      await wait(200);
 
       const hash = await swap({ config: supersimConfig, quote: quote! });
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
+      console.log(
+        "after swap",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
       await supersim.mine({ blocks: 1 });
 
-      await wait(200);
+      console.log(
+        "mined after swap",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
+      await wait(2000);
 
       const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
+
+      console.log(
+        "after wait for transaction",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
+      );
 
       expect(receipt.status).toBe("success");
     }
@@ -331,6 +481,22 @@ describe("Test swap functionality", () => {
     { timeout: 30000, retry: 3 },
     async ({ config, supersimConfig, tokens }) => {
       const supersim = getTestClientForChain(10);
+      const c = supersimConfig
+        .getClient({ chainId: 10 })
+        .extend(testActions({ mode: "anvil" }))
+        .extend(publicActions);
+
+      console.log(
+        "initial tx pool status",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
 
       const amountIn = parseUnits("1000", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
@@ -359,17 +525,76 @@ describe("Test swap functionality", () => {
         chainId: 10,
       });
 
+      console.log(
+        "token approved",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
       await supersim.mine({ blocks: 1 });
+
+      console.log(
+        "mined after approval",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
+      await wait(200);
 
       const hash = await swap({ config: supersimConfig, quote: quote! });
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
+      console.log(
+        "after swap",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
       await supersim.mine({ blocks: 1 });
 
-      await wait(200);
+      console.log(
+        "mined after swap",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
+      await wait(2000);
 
       const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
+
+      console.log(
+        "after wait for transaction",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
+      );
 
       expect(receipt.status).toBe("success");
     }
@@ -380,6 +605,22 @@ describe("Test swap functionality", () => {
     { timeout: 30000, retry: 3 },
     async ({ config, supersimConfig, tokens }) => {
       const supersim = getTestClientForChain(10);
+      const c = supersimConfig
+        .getClient({ chainId: 10 })
+        .extend(testActions({ mode: "anvil" }))
+        .extend(publicActions);
+
+      console.log(
+        "initial tx pool status",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
 
       const amountIn = parseUnits("1000", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
@@ -408,17 +649,76 @@ describe("Test swap functionality", () => {
         chainId: 10,
       });
 
+      console.log(
+        "token approved",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
       await supersim.mine({ blocks: 1 });
+
+      console.log(
+        "mined after approval",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
+      await wait(200);
 
       const hash = await swap({ config: supersimConfig, quote: quote! });
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
+      console.log(
+        "after swap",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
       await supersim.mine({ blocks: 1 });
 
-      await wait(200);
+      console.log(
+        "mined after swap",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
+      );
+
+      await wait(2000);
 
       const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
+
+      console.log(
+        "after wait for transaction",
+        await supersim.getTxpoolStatus(),
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
+      );
 
       expect(receipt.status).toBe("success");
     }
