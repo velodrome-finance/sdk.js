@@ -1,5 +1,5 @@
 import { waitForTransactionReceipt } from "@wagmi/core";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits, parseUnits, publicActions, testActions } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
@@ -105,11 +105,18 @@ describe("Test swap functionality", () => {
     { retry: 3, timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
       const supersim = getTestClientForChain(10);
+      const c = supersimConfig
+        .getClient({ chainId: 10 })
+        .extend(testActions({ mode: "anvil" }))
+        .extend(publicActions);
 
       console.log(
         "initial tx pool status",
         await supersim.getTxpoolStatus(),
-        await supersim.getBlockNumber()
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
       );
 
       const amountIn = parseUnits("1", tokens.weth.decimals);
@@ -142,7 +149,10 @@ describe("Test swap functionality", () => {
       console.log(
         "token approved",
         await supersim.getTxpoolStatus(),
-        await supersim.getBlockNumber()
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
       );
 
       await supersim.mine({ blocks: 1 });
@@ -150,7 +160,10 @@ describe("Test swap functionality", () => {
       console.log(
         "mined after approval",
         await supersim.getTxpoolStatus(),
-        await supersim.getBlockNumber()
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
       );
 
       await wait(200);
@@ -162,7 +175,10 @@ describe("Test swap functionality", () => {
       console.log(
         "after swap",
         await supersim.getTxpoolStatus(),
-        await supersim.getBlockNumber()
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
       );
 
       await supersim.mine({ blocks: 1 });
@@ -170,7 +186,10 @@ describe("Test swap functionality", () => {
       console.log(
         "mined after swap",
         await supersim.getTxpoolStatus(),
-        await supersim.getBlockNumber()
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
       );
 
       await wait(2000);
@@ -180,7 +199,10 @@ describe("Test swap functionality", () => {
       console.log(
         "after wait for transaction",
         await supersim.getTxpoolStatus(),
-        await supersim.getBlockNumber()
+        await supersim.getBlockNumber(),
+        "---------------------",
+        await c.getTxpoolStatus(),
+        await c.getBlockNumber()
       );
 
       expect(receipt.status).toBe("success");

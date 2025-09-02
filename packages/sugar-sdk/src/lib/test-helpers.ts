@@ -55,7 +55,6 @@ function getTransports(chains: Chain[], withHoney: boolean = false) {
   return Object.fromEntries(
     chains.map((chain, i) => {
       if (withHoney) {
-        // Create the test client and store it
         const testClient = createTestClient({
           mode: "anvil",
           cacheTime: 0,
