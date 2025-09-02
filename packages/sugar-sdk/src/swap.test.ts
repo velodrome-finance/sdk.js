@@ -116,7 +116,10 @@ describe("Test swap functionality", () => {
         await supersim.getBlockNumber(),
         "---------------------",
         await c.getTxpoolStatus(),
-        await c.getBlockNumber()
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
       );
 
       const amountIn = parseUnits("1", tokens.weth.decimals);
@@ -152,7 +155,10 @@ describe("Test swap functionality", () => {
         await supersim.getBlockNumber(),
         "---------------------",
         await c.getTxpoolStatus(),
-        await c.getBlockNumber()
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
       );
 
       await supersim.mine({ blocks: 1 });
@@ -163,7 +169,10 @@ describe("Test swap functionality", () => {
         await supersim.getBlockNumber(),
         "---------------------",
         await c.getTxpoolStatus(),
-        await c.getBlockNumber()
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
       );
 
       await wait(200);
@@ -178,7 +187,10 @@ describe("Test swap functionality", () => {
         await supersim.getBlockNumber(),
         "---------------------",
         await c.getTxpoolStatus(),
-        await c.getBlockNumber()
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
       );
 
       await supersim.mine({ blocks: 1 });
@@ -189,7 +201,10 @@ describe("Test swap functionality", () => {
         await supersim.getBlockNumber(),
         "---------------------",
         await c.getTxpoolStatus(),
-        await c.getBlockNumber()
+        await c.getBlockNumber(),
+        await supersim.getTransactionCount({
+          address: TEST_ACCOUNT_ADDRESS,
+        })
       );
 
       await wait(2000);
