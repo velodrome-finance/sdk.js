@@ -1,11 +1,10 @@
 import { waitForTransactionReceipt } from "@wagmi/core";
-import { optimism } from "@wagmi/core/chains";
 import { formatUnits, parseUnits } from "viem";
-import { createTestClient, http, publicActions, testActions } from "viem";
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import {
   checkHoneyStatus,
+  getTestClientForChain,
   initDrome,
   TEST_ACCOUNT_ADDRESS,
 } from "@/lib/test-helpers.js";
@@ -21,12 +20,7 @@ import {
 import { getListedTokens } from "./tokens.js";
 import { getDefaultDrome } from "./utils.js";
 
-export const optimismTestClient = createTestClient({
-  mode: "anvil",
-  cacheTime: 0,
-  chain: optimism,
-  transport: http("http://localhost:4444"),
-}).extend(publicActions);
+// We'll create this dynamically in the test
 
 async function wait(time: number) {
   return new Promise((res) => setTimeout(res, time));
@@ -106,27 +100,15 @@ describe("Test swap functionality", () => {
     }
   }, 30000); // 30 second timeout for honey startup
 
-  beforeEach(async () => {
-    console.log(">>>>>>>>>>>>>>>>>>>>>. befarrrr each");
-    await optimismTestClient.setAutomine(false);
-  });
-
-  test(
+  test.only(
     "quote and swap from WETH to USDC",
     { retry: 3, timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
-      const supersim = supersimConfig
-        .getClient({ chainId: 10 })
-        .extend(publicActions)
-        .extend(testActions({ mode: "anvil" }));
-
-      await supersim.setAutomine(false);
+      const supersim = getTestClientForChain(10);
 
       console.log(
         "initial tx pool status",
-        await optimismTestClient.getTxpoolStatus(),
-        await optimismTestClient.getBlockNumber(),
-        "-------------",
+        await supersim.getTxpoolStatus(),
         await supersim.getBlockNumber()
       );
 
@@ -159,9 +141,6 @@ describe("Test swap functionality", () => {
 
       console.log(
         "token approved",
-        await optimismTestClient.getTxpoolStatus(),
-        await optimismTestClient.getBlockNumber(),
-        "-------------",
         await supersim.getTxpoolStatus(),
         await supersim.getBlockNumber()
       );
@@ -170,9 +149,6 @@ describe("Test swap functionality", () => {
 
       console.log(
         "mined after approval",
-        await optimismTestClient.getTxpoolStatus(),
-        await optimismTestClient.getBlockNumber(),
-        "-------------",
         await supersim.getTxpoolStatus(),
         await supersim.getBlockNumber()
       );
@@ -185,9 +161,6 @@ describe("Test swap functionality", () => {
 
       console.log(
         "after swap",
-        await optimismTestClient.getTxpoolStatus(),
-        await optimismTestClient.getBlockNumber(),
-        "-------------",
         await supersim.getTxpoolStatus(),
         await supersim.getBlockNumber()
       );
@@ -196,22 +169,16 @@ describe("Test swap functionality", () => {
 
       console.log(
         "mined after swap",
-        await optimismTestClient.getTxpoolStatus(),
-        await optimismTestClient.getBlockNumber(),
-        "-------------",
         await supersim.getTxpoolStatus(),
         await supersim.getBlockNumber()
       );
 
-      await wait(200);
+      await wait(2000);
 
       const receipt = await waitForTransactionReceipt(supersimConfig, { hash });
 
       console.log(
         "after wait for transaction",
-        await optimismTestClient.getTxpoolStatus(),
-        await optimismTestClient.getBlockNumber(),
-        "-------------",
         await supersim.getTxpoolStatus(),
         await supersim.getBlockNumber()
       );
@@ -224,10 +191,7 @@ describe("Test swap functionality", () => {
     "quote and swap from VELO to USDC",
     { timeout: 30000, retry: 3 },
     async ({ config, supersimConfig, tokens }) => {
-      const supersim = supersimConfig
-        .getClient({ chainId: 10 })
-        .extend(publicActions)
-        .extend(testActions({ mode: "anvil" }));
+      const supersim = getTestClientForChain(10);
 
       const amountIn = parseUnits("100", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
@@ -266,7 +230,7 @@ describe("Test swap functionality", () => {
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
-      await optimismTestClient.mine({ blocks: 1 });
+      await supersim.mine({ blocks: 1 });
 
       await wait(200);
 
@@ -276,14 +240,11 @@ describe("Test swap functionality", () => {
     }
   );
 
-  test.skip(
+  test(
     "quote and swap from ETH to VELO",
     { timeout: 30000, retry: 3 },
     async ({ config, supersimConfig, tokens }) => {
-      const supersim = supersimConfig
-        .getClient({ chainId: 10 })
-        .extend(publicActions)
-        .extend(testActions({ mode: "anvil" }));
+      const supersim = getTestClientForChain(10);
 
       const amountIn = parseUnits("0.1", tokens.eth.decimals);
       const quote = await getQuoteForSwap({
@@ -318,7 +279,7 @@ describe("Test swap functionality", () => {
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
-      await optimismTestClient.mine({ blocks: 1 });
+      await supersim.mine({ blocks: 1 });
 
       await wait(200);
 
@@ -328,14 +289,11 @@ describe("Test swap functionality", () => {
     }
   );
 
-  test.skip(
+  test(
     "quote and swap from VELO to ETH",
     { timeout: 30000, retry: 3 },
     async ({ config, supersimConfig, tokens }) => {
-      const supersim = supersimConfig
-        .getClient({ chainId: 10 })
-        .extend(publicActions)
-        .extend(testActions({ mode: "anvil" }));
+      const supersim = getTestClientForChain(10);
 
       const amountIn = parseUnits("1000", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
@@ -370,7 +328,7 @@ describe("Test swap functionality", () => {
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
-      await optimismTestClient.mine({ blocks: 1 });
+      await supersim.mine({ blocks: 1 });
 
       await wait(200);
 
@@ -380,14 +338,11 @@ describe("Test swap functionality", () => {
     }
   );
 
-  test.skip(
+  test(
     "quote and swap from VELO to WETH",
     { timeout: 30000, retry: 3 },
     async ({ config, supersimConfig, tokens }) => {
-      const supersim = supersimConfig
-        .getClient({ chainId: 10 })
-        .extend(publicActions)
-        .extend(testActions({ mode: "anvil" }));
+      const supersim = getTestClientForChain(10);
 
       const amountIn = parseUnits("1000", tokens.velo.decimals);
       const quote = await getQuoteForSwap({
@@ -422,7 +377,7 @@ describe("Test swap functionality", () => {
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
-      await optimismTestClient.mine({ blocks: 1 });
+      await supersim.mine({ blocks: 1 });
 
       await wait(200);
 

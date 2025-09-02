@@ -14,6 +14,7 @@ import {
   swellchain,
   unichain,
 } from "@wagmi/core/chains";
+import { createTestClient, publicActions, testActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { createNonceManager, jsonRpc } from "viem/nonce";
 
@@ -47,9 +48,33 @@ export function getTransportURL(
   return rpc;
 }
 
+// Store test clients for access
+const testClients: Map<number, ReturnType<typeof createTestClient>> = new Map();
+
 function getTransports(chains: Chain[], withHoney: boolean = false) {
   return Object.fromEntries(
     chains.map((chain, i) => {
+      if (withHoney) {
+        // Create the test client and store it
+        const testClient = createTestClient({
+          mode: "anvil",
+          cacheTime: 0,
+          chain,
+          transport: http(getTransportURL(chain.id, i, withHoney)),
+        })
+          .extend(publicActions)
+          .extend(testActions({ mode: "anvil" }));
+
+        // testClient.setAutomine(false);
+        testClients.set(chain.id, testClient);
+
+        // Return regular http transport for wagmi compatibility
+        return [
+          chain.id,
+          http(getTransportURL(chain.id, i, withHoney), { batch: true }),
+        ];
+      }
+
       return [
         chain.id,
         http(getTransportURL(chain.id, i, withHoney), { batch: true }),
@@ -59,6 +84,11 @@ function getTransports(chains: Chain[], withHoney: boolean = false) {
 }
 
 export const initDrome = async (withHoney: boolean = false) => {
+  // Clear any existing test clients
+  if (!withHoney) {
+    testClients.clear();
+  }
+
   const velodromeChains = [
     optimism,
     mode,
@@ -131,6 +161,16 @@ export const getDromeConfig = async (withHoney: boolean = false) => {
   const d = await initDrome(withHoney);
   return d.dromeConfig;
 };
+
+export function getTestClientForChain(chainId: number) {
+  const testClient = testClients.get(chainId);
+  if (!testClient) {
+    throw new Error(
+      `Test client for chain ${chainId} not found. Make sure initDrome was called with withHoney=true`
+    );
+  }
+  return testClient;
+}
 
 // Honey health check function
 export async function checkHoneyStatus(): Promise<boolean> {
