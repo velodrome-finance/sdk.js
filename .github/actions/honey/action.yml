@@ -16,6 +16,7 @@ runs:
       run: forge --version
 
     - name: Install supersim
+      shell: bash
       run: brew install ethereum-optimism/tap/supersim
     
     - name: Confirm supersim is installed
