@@ -100,7 +100,7 @@ describe("Test swap functionality", () => {
     }
   }, 30000); // 30 second timeout for honey startup
 
-  test.only(
+  test(
     "quote and swap from WETH to USDC",
     { retry: 3, timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {

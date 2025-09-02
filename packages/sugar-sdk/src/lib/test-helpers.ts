@@ -59,7 +59,9 @@ function getTransports(chains: Chain[], withHoney: boolean = false) {
           mode: "anvil",
           cacheTime: 0,
           chain,
-          transport: http(getTransportURL(chain.id, i, withHoney)),
+          transport: http(getTransportURL(chain.id, i, withHoney), {
+            batch: true,
+          }),
         })
           .extend(publicActions)
           .extend(testActions({ mode: "anvil" }));
@@ -71,6 +73,7 @@ function getTransports(chains: Chain[], withHoney: boolean = false) {
         return [
           chain.id,
           http(getTransportURL(chain.id, i, withHoney), { batch: true }),
+          // testClient.transport,
         ];
       }
 
@@ -80,6 +83,51 @@ function getTransports(chains: Chain[], withHoney: boolean = false) {
       ];
     })
   );
+}
+
+function getClient(chains: Chain[], withHoney: boolean = false) {
+  Object.fromEntries(
+    chains.map((chain, i) => {
+      if (withHoney) {
+        const testClient = createTestClient({
+          mode: "anvil",
+          cacheTime: 0,
+          chain,
+          transport: http(getTransportURL(chain.id, i, withHoney), {
+            batch: true,
+          }),
+        })
+          .extend(publicActions)
+          .extend(testActions({ mode: "anvil" }));
+
+        // testClient.setAutomine(false);
+        testClients.set(chain.id, testClient);
+
+        // Return regular http transport for wagmi compatibility
+        return [
+          chain.id,
+          http(getTransportURL(chain.id, i, withHoney), { batch: true }),
+          // testClient.transport,
+        ];
+      }
+
+      return [
+        chain.id,
+        http(getTransportURL(chain.id, i, withHoney), { batch: true }),
+      ];
+    })
+  );
+  return ({ chain }: { chain: Chain }) => {
+    console.log(`Getting test client for chain ${chain}`);
+    console.log();
+    const testClient = testClients.get(chain.id);
+    if (!testClient) {
+      throw new Error(
+        `Test client for chain ${chain.id} not found. Make sure initDrome was called with withHoney=true`
+      );
+    }
+    return testClient;
+  };
 }
 
 export const initDrome = async (withHoney: boolean = false) => {
@@ -119,26 +167,32 @@ export const initDrome = async (withHoney: boolean = false) => {
   }));
 
   const config = baseInitDrome(
-    createConfig({
-      chains: chainsToUse as unknown as [Chain, ...Chain[]],
-      connectors: [
-        injected(),
-        ...(withHoney
-          ? [
-              mock({
-                accounts: [
-                  privateKeyToAccount(TEST_ACCOUNT_PK, {
-                    nonceManager: createNonceManager({
-                      source: jsonRpc(),
-                    }),
-                  }).address,
-                ],
-              }),
-            ]
-          : []),
-      ],
-      transports: getTransports(chainsToUse, withHoney),
-    }),
+    createConfig(
+      Object.assign(
+        {
+          chains: chainsToUse as unknown as [Chain, ...Chain[]],
+          connectors: [
+            injected(),
+            ...(withHoney
+              ? [
+                  mock({
+                    accounts: [
+                      privateKeyToAccount(TEST_ACCOUNT_PK, {
+                        nonceManager: createNonceManager({
+                          source: jsonRpc(),
+                        }),
+                      }).address,
+                    ],
+                  }),
+                ]
+              : []),
+          ],
+        },
+        withHoney
+          ? { client: getClient(chainsToUse, withHoney) }
+          : { transports: getTransports(chainsToUse, withHoney) }
+      )
+    ),
     {
       ...velodromeConfig,
       onError(error) {
