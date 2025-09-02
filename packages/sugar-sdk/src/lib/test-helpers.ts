@@ -16,7 +16,6 @@ import {
 } from "@wagmi/core/chains";
 import { createTestClient, publicActions, testActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { createNonceManager, jsonRpc } from "viem/nonce";
 
 import { initDrome as baseInitDrome, velodromeConfig } from "../index.js";
 
@@ -177,11 +176,12 @@ export const initDrome = async (withHoney: boolean = false) => {
               ? [
                   mock({
                     accounts: [
-                      privateKeyToAccount(TEST_ACCOUNT_PK, {
-                        nonceManager: createNonceManager({
-                          source: jsonRpc(),
-                        }),
-                      }).address,
+                      // {
+                      //   nonceManager: createNonceManager({
+                      //     source: jsonRpc(),
+                      //   }),
+                      // }
+                      privateKeyToAccount(TEST_ACCOUNT_PK).address,
                     ],
                   }),
                 ]
