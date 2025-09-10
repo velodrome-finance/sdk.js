@@ -17,7 +17,7 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { createNonceManager, jsonRpc } from "viem/nonce";
 
-import { initDrome as baseInitDrome, velodromeConfig } from "../index.js";
+import { dromeConfig, initDrome as baseInitDrome } from "../index.js";
 
 export const TEST_ACCOUNT_ADDRESS =
   "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
@@ -111,7 +111,7 @@ export const initDrome = async (withHoney: boolean = false) => {
       transports: getTransports(chainsToUse, withHoney),
     }),
     {
-      ...velodromeConfig,
+      ...dromeConfig,
       onError(error) {
         throw error;
       },

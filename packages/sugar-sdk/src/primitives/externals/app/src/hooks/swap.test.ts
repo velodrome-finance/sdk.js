@@ -29,7 +29,8 @@ const test = it.extend<TestContext>({
     await use(dromeConfig.DEFAULT_CHAIN_ID);
   },
   UNIVERSAL_ROUTER_ADDRESS: async ({ dromeConfig, DEFAULT_CHAIN_ID }, use) => {
-    await use(dromeConfig.chains[DEFAULT_CHAIN_ID].UNIVERSAL_ROUTER_ADDRESS);
+    const cfg = dromeConfig.chains.find((c) => c.chainId === DEFAULT_CHAIN_ID)!;
+    await use(cfg.UNIVERSAL_ROUTER_ADDRESS);
   },
 });
 const packedRoute = "0x0000000000000000000000000000000000000007";

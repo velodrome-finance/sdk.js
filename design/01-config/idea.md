@@ -118,3 +118,13 @@ const config = getDefaultDrome();
 ```
 
 - initially support chain selection override in `getDefaultDrome` (this has proven useful for Wonderland already, for example)
+
+
+## Refinements
+
+Based on the discussion with the rest of the team, here a couple of adjustments to consider:
+
+- instead of burying RPC urls deep in the env vars, let's require the explicitly during init and let SDK consumers figure out how they manage them (env, DB, etc)
+- `getDefaultDrome` will require explicit chain spec (list of chains with corresponding RPC URLs at minimum)
+- `initDrome` is still available and it provides the most fine grained way of customization when running config
+- `config.ts` can be flattened (drop aero/velo split) to have a list of supported chains with corresponding configuration   

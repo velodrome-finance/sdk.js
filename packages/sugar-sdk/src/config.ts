@@ -1,29 +1,83 @@
-// This file is auto-generated. Do not edit manually.
 import { Address } from "viem";
+import {
+  // Chains referenced by configs
+  base,
+  celo,
+  fraxtal,
+  ink,
+  lisk,
+  mainnet,
+  metalL2,
+  mode,
+  optimism,
+  soneium,
+  superseed,
+  swellchain,
+  unichain,
+  type Chain
+} from "@wagmi/core/chains";
+import { Config, createConfig, injected, mock, http } from "@wagmi/core";
+import { privateKeyToAccount} from "viem/accounts";
+
+// OMG, there are private keys in this file. What is this amateur hour?
+// Calm down, these are presets from Anvil. No need to panic.
+// see https://getfoundry.sh/anvil/overview#getting-started
+const TEST_ACCOUNT_PK =
+  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+
+
+// Re-export chains for consumers
+export {
+  base,
+  celo,
+  fraxtal,
+  ink,
+  lisk,
+  metalL2,
+  mode,
+  optimism,
+  soneium,
+  superseed,
+  swellchain,
+  unichain,
+};
+
+export const supportedChains = [
+  optimism,  // 10
+  unichain,  // 130
+  fraxtal,   // 252
+  lisk,      // 1135
+  metalL2,   // 1750
+  soneium,   // 1868
+  swellchain,// 1923
+  superseed, // 5330
+  base,      // 8453
+  mode,      // 34443
+  celo,      // 42220
+  ink,       // 57073
+];
+
 
 export type DromeConfig = {
-  type: "velodrome" | "aerodrome";
-  CHAIN_IDS: number[];
-  EXTERNAL_CHAIN_IDS: number[];
-  DEFAULT_TOKEN_ORDER: string[];
-  PRICE_THRESHOLD_FILTER: number;
-  MAX_HOPS: number;
-  QUOTER_STABLE_POOL_FILLER: number;
-  QUOTER_VOLATILE_POOL_FILLER: number;
-  PRICES_CHUNK_SIZE: number;
-  PRICE_MAPS: PriceMap;
-  POOLS_PAGE_SIZE: number;
-  POOLS_COUNT_UPPER_BOUND: number;
-  TOKENS_PAGE_SIZE: number;
-  TOKEN_BRIDGE?: Address;
-  DEFAULT_CHAIN_ID: number;
-  chains: { [chainId: number]: DromeChainConfig; };
-  externalChains: { [chainId: number]: Partial<DromeChainConfig>; };
-  tokens: { [tokenAddress: Address]: DromeTokenConfig; };
+  readonly DEFAULT_TOKEN_ORDER: string[];
+  readonly PRICE_THRESHOLD_FILTER: number;
+  readonly MAX_HOPS: number;
+  readonly QUOTER_STABLE_POOL_FILLER: number;
+  readonly QUOTER_VOLATILE_POOL_FILLER: number;
+  readonly PRICES_CHUNK_SIZE: number;
+  readonly PRICE_MAPS: PriceMap;
+  readonly POOLS_PAGE_SIZE: number;
+  readonly POOLS_COUNT_UPPER_BOUND: number;
+  readonly TOKENS_PAGE_SIZE: number;
+  readonly TOKEN_BRIDGE?: Address;
+  readonly DEFAULT_CHAIN_ID: number;
+  readonly chains: ReadonlyArray<DromeChainConfig>;
+  readonly tokens: { [tokenAddress: Address]: DromeTokenConfig; };
   onError?: (error: unknown) => void;
 };
 
 export type DromeChainConfig = {
+  CHAIN: Chain;
   CONNECTOR_TOKENS: Address[];
   STABLE_TOKEN: Address;
   DEFAULT_TOKENS: Address[];
@@ -49,24 +103,22 @@ export type DromeTokenConfig = {
 
 export type PriceMap = Record<Address, { chainId: number,  substituteToken: Address }>;
 
-export const velodromeConfig = {
-  type: "velodrome",
+export const baseDromeConfig = {
   PRICE_THRESHOLD_FILTER: 10,
   QUOTER_STABLE_POOL_FILLER: 2097152,
   QUOTER_VOLATILE_POOL_FILLER: 4194304,
-  POOLS_COUNT_UPPER_BOUND: 1500,
-  PRICE_MAPS: {"0xafcc6ae807187a31e84138f3860d4ce27973e01b":{chainId:10,substituteToken:"0x4200000000000000000000000000000000000042"}} as PriceMap,
-  PRICES_CHUNK_SIZE: 15,
-  DEFAULT_TOKEN_ORDER: ["ETH","VELO","USDC","OP","WETH","USDC.e","USDT","DAI","tBTC"],
-  CHAIN_IDS: [10,34443,1135,1750,252,57073,1868,5330,1923,130,42220],
-  EXTERNAL_CHAIN_IDS: [1],
+  POOLS_COUNT_UPPER_BOUND: 7000,
+  PRICE_MAPS: {"0xafcc6ae807187a31e84138f3860d4ce27973e01b":{chainId:10,substituteToken:"0x4200000000000000000000000000000000000042"},"0xab77a4cc84bb8bcc0fcb54a00eca32680d6f96ca":{chainId:10,substituteToken:"0x4200000000000000000000000000000000000042"}} as PriceMap,
+  PRICES_CHUNK_SIZE: 20,
+  DEFAULT_TOKEN_ORDER: ["ETH","WETH","AERO","VELO","USDC","OP","USDC.e","USDT","DAI","tBTC","cbBTC"],
   TOKEN_BRIDGE: "0x1A9d17828897d6289C6dff9DC9F5cc3bAEa17814" as Address,
   MAX_HOPS: 3,
   POOLS_PAGE_SIZE: 300,
   TOKENS_PAGE_SIZE: 1000,
   DEFAULT_CHAIN_ID: 10,
-  chains: {
-    "10": {
+  chains: [
+    {
+      CHAIN: optimism,
       LP_SUGAR_ADDRESS: "0xC8229d65581afE8f04344A6706FF45faECC426f9" as Address,
       REWARDS_SUGAR_ADDRESS: "0x62CCFB2496f49A80B0184AD720379B529E9152fB" as Address,
       VE_SUGAR_ADDRESS: "0x94f913362b232e31daB49a1aFB775cfd25DaA6a1" as Address,
@@ -84,7 +136,8 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0x9560e827af36c94d2ac33a39bce1fe78631088db","eth"] as Address[],
       UNSAFE_TOKENS: ["0x74ccbe53f77b08632ce0cb91d3a545bf6b8e0979","0x139283255069ea5deef6170699aaef7139526f1f","0x88a89866439f4c2830986b79cbe6f69d1bd548bb","0x8901cb2e82cc95c01e42206f8d1f417fe53e7af0"] as Address[],
     },
-    "130": {
+    {
+      CHAIN: unichain,
       LP_SUGAR_ADDRESS: "0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20" as Address,
       REWARDS_SUGAR_ADDRESS: "0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b" as Address,
       ROUTER_ADDRESS: "0x3a63171DD9BebF4D07BC782FECC7eb0b890C2A45" as Address,
@@ -98,7 +151,8 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0x1217bfe6c773eec6cc4a38b5dc45b92292b6e189","eth"] as Address[],
       VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-    "252": {
+    {
+      CHAIN: fraxtal,
       WRAPPED_NATIVE_TOKEN: "0xfc00000000000000000000000000000000000002" as Address,
       WETH_ADDRESS: "0xfc00000000000000000000000000000000000006" as Address,
       LP_SUGAR_ADDRESS: "0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1" as Address,
@@ -114,7 +168,8 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0xfc00000000000000000000000000000000000001","frax"] as Address[],
       VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-    "1135": {
+    {
+      CHAIN: lisk,
       LP_SUGAR_ADDRESS: "0x1443c0757f77c04bd514427d2bE356A5834E4167" as Address,
       REWARDS_SUGAR_ADDRESS: "0xB1d0DFFe6260982164B53EdAcD3ccd58B081889d" as Address,
       ROUTER_ADDRESS: "0x3a63171DD9BebF4D07BC782FECC7eb0b890C2A45" as Address,
@@ -128,7 +183,8 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0xac485391eb2d7d88253a7f1ef18c37f4242d1a24","0x1217bfe6c773eec6cc4a38b5dc45b92292b6e189"] as Address[],
       VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-    "1750": {
+    {
+      CHAIN: metalL2,
       LP_SUGAR_ADDRESS: "0x471C34138D06001AEe399af9EBEbbdF680b966B3" as Address,
       REWARDS_SUGAR_ADDRESS: "0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b" as Address,
       ROUTER_ADDRESS: "0x3a63171DD9BebF4D07BC782FECC7eb0b890C2A45" as Address,
@@ -142,7 +198,8 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0xbcfc435d8f276585f6431fc1b9ee9a850b5c00a9","eth"] as Address[],
       VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-    "1868": {
+    { 
+      CHAIN: soneium,
       LP_SUGAR_ADDRESS: "0x0771B5B979230E29140774C1dc441a9fDddD28bD" as Address,
       REWARDS_SUGAR_ADDRESS: "0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b" as Address,
       ROUTER_ADDRESS: "0x3a63171DD9BebF4D07BC782FECC7eb0b890C2A45" as Address,
@@ -156,7 +213,8 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0xba9986d2381edf1da03b0b9c1f8b00dc4aacc369","eth"] as Address[],
       VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-    "1923": {
+    {
+      CHAIN: swellchain,
       LP_SUGAR_ADDRESS: "0x154c0F8331B0B4af1384A2dFa67AADCa5Fd92C20" as Address,
       REWARDS_SUGAR_ADDRESS: "0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b" as Address,
       ROUTER_ADDRESS: "0x3a63171DD9BebF4D07BC782FECC7eb0b890C2A45" as Address,
@@ -170,7 +228,9 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0x2826d136f5630ada89c1678b64a61620aab77aea","eth"] as Address[],
       VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-    "5330": {
+    {
+      
+      CHAIN: superseed,
       LP_SUGAR_ADDRESS: "0xcaa7d54453964773FE04B5aD32D06322Fc9d9fE4" as Address,
       REWARDS_SUGAR_ADDRESS: "0xbDD1d5A9d9566F575bC59cE33C8F77ACa5cF924b" as Address,
       ROUTER_ADDRESS: "0x3a63171DD9BebF4D07BC782FECC7eb0b890C2A45" as Address,
@@ -184,21 +244,44 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0xc316c8252b5f2176d0135ebb0999e99296998f2e","eth"] as Address[],
       VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-    "34443": {
+    {
+      CHAIN: base,
+      LP_SUGAR_ADDRESS: "0x73ffd28DFde56704F832163e6cD432FCbbD607a1" as Address,
+      REWARDS_SUGAR_ADDRESS: "0xA44600F4DBA6683d8BD99270B1A6a143fB9F1C3B" as Address,
+      VE_SUGAR_ADDRESS: "0x4c5d3925fe65DFeB5A079485136e4De09cb664A5" as Address,
+      RELAY_SUGAR_ADDRESS: "0xE1328FFaDa4f9CC2b6EFE4aD4db63C5ABAC9bab1" as Address,
+      ROUTER_ADDRESS: "0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43" as Address,
+      PRICES_ADDRESS: "0x288a124CB87D7c95656Ad7512B7Da733Bb60A432" as Address,
+      VOTER_ADDRESS: "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5" as Address,
+      DEFAULT_TOKENS: ["0x940181a94a35a4569e4529a3cdfb74e38fd98631","eth"] as Address[],
+      QUOTER_ADDRESS: "0x0A5aA5D3a4d28014f967Bf0f29EAA3FF9807D5c6" as Address,
+      UNIVERSAL_ROUTER_ADDRESS: "0x6Cb442acF35158D5eDa88fe602221b67B400Be3E" as Address,
+      WRAPPED_NATIVE_TOKEN: "0x4200000000000000000000000000000000000006" as Address,
+      UNSAFE_TOKENS: ["0x74ccbe53f77b08632ce0cb91d3a545bf6b8e0979","0x8901cb2e82cc95c01e42206f8d1f417fe53e7af0","0x9cbd543f1b1166b2df36b68eb6bb1dce24e6abdf","0x025f99977db78317a4eba606998258b502bb256f","0xd260115030b9fb6849da169a01ed80b6496d1e99","0x608d5401d377228e465ba6113517dcf9bd1f95ca","0xd260115030b9fb6849da169a01ed80b6496d1e99","0x728cda34d732a87fd6429129e23d4742d9ff0064","0x728cda34d732a87fd6429129e23d4742d9ff0064","0xac1bd2486aaf3b5c0fc3fd868558b082a531b2b4","0x0f929c29dce303f96b1d4104505f2e60ee795cac","0x47e78d664e6c339693e8638b7a7d9543abcc99d4","0xff0c532fdb8cd566ae169c1cb157ff2bdc83e105","0x373504da48418c67e6fcd071f33cb0b3b47613c7","0x0f929c29dce303f96b1d4104505f2e60ee795cac","0x628c5ba9b775dacecd14e237130c537f497d1cc7"] as Address[],
+      CONNECTOR_TOKENS: ["0x833589fcd6edb6e08f4c7c32d4f71b54bda02913","0x940181a94a35a4569e4529a3cdfb74e38fd98631","0x50c5725949a6f0c72e6c4a641f24049a917db0cb","0x4621b7a9c75199271f773ebd9a499dbd165c3191","0x4200000000000000000000000000000000000006","0xb79dd08ea68a908a97220c76d19a6aa9cbde4376","0xf7a0dd3317535ec4f4d29adf9d620b3d8d5d5069","0xcfa3ef56d303ae4faaba0592388f19d7c3399fb4","0xcb327b99ff831bf8223cced12b1338ff3aa322ff","0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22","0xc1cba3fcea344f92d9239c08c0568f6f2f0ee452","0x60a3e35cc302bfa44cb288bc5a4f316fdb1adb42","0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca","0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"] as Address[],
+      STABLE_TOKEN: "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca" as Address,
+      SLIPSTREAM_SUGAR_ADDRESS: "0x9c62ab10577fB3C20A22E231b7703Ed6D456CC7a" as Address,
+      NFPM_ADDRESS: "0x827922686190790b37229fd06084350E74485b72" as Address,
+    },
+    {
+      CHAIN: mode,
       LP_SUGAR_ADDRESS: "0x6eA93e8d5059D4bd986F24a46546E930e0d0Fa82" as Address,
       REWARDS_SUGAR_ADDRESS: "0xD5d3ABAcB8CF075636792658EE0be8B03AF517B8" as Address,
+      VE_SUGAR_ADDRESS: "0x4c5d3925fe65DFeB5A079485136e4De09cb664A5" as Address,
+      RELAY_SUGAR_ADDRESS: "0xE1328FFaDa4f9CC2b6EFE4aD4db63C5ABAC9bab1" as Address,
       ROUTER_ADDRESS: "0x3a63171DD9BebF4D07BC782FECC7eb0b890C2A45" as Address,
       PRICES_ADDRESS: "0xbAEe949B52cb503e39f1Df54Dcee778da59E11bc" as Address,
-      CONNECTOR_TOKENS: ["0x4200000000000000000000000000000000000006","0xdfc7c877a950e49d2610114102175a06c2e3167a","0xf0f161fda2712db8b566946122a5af183995e2ed","0xe7798f023fc62146e8aa1b36da45fb70855a77ea"] as Address[],
-      STABLE_TOKEN: "0xd988097fb8612cc24eec14542bc03424c656005f" as Address,
+      VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
+      DEFAULT_TOKENS: ["0xdfc7c877a950e49d2610114102175a06c2e3167a","eth"] as Address[],
       QUOTER_ADDRESS: "0x2f7150B288ef1cc553207bD9fbd40D4e0e093B24" as Address,
       UNIVERSAL_ROUTER_ADDRESS: "0x01D40099fCD87C018969B0e8D4aB1633Fb34763C" as Address,
+      CONNECTOR_TOKENS: ["0x4200000000000000000000000000000000000006","0xdfc7c877a950e49d2610114102175a06c2e3167a","0xf0f161fda2712db8b566946122a5af183995e2ed","0xe7798f023fc62146e8aa1b36da45fb70855a77ea"] as Address[],
+      STABLE_TOKEN: "0xd988097fb8612cc24eec14542bc03424c656005f" as Address,
       SLIPSTREAM_SUGAR_ADDRESS: "0xD24a61656AB0d70994Ef5F42fE11AA95c0a1d329" as Address,
       NFPM_ADDRESS: "0x991d5546C4B442B4c5fdc4c8B8b8d131DEB24702" as Address,
-      DEFAULT_TOKENS: ["0xdfc7c877a950e49d2610114102175a06c2e3167a","eth"] as Address[],
-      VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-    "42220": {
+    {
+      CHAIN: celo,
       WRAPPED_NATIVE_TOKEN: "0x0000000000000000000000000000000000000000" as Address,
       WETH_ADDRESS: "0xd221812de1bd094f35587ee8e174b07b6167d9af" as Address,
       LP_SUGAR_ADDRESS: "0x74f18F46d20750Cab0d3fE75Ca0395bdB8016fD1" as Address,
@@ -214,7 +297,8 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0x471ece3750da237f93b8e339c536989b8978a438","0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e"] as Address[],
       VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-    "57073": {
+    {
+      CHAIN: ink,
       LP_SUGAR_ADDRESS: "0x471C34138D06001AEe399af9EBEbbdF680b966B3" as Address,
       REWARDS_SUGAR_ADDRESS: "0xc100DC20aff9907E833a6aDEDDB52fC310554fF2" as Address,
       ROUTER_ADDRESS: "0x3a63171DD9BebF4D07BC782FECC7eb0b890C2A45" as Address,
@@ -228,12 +312,8 @@ export const velodromeConfig = {
       DEFAULT_TOKENS: ["0xf1815bd50389c46847f0bda824ec8da914045d14","eth"] as Address[],
       VOTER_ADDRESS: "0x97cDBCe21B6fd0585d29E539B1B99dAd328a1123" as Address,
     },
-  },
-  externalChains: {
-    "1": {
-
-    },
-  },
+    
+  ],
   tokens: {
     "0xafcc6ae807187a31e84138f3860d4ce27973e01b": {
       TOKEN_SYMBOL: "OP",
@@ -265,74 +345,50 @@ export const velodromeConfig = {
     "0x9151434b16b9763660705744891fa906f660ecc5": {
       TOKEN_SYMBOL: "USDT0 # unichain",
     },
-  },
-} as DromeConfig;
-
-export const aerodromeConfig = {
-  type: "aerodrome",
-  PRICE_THRESHOLD_FILTER: 10,
-  QUOTER_STABLE_POOL_FILLER: 2097152,
-  QUOTER_VOLATILE_POOL_FILLER: 4194304,
-  DEFAULT_TOKEN_ORDER: ["WETH","AERO","USDC","cbBTC"],
-  PRICE_MAPS: {"0xafcc6ae807187a31e84138f3860d4ce27973e01b":{chainId:10,substituteToken:"0x4200000000000000000000000000000000000042"},"0xab77a4cc84bb8bcc0fcb54a00eca32680d6f96ca":{chainId:10,substituteToken:"0x4200000000000000000000000000000000000042"}} as PriceMap,
-  POOLS_COUNT_UPPER_BOUND: 7000,
-  CHAIN_IDS: [8453],
-  EXTERNAL_CHAIN_IDS: [10],
-  MAX_HOPS: 3,
-  PRICES_CHUNK_SIZE: 20,
-  POOLS_PAGE_SIZE: 300,
-  TOKENS_PAGE_SIZE: 1000,
-  DEFAULT_CHAIN_ID: 8453,
-  chains: {
-    "8453": {
-      LP_SUGAR_ADDRESS: "0x73ffd28DFde56704F832163e6cD432FCbbD607a1" as Address,
-      REWARDS_SUGAR_ADDRESS: "0xA44600F4DBA6683d8BD99270B1A6a143fB9F1C3B" as Address,
-      VE_SUGAR_ADDRESS: "0x4c5d3925fe65DFeB5A079485136e4De09cb664A5" as Address,
-      RELAY_SUGAR_ADDRESS: "0xE1328FFaDa4f9CC2b6EFE4aD4db63C5ABAC9bab1" as Address,
-      ROUTER_ADDRESS: "0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43" as Address,
-      PRICES_ADDRESS: "0x288a124CB87D7c95656Ad7512B7Da733Bb60A432" as Address,
-      VOTER_ADDRESS: "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5" as Address,
-      DEFAULT_TOKENS: ["0x940181a94a35a4569e4529a3cdfb74e38fd98631","eth"] as Address[],
-      QUOTER_ADDRESS: "0x0A5aA5D3a4d28014f967Bf0f29EAA3FF9807D5c6" as Address,
-      UNIVERSAL_ROUTER_ADDRESS: "0x6Cb442acF35158D5eDa88fe602221b67B400Be3E" as Address,
-      WRAPPED_NATIVE_TOKEN: "0x4200000000000000000000000000000000000006" as Address,
-      UNSAFE_TOKENS: ["0x74ccbe53f77b08632ce0cb91d3a545bf6b8e0979","0x8901cb2e82cc95c01e42206f8d1f417fe53e7af0","0x9cbd543f1b1166b2df36b68eb6bb1dce24e6abdf","0x025f99977db78317a4eba606998258b502bb256f","0xd260115030b9fb6849da169a01ed80b6496d1e99","0x608d5401d377228e465ba6113517dcf9bd1f95ca","0xd260115030b9fb6849da169a01ed80b6496d1e99","0x728cda34d732a87fd6429129e23d4742d9ff0064","0x728cda34d732a87fd6429129e23d4742d9ff0064","0xac1bd2486aaf3b5c0fc3fd868558b082a531b2b4","0x0f929c29dce303f96b1d4104505f2e60ee795cac","0x47e78d664e6c339693e8638b7a7d9543abcc99d4","0xff0c532fdb8cd566ae169c1cb157ff2bdc83e105","0x373504da48418c67e6fcd071f33cb0b3b47613c7","0x0f929c29dce303f96b1d4104505f2e60ee795cac","0x628c5ba9b775dacecd14e237130c537f497d1cc7"] as Address[],
-      CONNECTOR_TOKENS: ["0x833589fcd6edb6e08f4c7c32d4f71b54bda02913","0x940181a94a35a4569e4529a3cdfb74e38fd98631","0x50c5725949a6f0c72e6c4a641f24049a917db0cb","0x4621b7a9c75199271f773ebd9a499dbd165c3191","0x4200000000000000000000000000000000000006","0xb79dd08ea68a908a97220c76d19a6aa9cbde4376","0xf7a0dd3317535ec4f4d29adf9d620b3d8d5d5069","0xcfa3ef56d303ae4faaba0592388f19d7c3399fb4","0xcb327b99ff831bf8223cced12b1338ff3aa322ff","0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22","0xc1cba3fcea344f92d9239c08c0568f6f2f0ee452","0x60a3e35cc302bfa44cb288bc5a4f316fdb1adb42","0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca","0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf"] as Address[],
-      STABLE_TOKEN: "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca" as Address,
-      SLIPSTREAM_SUGAR_ADDRESS: "0x9c62ab10577fB3C20A22E231b7703Ed6D456CC7a" as Address,
-      NFPM_ADDRESS: "0x827922686190790b37229fd06084350E74485b72" as Address,
-    },
-  },
-  externalChains: {
-    "10": {
-      LP_SUGAR_ADDRESS: "0xC8229d65581afE8f04344A6706FF45faECC426f9" as Address,
-      REWARDS_SUGAR_ADDRESS: "0x62CCFB2496f49A80B0184AD720379B529E9152fB" as Address,
-      VE_SUGAR_ADDRESS: "0x94f913362b232e31daB49a1aFB775cfd25DaA6a1" as Address,
-      RELAY_SUGAR_ADDRESS: "0xA405a1e247c40e1e88F5344135327e22bA0AC4b7" as Address,
-      ROUTER_ADDRESS: "0xa062aE8A9c5e11aaA026fc2670B0D65cCc8B2858" as Address,
-      PRICES_ADDRESS: "0x59114D308C6DE4A84F5F8cD80485a5481047b99f" as Address,
-      VOTER_ADDRESS: "0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C" as Address,
-      QUOTER_ADDRESS: "0xff79ec912ba114fd7989b9a2b90c65f0c1b44722" as Address,
-      UNIVERSAL_ROUTER_ADDRESS: "0x4bF3E32de155359D1D75e8B474b66848221142fc" as Address,
-      CONNECTOR_TOKENS: ["0x9560e827af36c94d2ac33a39bce1fe78631088db","0x4200000000000000000000000000000000000042","0x4200000000000000000000000000000000000006","0x9bcef72be871e61ed4fbbc7630889bee758eb81d","0x2e3d870790dc77a83dd1d18184acc7439a53f475","0x8c6f28f2f1a3c87f0f938b96d27520d9751ec8d9","0x1f32b1c2345538c0c6f582fcb022739c4a194ebb","0xbfd291da8a403daaf7e5e9dc1ec0aceacd4848b9","0xc3864f98f2a61a7caeb95b039d031b4e2f55e0e9","0x9485aca5bbbe1667ad97c7fe7c4531a624c8b1ed","0xda10009cbd5d07dd0cecc66161fc93d7c9000da1","0x73cb180bf0521828d8849bc8cf2b920918e23032","0x6806411765af15bddd26f8f544a34cc40cb9838b","0x6c2f7b6110a37b3b0fbdd811876be368df02e8b0","0xc5b001dc33727f8f26880b184090d3e252470d45","0x6c84a8f1c29108f47a79964b5fe888d4f4d0de40","0xc40f949f8a4e094d1b49a23ea9241d289b7b2819","0x94b008aa00579c1307b0ef2c499ad98a8ce58e58","0x0b2c639c533813f4aa9d7837caf62653d097ff85"] as Address[],
-      STABLE_TOKEN: "0x7f5c764cbc14f9669b88837ca1490cca17c31607" as Address,
-      SLIPSTREAM_SUGAR_ADDRESS: "0xD45624bf2CB9f65ecbdF3067d21992b099b56202" as Address,
-      NFPM_ADDRESS: "0x416b433906b1B72FA758e166e239c43d68dC6F29" as Address,
-      WRAPPED_NATIVE_TOKEN: "0x4200000000000000000000000000000000000006" as Address,
-    },
-  },
-  tokens: {
-    "0xafcc6ae807187a31e84138f3860d4ce27973e01b": {
-      TOKEN_SYMBOL: "OP",
-    },
-    "0x7f5c764cbc14f9669b88837ca1490cca17c31607": {
-      TOKEN_SYMBOL: "USDC.e",
-    },
-    "0x102d758f688a4c1c5a80b116bd945d4455460282": {
-      TOKEN_SYMBOL: "USDT0",
-    },
     "0xab77a4cc84bb8bcc0fcb54a00eca32680d6f96ca": {
       TOKEN_SYMBOL: "OP",
     },
   },
 } as DromeConfig;
+
+
+export type DromeWagmiConfig = Config & { dromeConfig: DromeConfig };
+
+export function initDrome<WagmiConfig extends Config>(
+  wagmiConfig: WagmiConfig,
+  dromeConfig: DromeConfig
+) {
+  return Object.assign(wagmiConfig, { dromeConfig });
+}
+
+interface DromeSpec {
+  chains: { chain: Chain; rpcUrls: string[] }[];
+  testMode?: boolean; 
+}
+
+export const getDefaultDrome = ({ chains, testMode  }: DromeSpec): DromeWagmiConfig => {
+const requestedChainIds = chains.map((c) => c.chain.id);
+  return initDrome(createConfig({
+    chains: chains as unknown as [Chain, ...Chain[]],
+    connectors: [
+        injected(),
+        ...(testMode
+          ? [
+              mock({
+                accounts: [
+                  privateKeyToAccount(TEST_ACCOUNT_PK).address,
+                ],
+              }),
+            ]
+          : []),
+      ],
+      transports: Object.fromEntries(
+    chains.map((c) => {
+      return [c.chain.id, http(c.rpcUrls[0], { batch: true })];
+    })
+  ),
+  }), Object.assign({}, baseDromeConfig, {
+   chains: baseDromeConfig.chains.filter((c) => requestedChainIds.includes(c.CHAIN.id)),
+  }));
+};
+

@@ -3,7 +3,12 @@ import { etherscan } from "@wagmi/cli/plugins";
 import type { Address } from "viem";
 import { optimism } from "viem/chains";
 
-import { aerodromeConfig, DromeConfig, velodromeConfig } from "./src";
+import {
+  aerodromeConfig,
+  DromeChainConfig,
+  DromeConfig,
+  velodromeConfig,
+} from "./src";
 
 function etherscanWithRetries({
   maxAttempts,
@@ -65,12 +70,17 @@ export default defineConfig(() => {
         addresses[chainId] = config[configKey];
       }
 
-      // Look in the chains object for addresses
+      // Look in the chains list for addresses
       if (config.chains) {
-        for (const chainIdStr in config.chains) {
-          const chainConfig = config.chains[chainIdStr];
-          if (chainConfig[configKey]) {
-            addresses[parseInt(chainIdStr)] = chainConfig[configKey];
+        for (const {
+          chainId,
+          ...chainConfig
+        } of config.chains as (DromeChainConfig & { chainId: number })[]) {
+          const value = (chainConfig as Record<string, Address | undefined>)[
+            configKey
+          ];
+          if (value) {
+            addresses[chainId] = value;
           }
         }
       }
