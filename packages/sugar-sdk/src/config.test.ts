@@ -53,13 +53,20 @@ describe("getDefaultDrome", () => {
     ];
 
     const drome = getDefaultDrome({
-      chains: chains.map((chain) => ({
-        chain,
-        rpcUrls: process.env[`VITE_RPC_URIS_${chain.id}`]!.split(",").map(
-          // TODDO: deal with ":N" suffixes for priorities
-          (rpc: string) => rpc.slice(0, rpc.lastIndexOf(":"))
-        ),
-      })),
+      chains: chains.map((chain) => {
+        console.log(
+          ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+          process.env[`VITE_RPC_URI_${chain.id}`]
+        );
+        const rpcUrl = process.env[`RPC_URI_${chain.id}`];
+        if (!rpcUrl) {
+          throw new Error(`Missing RPC URI for chain ${chain.id}`);
+        }
+        return {
+          chain,
+          rpcUrl,
+        };
+      }),
     });
     expect(drome.dromeConfig.chains.length).toEqual(chains.length);
     for (const chain of chains) {
@@ -71,7 +78,7 @@ describe("getDefaultDrome", () => {
 
   it("works for base", () => {
     const drome = getDefaultDrome({
-      chains: [{ chain: base, rpcUrls: ["https://mainnet.base.org/"] }],
+      chains: [{ chain: base, rpcUrl: "https://mainnet.base.org/" }],
     });
     expect(drome.dromeConfig.chains.length).toEqual(1);
     expect(drome.dromeConfig.chains[0].CHAIN.id).toEqual(base.id);

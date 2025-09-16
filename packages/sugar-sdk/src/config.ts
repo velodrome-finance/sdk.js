@@ -6,7 +6,6 @@ import {
   fraxtal,
   ink,
   lisk,
-  mainnet,
   metalL2,
   mode,
   optimism,
@@ -362,7 +361,7 @@ export function initDrome<WagmiConfig extends Config>(
 }
 
 interface DromeSpec {
-  chains: { chain: Chain; rpcUrls: string[] }[];
+  chains: { chain: Chain; rpcUrl: string }[];
   testMode?: boolean; 
 }
 
@@ -384,11 +383,10 @@ const requestedChainIds = chains.map((c) => c.chain.id);
       ],
       transports: Object.fromEntries(
     chains.map((c) => {
-      return [c.chain.id, http(c.rpcUrls[0], { batch: true })];
+      return [c.chain.id, http(c.rpcUrl, { batch: true })];
     })
   ),
   }), Object.assign({}, baseDromeConfig, {
    chains: baseDromeConfig.chains.filter((c) => requestedChainIds.includes(c.CHAIN.id)),
   }));
 };
-
