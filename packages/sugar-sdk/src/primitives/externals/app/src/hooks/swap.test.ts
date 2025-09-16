@@ -29,7 +29,7 @@ const test = it.extend<TestContext>({
     await use(dromeConfig.DEFAULT_CHAIN_ID);
   },
   UNIVERSAL_ROUTER_ADDRESS: async ({ dromeConfig, DEFAULT_CHAIN_ID }, use) => {
-    const cfg = dromeConfig.chains.find((c) => c.chainId === DEFAULT_CHAIN_ID)!;
+    const cfg = dromeConfig.chains.find((c) => c.CHAIN.id === DEFAULT_CHAIN_ID)!;
     await use(cfg.UNIVERSAL_ROUTER_ADDRESS);
   },
 });

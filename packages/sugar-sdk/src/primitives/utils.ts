@@ -78,7 +78,7 @@ class DromeError extends Error {
 }
 
 export function getChainConfig(config: DromeConfig, chainId: number) {
-  const entry = config.chains.find((c) => c.chainId === chainId);
+  const entry = config.chains.find((c) => c.CHAIN.id === chainId);
   if (entry) return entry;
   throw new Error(`chainId ${chainId} is not part of the current config.`);
 }

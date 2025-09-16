@@ -21,8 +21,8 @@ export async function getListedTokens(params: BaseParams) {
   const customPrices = await getCustomPrices({ config });
 
   const results = await Promise.allSettled(
-    config.dromeConfig.CHAIN_IDS.map((chainId) =>
-      getTokensFromChain({ config, chainId, customPrices })
+    config.dromeConfig.chains.map((chain) =>
+      getTokensFromChain({ config, chainId: chain.CHAIN.id, customPrices })
     )
   );
 
@@ -31,7 +31,7 @@ export async function getListedTokens(params: BaseParams) {
 
   for (let i = 0; i < results.length; i++) {
     const result = results[i];
-    const chainId = config.dromeConfig.CHAIN_IDS[i];
+    const chainId = config.dromeConfig.chains[i].CHAIN.id;
 
     if (result.status === "rejected") {
       onDromeError(

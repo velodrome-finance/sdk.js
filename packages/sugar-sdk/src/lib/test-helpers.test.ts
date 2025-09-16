@@ -8,7 +8,7 @@ describe("initDrome", () => {
     const supersimConfig = await initDrome(true);
     const account = getAccount(supersimConfig);
     expect(account.address).toEqual(TEST_ACCOUNT_ADDRESS);
-    expect(supersimConfig.chains[1].rpcUrls.default.http).toEqual([
+    expect(supersimConfig.chains[0].rpcUrls.default.http).toEqual([
       "http://localhost:4444",
     ]);
   });

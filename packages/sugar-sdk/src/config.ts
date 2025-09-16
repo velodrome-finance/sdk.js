@@ -365,28 +365,51 @@ interface DromeSpec {
   testMode?: boolean; 
 }
 
-export const getDefaultDrome = ({ chains, testMode  }: DromeSpec): DromeWagmiConfig => {
-const requestedChainIds = chains.map((c) => c.chain.id);
-  return initDrome(createConfig({
-    chains: chains as unknown as [Chain, ...Chain[]],
+export const getDefaultDrome = ({ chains, testMode }: DromeSpec): DromeWagmiConfig => {
+  const requestedChainIds = chains.map((c) => c.chain.id);
+  const wagmiChains = chains.map(({ chain, rpcUrl }) => {
+    return {
+      ...chain,
+      rpcUrls: {
+        ...chain.rpcUrls,
+        default: {
+          ...chain.rpcUrls.default,
+          http: [rpcUrl],
+        },
+        public: {
+          ...chain.rpcUrls.public,
+          http: [rpcUrl],
+        },
+      },
+    } satisfies Chain;
+  }) as unknown as [Chain, ...Chain[]];
+
+  const wagmiConfig = createConfig({
+    chains: wagmiChains,
     connectors: [
-        injected(),
-        ...(testMode
-          ? [
-              mock({
-                accounts: [
-                  privateKeyToAccount(TEST_ACCOUNT_PK).address,
-                ],
-              }),
-            ]
-          : []),
-      ],
-      transports: Object.fromEntries(
-    chains.map((c) => {
-      return [c.chain.id, http(c.rpcUrl, { batch: true })];
+      injected(),
+      ...(testMode
+        ? [
+            mock({
+              accounts: [privateKeyToAccount(TEST_ACCOUNT_PK).address],
+            }),
+          ]
+        : []),
+    ],
+    transports: Object.fromEntries(
+      chains.map(({ chain, rpcUrl }) => [
+        chain.id,
+        http(rpcUrl, { batch: true }),
+      ])
+    ),
+  });
+
+  return initDrome(
+    wagmiConfig,
+    Object.assign({}, baseDromeConfig, {
+      chains: baseDromeConfig.chains.filter((c) =>
+        requestedChainIds.includes(c.CHAIN.id)
+      ),
     })
-  ),
-  }), Object.assign({}, baseDromeConfig, {
-   chains: baseDromeConfig.chains.filter((c) => requestedChainIds.includes(c.CHAIN.id)),
-  }));
+  );
 };
