@@ -1,7 +1,7 @@
 import {
   aerodromeConfig,
-  type DromeWagmiConfig,
-  initDrome,
+  init,
+  type SugarWagmiConfig,
   velodromeConfig,
 } from "sugar-sdk";
 import { createConfig, http, injected } from "wagmi";
@@ -38,12 +38,12 @@ function getTransports(chains: Chain[]) {
   );
 }
 
-export let config: DromeWagmiConfig;
+export let config: SugarWagmiConfig;
 
 if (import.meta.env.MODE === "aero") {
   const aerodromChains = [base, optimism] as [Chain, ...Chain[]];
 
-  config = initDrome(
+  config = init(
     createConfig({
       chains: aerodromChains,
       connectors: [injected()],
@@ -72,7 +72,7 @@ if (import.meta.env.MODE === "aero") {
     mainnet,
   ] as [Chain, ...Chain[]];
 
-  config = initDrome(
+  config = init(
     createConfig({
       chains: velodromChains,
       connectors: [injected()],

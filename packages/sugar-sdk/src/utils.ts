@@ -1,9 +1,9 @@
 import { getAccount, switchChain } from "@wagmi/core";
 
-import { DromeWagmiConfig } from "./config.js";
+import { SugarWagmiConfig } from "./config.js";
 
 export interface BaseParams {
-  config: DromeWagmiConfig;
+  config: SugarWagmiConfig;
 }
 
 export interface ChainParams extends BaseParams {

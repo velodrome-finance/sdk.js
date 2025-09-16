@@ -17,7 +17,7 @@ import {
 export const TEST_ACCOUNT_ADDRESS =
   "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
-export const initDrome = async (testMode: boolean = false) => {
+export const init = async (testMode: boolean = false) => {
   // When honey is enabled, modify chain RPC URLs to use localhost
   const config = getDefaultDrome({
     chains: [
@@ -58,9 +58,9 @@ export const initDrome = async (testMode: boolean = false) => {
   return config;
 };
 
-export const getDromeConfig = async (testMode: boolean = false) => {
-  const d = await initDrome(testMode);
-  return d.dromeConfig;
+export const getConfig = async (testMode: boolean = false) => {
+  const d = await init(testMode);
+  return d.sugarConfig;
 };
 
 // Honey health check function

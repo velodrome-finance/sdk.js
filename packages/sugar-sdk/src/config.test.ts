@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   base,
-  baseDromeConfig,
+  baseConfig,
   celo,
   fraxtal,
   getDefaultDrome,
@@ -26,12 +26,12 @@ describe("config supportedChains", () => {
   });
 });
 
-describe("config baseDromeConfig", () => {
+describe("config baseConfig", () => {
   it("has configs for all supported chains", () => {
-    expect(supportedChains.length).toEqual(baseDromeConfig.chains.length);
+    expect(supportedChains.length).toEqual(baseConfig.chains.length);
     const ids = supportedChains.map((c) => c.id);
     for (const id of ids) {
-      expect(baseDromeConfig.chains.some((c) => c.CHAIN.id === id)).toBe(true);
+      expect(baseConfig.chains.some((c) => c.CHAIN.id === id)).toBe(true);
     }
   });
 });
@@ -64,10 +64,10 @@ describe("getDefaultDrome", () => {
         };
       }),
     });
-    expect(drome.dromeConfig.chains.length).toEqual(chains.length);
+    expect(drome.sugarConfig.chains.length).toEqual(chains.length);
     for (const chain of chains) {
       expect(
-        drome.dromeConfig.chains.some((c) => c.CHAIN.id === chain.id)
+        drome.sugarConfig.chains.some((c) => c.CHAIN.id === chain.id)
       ).toBe(true);
     }
   });
@@ -76,7 +76,7 @@ describe("getDefaultDrome", () => {
     const drome = getDefaultDrome({
       chains: [{ chain: base, rpcUrl: "https://mainnet.base.org/" }],
     });
-    expect(drome.dromeConfig.chains.length).toEqual(1);
-    expect(drome.dromeConfig.chains[0].CHAIN.id).toEqual(base.id);
+    expect(drome.sugarConfig.chains.length).toEqual(1);
+    expect(drome.sugarConfig.chains[0].CHAIN.id).toEqual(base.id);
   });
 });

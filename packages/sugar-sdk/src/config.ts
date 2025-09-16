@@ -76,12 +76,12 @@ export type Config = {
   readonly TOKENS_PAGE_SIZE: number;
   readonly TOKEN_BRIDGE?: Address;
   readonly DEFAULT_CHAIN_ID: number;
-  readonly chains: ReadonlyArray<DromeChainConfig>;
-  readonly tokens: { [tokenAddress: Address]: DromeTokenConfig; };
+  readonly chains: ReadonlyArray<ChainConfig>;
+  readonly tokens: { [tokenAddress: Address]: TokenConfig; };
   onError?: (error: unknown) => void;
 };
 
-export type DromeChainConfig = {
+export type ChainConfig = {
   CHAIN: Chain;
   CONNECTOR_TOKENS: Address[];
   STABLE_TOKEN: Address;
@@ -102,13 +102,13 @@ export type DromeChainConfig = {
   RELAY_SUGAR_ADDRESS?: Address;
 };
 
-export type DromeTokenConfig = {
+export type TokenConfig = {
   TOKEN_SYMBOL?: string;
 };
 
 export type PriceMap = Record<Address, { chainId: number,  substituteToken: Address }>;
 
-export const baseDromeConfig = {
+export const baseConfig = {
   PRICE_THRESHOLD_FILTER: 10,
   QUOTER_STABLE_POOL_FILLER: 2097152,
   QUOTER_VOLATILE_POOL_FILLER: 4194304,
@@ -356,21 +356,21 @@ export const baseDromeConfig = {
   },
 } as Config;
 
-export type DromeWagmiConfig = WagmiCoreConfig & { dromeConfig: Config };
+export type SugarWagmiConfig = WagmiCoreConfig & { sugarConfig: Config };
 
-export function initDrome<T extends WagmiCoreConfig>(
+export function init<T extends WagmiCoreConfig>(
   wagmiConfig: T,
-  dromeConfig: Config
+  sugarConfig: Config
 ) {
-  return Object.assign(wagmiConfig, { dromeConfig });
+  return Object.assign(wagmiConfig, { sugarConfig });
 }
 
-interface DromeSpec {
+interface ConfigSpec {
   chains: { chain: Chain; rpcUrl: string }[];
   testMode?: boolean; 
 }
 
-export const getDefaultDrome = ({ chains, testMode }: DromeSpec): DromeWagmiConfig => {
+export const getDefaultDrome = ({ chains, testMode }: ConfigSpec): SugarWagmiConfig => {
   const requestedChainIds = chains.map((c) => c.chain.id);
   const wagmiChains = chains.map(({ chain, rpcUrl }) => {
     return {
@@ -409,10 +409,10 @@ export const getDefaultDrome = ({ chains, testMode }: DromeSpec): DromeWagmiConf
     ),
   });
 
-  return initDrome(
+  return init(
     wagmiConfig,
-    Object.assign({}, baseDromeConfig, {
-      chains: baseDromeConfig.chains.filter((c) =>
+    Object.assign({}, baseConfig, {
+      chains: baseConfig.chains.filter((c) =>
         requestedChainIds.includes(c.CHAIN.id)
       ),
     })

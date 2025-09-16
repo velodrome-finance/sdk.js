@@ -21,7 +21,7 @@ export async function getListedTokens(params: BaseParams) {
   const customPrices = await getCustomPrices({ config });
 
   const results = await Promise.allSettled(
-    config.dromeConfig.chains.map((chain) =>
+    config.sugarConfig.chains.map((chain) =>
       getTokensFromChain({ config, chainId: chain.CHAIN.id, customPrices })
     )
   );
@@ -31,11 +31,11 @@ export async function getListedTokens(params: BaseParams) {
 
   for (let i = 0; i < results.length; i++) {
     const result = results[i];
-    const chainId = config.dromeConfig.chains[i].CHAIN.id;
+    const chainId = config.sugarConfig.chains[i].CHAIN.id;
 
     if (result.status === "rejected") {
       onDromeError(
-        config.dromeConfig,
+        config.sugarConfig,
         `Failed to fetch tokens for chain ${chainId}.`,
         result.reason
       );
@@ -47,7 +47,7 @@ export async function getListedTokens(params: BaseParams) {
   }
 
   return mergeTokens({
-    config: config.dromeConfig,
+    config: config.sugarConfig,
     tokensPerChain: tokens,
     chainIds,
   }).sorted;
@@ -67,15 +67,15 @@ async function getTokensFromChain({
       readContract(
         config,
         getTokensParams({
-          config: config.dromeConfig,
+          config: config.sugarConfig,
           chainId,
           offset,
           count,
           accountAddress,
         })
       ),
-    config.dromeConfig.TOKENS_PAGE_SIZE,
-    config.dromeConfig.POOLS_COUNT_UPPER_BOUND
+    config.sugarConfig.TOKENS_PAGE_SIZE,
+    config.sugarConfig.POOLS_COUNT_UPPER_BOUND
   );
 
   const nativeTokenBalance =
@@ -95,7 +95,7 @@ async function getTokensFromChain({
   });
 
   return transformTokens({
-    config: config.dromeConfig,
+    config: config.sugarConfig,
     chainId,
     rawTokens,
     nativeCurrency: extractChain({ chains: config.chains, id: chainId })
@@ -107,7 +107,7 @@ async function getTokensFromChain({
 }
 
 async function getCustomPrices({ config }: BaseParams) {
-  const requests = getCustomPricesVars(config.dromeConfig).map(
+  const requests = getCustomPricesVars(config.sugarConfig).map(
     ({ chainId, tokens }) =>
       getTokenPrices({ config, chainId, rawTokens: tokens })
   );
@@ -116,7 +116,7 @@ async function getCustomPrices({ config }: BaseParams) {
     const prices = await Promise.all(requests);
     return mergeAll(prices);
   } catch (error) {
-    onDromeError(config.dromeConfig, "Failed to fetch custom prices.", error);
+    onDromeError(config.sugarConfig, "Failed to fetch custom prices.", error);
     return {};
   }
 }
@@ -129,7 +129,7 @@ async function getTokenPrices({
   rawTokens: Array<{ token_address: Address; decimals: number }>;
 }) {
   const { tokenChunks, customConnectors, useWrappers, thresholdFilter } =
-    getTokenPricesVars(config.dromeConfig, chainId, rawTokens);
+    getTokenPricesVars(config.sugarConfig, chainId, rawTokens);
   const rawRates: RawTokenRateWithDecimals[] = [];
 
   await Promise.all(
@@ -138,7 +138,7 @@ async function getTokenPrices({
         const rateChunk = await readContract(
           config,
           getTokenRatesParams({
-            config: config.dromeConfig,
+            config: config.sugarConfig,
             chainId,
             tokens: tokenChunk.map((t) => t.token_address),
             useWrappers,
@@ -156,7 +156,7 @@ async function getTokenPrices({
         );
       } catch (error) {
         onDromeError(
-          config.dromeConfig,
+          config.sugarConfig,
           `Failed to get token price chunk.`,
           error
         );
@@ -165,7 +165,7 @@ async function getTokenPrices({
   );
 
   return transformTokenPrices({
-    config: config.dromeConfig,
+    config: config.sugarConfig,
     chainId,
     rawRates,
     nativeCurrency: extractChain({ chains: config.chains, id: chainId })

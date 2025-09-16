@@ -2,7 +2,7 @@ import { ContractConfig, defineConfig } from "@wagmi/cli";
 import { etherscan } from "@wagmi/cli/plugins";
 import { optimism } from "viem/chains";
 
-import { baseDromeConfig } from "./src/config.js";
+import { baseConfig } from "./src/config.js";
 
 function etherscanWithRetries({
   maxAttempts,
@@ -54,7 +54,7 @@ function etherscanWithRetries({
 
 export default defineConfig(() => {
   const chainId = optimism.id;
-  const config = baseDromeConfig.chains.find((c) => c.CHAIN.id === chainId);
+  const config = baseConfig.chains.find((c) => c.CHAIN.id === chainId);
 
   if (!config) {
     throw new Error(`No config found for chainId ${chainId}`);
@@ -116,7 +116,7 @@ export default defineConfig(() => {
           },
           {
             name: "tokenBridge",
-            address: baseDromeConfig.TOKEN_BRIDGE,
+            address: baseConfig.TOKEN_BRIDGE,
           },
         ] as ContractConfig<number, 10>[],
       }),
