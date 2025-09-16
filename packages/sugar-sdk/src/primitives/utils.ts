@@ -5,7 +5,7 @@ import {
   ContractFunctionName,
 } from "viem";
 
-import { DromeConfig } from "../config.js";
+import { Config } from "../config.js";
 
 /**
  * Call a paginated function repeatedly until all records are returned.
@@ -55,7 +55,7 @@ export type ContractFunction<
 };
 
 export function onDromeError(
-  config: DromeConfig,
+  config: Config,
   message: string,
   originalError?: unknown
 ) {
@@ -77,12 +77,12 @@ class DromeError extends Error {
   }
 }
 
-export function getChainConfig(config: DromeConfig, chainId: number) {
+export function getChainConfig(config: Config, chainId: number) {
   const entry = config.chains.find((c) => c.CHAIN.id === chainId);
   if (entry) return entry;
   throw new Error(`chainId ${chainId} is not part of the current config.`);
 }
 
-export function getDefaultChainConfig(config: DromeConfig) {
+export function getDefaultChainConfig(config: Config) {
   return getChainConfig(config, config.DEFAULT_CHAIN_ID);
 }

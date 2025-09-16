@@ -5,8 +5,8 @@ import { optimism } from "viem/chains";
 
 import {
   aerodromeConfig,
+  Config,
   DromeChainConfig,
-  DromeConfig,
   velodromeConfig,
 } from "./src";
 
@@ -62,7 +62,7 @@ export default defineConfig(() => {
   const chainId = optimism.id;
 
   const getAddresses = (configKey: string) => {
-    const getAddressesFromConfig = (config: DromeConfig) => {
+    const getAddressesFromConfig = (config: Config) => {
       const addresses = {} as Record<number, Address>;
 
       // Check if it's a top-level config property (like TOKEN_BRIDGE)

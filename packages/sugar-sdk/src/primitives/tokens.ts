@@ -1,7 +1,7 @@
 import { splitEvery, uniqBy } from "ramda";
 import { Address, ContractFunctionReturnType, zeroAddress } from "viem";
 
-import { DromeConfig } from "../config.js";
+import { Config } from "../config.js";
 import { lpSugarAbi, pricesAbi } from "./abis.js";
 import {
   ContractFunction,
@@ -17,7 +17,7 @@ export function getTokensParams<ChainId extends number>({
   accountAddress = zeroAddress,
   addresses = [],
 }: {
-  config: DromeConfig;
+  config: Config;
   chainId: ChainId;
   offset: number;
   count: number;
@@ -41,7 +41,7 @@ export function getTokenPricesParams<ChainId extends number>({
   customConnectors,
   thresholdFilter,
 }: {
-  config: DromeConfig;
+  config: Config;
   chainId: ChainId;
   tokens: Address[];
   useWrappers: boolean;
@@ -61,7 +61,7 @@ export function getTokenPricesParams<ChainId extends number>({
   >;
 }
 
-export function getCustomPricesVars(config: DromeConfig) {
+export function getCustomPricesVars(config: Config) {
   return Object.values(config.PRICE_MAPS).map(
     ({ chainId, substituteToken }) => {
       const chainConfig = getChainConfig(config, chainId);
@@ -88,7 +88,7 @@ export function getCustomPricesVars(config: DromeConfig) {
 }
 
 export function getTokenPricesVars(
-  config: DromeConfig,
+  config: Config,
   chainId: number,
   rawTokens: Pick<RawToken, "token_address" | "decimals">[]
 ) {

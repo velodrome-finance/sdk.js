@@ -7,7 +7,7 @@ import { sortByIdx } from "../lib/helpers.js";
 import { SuperchainKey, Token, Tokens } from "./types.js";
 import { mulUnsafe } from "./math.js";
 import { RawTokenRateWithDecimals, RawToken } from "../../../../tokens.js";
-import { DromeConfig } from "../../../../../config.js";
+import { Config } from "../../../../../config.js";
 import { getChainConfig, getDefaultChainConfig } from "../../../../utils.js";
 
 export function sortGrouped<T extends Token, S extends Token>(
@@ -32,7 +32,7 @@ export function transformTokens({
   prices,
   customPrices
 }:{
-  config: DromeConfig;
+  config: Config;
   chainId: number;
   rawTokens: RawToken[];
   nativeCurrency: Chain['nativeCurrency'];
@@ -126,7 +126,7 @@ export function transformTokenPrices({
   rawRates,
   nativeCurrency,
 }: {
-  config: DromeConfig;
+  config: Config;
   chainId: number;
   rawRates: RawTokenRateWithDecimals[];
   nativeCurrency: Chain['nativeCurrency'];
@@ -176,7 +176,7 @@ export function mergeTokens({
   tokensPerChain,
   chainIds
 }: {
-  config: DromeConfig;
+  config: Config;
   tokensPerChain: ReturnType<typeof transformTokens>[];
   chainIds: number[];
 }) {

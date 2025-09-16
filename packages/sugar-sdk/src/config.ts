@@ -15,7 +15,13 @@ import {
   unichain,
   type Chain
 } from "@wagmi/core/chains";
-import { Config, createConfig, injected, mock, http } from "@wagmi/core";
+import {
+  Config as WagmiCoreConfig,
+  createConfig,
+  injected,
+  mock,
+  http,
+} from "@wagmi/core";
 import { privateKeyToAccount} from "viem/accounts";
 
 // OMG, there are private keys in this file. What is this amateur hour?
@@ -57,7 +63,7 @@ export const supportedChains = [
 ];
 
 
-export type DromeConfig = {
+export type Config = {
   readonly DEFAULT_TOKEN_ORDER: string[];
   readonly PRICE_THRESHOLD_FILTER: number;
   readonly MAX_HOPS: number;
@@ -348,14 +354,13 @@ export const baseDromeConfig = {
       TOKEN_SYMBOL: "OP",
     },
   },
-} as DromeConfig;
+} as Config;
 
+export type DromeWagmiConfig = WagmiCoreConfig & { dromeConfig: Config };
 
-export type DromeWagmiConfig = Config & { dromeConfig: DromeConfig };
-
-export function initDrome<WagmiConfig extends Config>(
-  wagmiConfig: WagmiConfig,
-  dromeConfig: DromeConfig
+export function initDrome<T extends WagmiCoreConfig>(
+  wagmiConfig: T,
+  dromeConfig: Config
 ) {
   return Object.assign(wagmiConfig, { dromeConfig });
 }
