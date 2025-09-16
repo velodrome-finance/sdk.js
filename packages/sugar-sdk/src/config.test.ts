@@ -5,7 +5,7 @@ import {
   baseConfig,
   celo,
   fraxtal,
-  getDefaultDrome,
+  getDefaultConfig,
   ink,
   lisk,
   metalL2,
@@ -36,7 +36,7 @@ describe("config baseConfig", () => {
   });
 });
 
-describe("getDefaultDrome", () => {
+describe("getDefaultConfig", () => {
   it("works for velodrome chain subset", () => {
     const chains = [
       celo,
@@ -52,7 +52,7 @@ describe("getDefaultDrome", () => {
       unichain,
     ];
 
-    const drome = getDefaultDrome({
+    const config = getDefaultConfig({
       chains: chains.map((chain) => {
         const rpcUrl = import.meta.env[`VITE_RPC_URI_${chain.id}`];
         if (!rpcUrl) {
@@ -64,19 +64,19 @@ describe("getDefaultDrome", () => {
         };
       }),
     });
-    expect(drome.sugarConfig.chains.length).toEqual(chains.length);
+    expect(config.sugarConfig.chains.length).toEqual(chains.length);
     for (const chain of chains) {
       expect(
-        drome.sugarConfig.chains.some((c) => c.CHAIN.id === chain.id)
+        config.sugarConfig.chains.some((c) => c.CHAIN.id === chain.id)
       ).toBe(true);
     }
   });
 
   it("works for base", () => {
-    const drome = getDefaultDrome({
+    const config = getDefaultConfig({
       chains: [{ chain: base, rpcUrl: "https://mainnet.base.org/" }],
     });
-    expect(drome.sugarConfig.chains.length).toEqual(1);
-    expect(drome.sugarConfig.chains[0].CHAIN.id).toEqual(base.id);
+    expect(config.sugarConfig.chains.length).toEqual(1);
+    expect(config.sugarConfig.chains[0].CHAIN.id).toEqual(base.id);
   });
 });

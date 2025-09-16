@@ -370,7 +370,7 @@ interface ConfigSpec {
   testMode?: boolean; 
 }
 
-export const getDefaultDrome = ({ chains, testMode }: ConfigSpec): SugarWagmiConfig => {
+export const getDefaultConfig = ({ chains, testMode }: ConfigSpec): SugarWagmiConfig => {
   const requestedChainIds = chains.map((c) => c.chain.id);
   const wagmiChains = chains.map(({ chain, rpcUrl }) => {
     return {

@@ -2,7 +2,7 @@ import { connect } from "@wagmi/core";
 
 import {
   base,
-  getDefaultDrome,
+  getDefaultConfig,
   ink,
   lisk,
   metalL2,
@@ -19,7 +19,7 @@ export const TEST_ACCOUNT_ADDRESS =
 
 export const init = async (testMode: boolean = false) => {
   // When honey is enabled, modify chain RPC URLs to use localhost
-  const config = getDefaultDrome({
+  const config = getDefaultConfig({
     chains: [
       optimism, // 4444
       unichain, // 4445
