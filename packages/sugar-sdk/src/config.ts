@@ -1,6 +1,5 @@
 import { Address } from "viem";
 import {
-  // Chains referenced by configs
   base,
   celo,
   fraxtal,
@@ -358,6 +357,11 @@ export const baseConfig = {
 
 export type SugarWagmiConfig = WagmiCoreConfig & { sugarConfig: Config };
 
+/**
+ * Attaches the sugar configuration onto an existing wagmi config instance so
+ * downstream callers can consume both wagmi and sugar specific settings from a
+ * single object.
+ */
 export function init<T extends WagmiCoreConfig>(
   wagmiConfig: T,
   sugarConfig: Config
@@ -370,6 +374,12 @@ interface ConfigSpec {
   testMode?: boolean; 
 }
 
+/**
+ * Builds a {@link SugarWagmiConfig} seeded with the provided chains and RPC
+ * endpoints, optionally wiring in a mock connector for test scenarios.
+ * Returned configs are filtered down to the requested chains while preserving
+ * the defaults defined in {@link baseConfig}.
+ */
 export const getDefaultConfig = ({ chains, testMode }: ConfigSpec): SugarWagmiConfig => {
   const requestedChainIds = chains.map((c) => c.chain.id);
   const wagmiChains = chains.map(({ chain, rpcUrl }) => {
