@@ -34,8 +34,8 @@ export const initDrome = async (testMode: boolean = false) => {
     ].map((chain, i) => {
       const rpcUrl = testMode
         ? `http://localhost:${i + 4444}`
-        : process.env[`RPC_URI_${chain.id}`];
-      console.log(`RPC_URI_${chain.id}`, process.env[`RPC_URI_${chain.id}`]);
+        : import.meta.env[`VITE_RPC_URI_${chain.id}`];
+
       if (!rpcUrl) {
         throw new Error(
           `RPC URL not defined for chain ${chain.name} (${chain.id})`

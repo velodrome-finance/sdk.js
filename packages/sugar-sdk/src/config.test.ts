@@ -54,11 +54,7 @@ describe("getDefaultDrome", () => {
 
     const drome = getDefaultDrome({
       chains: chains.map((chain) => {
-        console.log(
-          ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-          process.env[`VITE_RPC_URI_${chain.id}`]
-        );
-        const rpcUrl = process.env[`RPC_URI_${chain.id}`];
+        const rpcUrl = import.meta.env[`VITE_RPC_URI_${chain.id}`];
         if (!rpcUrl) {
           throw new Error(`Missing RPC URI for chain ${chain.id}`);
         }
