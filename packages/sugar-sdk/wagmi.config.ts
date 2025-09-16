@@ -1,14 +1,8 @@
 import { ContractConfig, defineConfig } from "@wagmi/cli";
 import { etherscan } from "@wagmi/cli/plugins";
-import type { Address } from "viem";
 import { optimism } from "viem/chains";
 
-import {
-  aerodromeConfig,
-  Config,
-  DromeChainConfig,
-  velodromeConfig,
-} from "./src";
+import { baseDromeConfig } from "./src/config.js";
 
 function etherscanWithRetries({
   maxAttempts,
@@ -60,39 +54,11 @@ function etherscanWithRetries({
 
 export default defineConfig(() => {
   const chainId = optimism.id;
+  const config = baseDromeConfig.chains.find((c) => c.CHAIN.id === chainId);
 
-  const getAddresses = (configKey: string) => {
-    const getAddressesFromConfig = (config: Config) => {
-      const addresses = {} as Record<number, Address>;
-
-      // Check if it's a top-level config property (like TOKEN_BRIDGE)
-      if (config[configKey]) {
-        addresses[chainId] = config[configKey];
-      }
-
-      // Look in the chains list for addresses
-      if (config.chains) {
-        for (const {
-          chainId,
-          ...chainConfig
-        } of config.chains as (DromeChainConfig & { chainId: number })[]) {
-          const value = (chainConfig as Record<string, Address | undefined>)[
-            configKey
-          ];
-          if (value) {
-            addresses[chainId] = value;
-          }
-        }
-      }
-
-      return addresses;
-    };
-
-    return {
-      ...getAddressesFromConfig(aerodromeConfig),
-      ...getAddressesFromConfig(velodromeConfig),
-    };
-  };
+  if (!config) {
+    throw new Error(`No config found for chainId ${chainId}`);
+  }
 
   return {
     out: "src/primitives/abis.ts",
@@ -106,51 +72,51 @@ export default defineConfig(() => {
         contracts: [
           {
             name: "lpSugar",
-            address: getAddresses("LP_SUGAR_ADDRESS"),
+            address: config.LP_SUGAR_ADDRESS,
           },
           {
             name: "rewardsSugar",
-            address: getAddresses("REWARDS_SUGAR_ADDRESS"),
+            address: config.REWARDS_SUGAR_ADDRESS,
           },
           {
             name: "relaySugar",
-            address: getAddresses("RELAY_SUGAR_ADDRESS"),
+            address: config.RELAY_SUGAR_ADDRESS,
           },
           {
             name: "router",
-            address: getAddresses("ROUTER_ADDRESS"),
+            address: config.ROUTER_ADDRESS,
           },
           {
             name: "universalRouter",
-            address: getAddresses("UNIVERSAL_ROUTER_ADDRESS"),
+            address: config.UNIVERSAL_ROUTER_ADDRESS,
           },
           {
             name: "veSugar",
-            address: getAddresses("VE_SUGAR_ADDRESS"),
+            address: config.VE_SUGAR_ADDRESS,
           },
           {
             name: "prices",
-            address: getAddresses("PRICES_ADDRESS"),
+            address: config.PRICES_ADDRESS,
           },
           {
             name: "routeQuoter",
-            address: getAddresses("QUOTER_ADDRESS"),
+            address: config.QUOTER_ADDRESS,
           },
           {
             name: "slipstreamSugar",
-            address: getAddresses("SLIPSTREAM_SUGAR_ADDRESS"),
+            address: config.SLIPSTREAM_SUGAR_ADDRESS,
           },
           {
             name: "nfpm",
-            address: getAddresses("NFPM_ADDRESS"),
+            address: config.NFPM_ADDRESS,
           },
           {
             name: "voter",
-            address: getAddresses("VOTER_ADDRESS"),
+            address: config.VOTER_ADDRESS,
           },
           {
             name: "tokenBridge",
-            address: getAddresses("TOKEN_BRIDGE"),
+            address: baseDromeConfig.TOKEN_BRIDGE,
           },
         ] as ContractConfig<number, 10>[],
       }),

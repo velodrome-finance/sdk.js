@@ -37,5 +37,5 @@ npm test
 Regenerate 
 
 ```
-npx @wagmi/cli generate YOUR_ETHERSCAN_KEY_HERE
+cd packages/sugar-sdk  && npx @wagmi/cli generate YOUR_ETHERSCAN_KEY_HERE
 ```
