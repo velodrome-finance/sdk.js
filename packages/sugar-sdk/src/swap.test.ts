@@ -1,17 +1,20 @@
 import { formatUnits, parseUnits } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { initDrome, TEST_ACCOUNT_ADDRESS } from "@/lib/test-helpers.js";
+import {
+  // checkHoneyStatus,
+  init,
+  TEST_ACCOUNT_ADDRESS,
+} from "@/lib/test-helpers.js";
 
 import { type Token } from "./primitives";
 // Import the swap functions
 import { getCallDataForSwap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
-import { getDefaultDrome } from "./utils.js";
 
 interface TestContext {
-  config: Awaited<ReturnType<typeof initDrome>>;
-  supersimConfig: Awaited<ReturnType<typeof initDrome>>;
+  config: Awaited<ReturnType<typeof init>>;
+  supersimConfig: Awaited<ReturnType<typeof init>>;
   tokens: {
     opVelo: Token;
     opWeth: Token;
@@ -25,12 +28,12 @@ interface TestContext {
 const test = it.extend<TestContext>({
   // eslint-disable-next-line no-empty-pattern
   config: async ({}, use) => {
-    const config = await initDrome();
+    const config = await init();
     await use(config);
   },
   // eslint-disable-next-line no-empty-pattern
   supersimConfig: async ({}, use) => {
-    const supersimConfig = await initDrome(true);
+    const supersimConfig = await init(true);
     await use(supersimConfig);
   },
   tokens: async ({ config }, use) => {
@@ -65,9 +68,9 @@ const test = it.extend<TestContext>({
 });
 
 describe("getCallDataForSwap", () => {
-  test("works for OP", { timeout: 10000 }, async ({ tokens }) => {
+  test("works for OP", { timeout: 10000 }, async ({ config, tokens }) => {
     const callData = await getCallDataForSwap({
-      config: getDefaultDrome(),
+      config,
       fromToken: tokens.opUsdc,
       toToken: tokens.opVelo,
       amountIn: parseUnits("100", tokens.opUsdc.decimals),
@@ -80,9 +83,9 @@ describe("getCallDataForSwap", () => {
     expect(Math.abs(parseFloat(pi))).toBeLessThan(0.01);
   });
 
-  test("works for Base", { timeout: 20000 }, async ({ tokens }) => {
+  test("works for Base", { timeout: 20000 }, async ({ config, tokens }) => {
     const callData = await getCallDataForSwap({
-      config: getDefaultDrome(),
+      config,
       fromToken: tokens.baseAero,
       toToken: tokens.baseUsdc,
       amountIn: parseUnits("100", tokens.baseAero.decimals),
@@ -95,10 +98,10 @@ describe("getCallDataForSwap", () => {
     expect(Math.abs(parseFloat(pi))).toBeLessThan(0.01);
   });
 
-  test("handles invalid slippage values", async ({ tokens }) => {
+  test("handles invalid slippage values", async ({ config, tokens }) => {
     await expect(
       getCallDataForSwap({
-        config: getDefaultDrome(),
+        config,
         fromToken: tokens.opUsdc,
         toToken: tokens.opVelo,
         amountIn: parseUnits("100", tokens.opUsdc.decimals),
@@ -109,7 +112,7 @@ describe("getCallDataForSwap", () => {
 
     await expect(
       getCallDataForSwap({
-        config: getDefaultDrome(),
+        config,
         fromToken: tokens.opUsdc,
         toToken: tokens.opVelo,
         amountIn: parseUnits("100", tokens.opUsdc.decimals),
@@ -119,9 +122,9 @@ describe("getCallDataForSwap", () => {
     ).rejects.toThrow("Invalid slippage value. Should be between 0 and 1.");
   });
 
-  test("handles missing quotes", async ({ tokens }) => {
+  test("handles missing quotes", async ({ config, tokens }) => {
     const d = await getCallDataForSwap({
-      config: getDefaultDrome(),
+      config,
       fromToken: Object.assign({}, tokens.opUsdc, {
         // not a real token
         address: "0x7f9adfbd38b669f03d1d11000bc76b9aaea28a81",

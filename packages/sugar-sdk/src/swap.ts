@@ -84,7 +84,7 @@ export async function getCallDataForSwap({
   }
 
   const { planner } = getSwapVars(
-    config.dromeConfig,
+    config.sugarConfig,
     quote,
     `${slippage * 100}`,
     account
@@ -113,14 +113,14 @@ export async function getQuoteForSwap({
   amountIn: bigint;
 }) {
   const { chainId, mustExcludeTokens } = getQuoteForSwapVars(
-    config.dromeConfig,
+    config.sugarConfig,
     fromToken,
     toToken
   );
   const pools = await getPoolsForSwaps({ config, chainId });
 
   const paths = getPaths({
-    config: config.dromeConfig,
+    config: config.sugarConfig,
     pools,
     fromToken,
     toToken,
@@ -143,7 +143,7 @@ export async function getQuoteForSwap({
       readContracts(config, {
         contracts: batch.map((path) =>
           getSwapQuoteParams({
-            config: config.dromeConfig,
+            config: config.sugarConfig,
             chainId,
             path: path.nodes,
             amountIn,
@@ -208,7 +208,7 @@ export async function swap({
 }) {
   const account = getAccount(config);
   const { chainId, planner, amount } = getSwapVars(
-    config.dromeConfig,
+    config.sugarConfig,
     quote,
     slippagePct,
     account.address
@@ -218,7 +218,7 @@ export async function swap({
 
   // Get the Universal Router address from the execute params
   const swapParams = executeSwapParams({
-    config: config.dromeConfig,
+    config: config.sugarConfig,
     chainId,
     commands: planner.commands as Hex,
     inputs: planner.inputs as Hex[],

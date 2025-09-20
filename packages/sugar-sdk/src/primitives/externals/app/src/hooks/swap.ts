@@ -5,7 +5,7 @@ import { packRoute } from "./lib.js";
 import { applyPct } from "./math.js";
 import { Quote, RouteElement } from "./types.js";
 import { getChainConfig } from "../../../../utils.js";
-import { DromeConfig } from "@/config";
+import { Config } from "@/config";
 
 // this is used to indicate "all available funds" for v2 and v3 swaps
 export const CONTRACT_BALANCE_FOR_V3_SWAPS = hexToBigInt(
@@ -20,7 +20,7 @@ export const setupPlanner = ({
   slippagePct,
   routePlanner = new RoutePlanner(),
 }: {
-  config: DromeConfig;
+  config: Config;
   chainId: number;
   account: Address;
   quote: Quote;

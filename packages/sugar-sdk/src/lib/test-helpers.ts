@@ -1,13 +1,53 @@
 import { connect } from "@wagmi/core";
 
-import { getDefaultDrome } from "../utils.js";
+import {
+  base,
+  getDefaultConfig,
+  ink,
+  lisk,
+  metalL2,
+  mode,
+  optimism,
+  soneium,
+  superseed,
+  swellchain,
+  unichain,
+} from "../config.js";
 
 export const TEST_ACCOUNT_ADDRESS =
   "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
-export const initDrome = async (testMode: boolean = false) => {
+export const init = async (testMode: boolean = false) => {
   // When honey is enabled, modify chain RPC URLs to use localhost
-  const config = getDefaultDrome(testMode);
+  const config = getDefaultConfig({
+    chains: [
+      optimism, // 4444
+      unichain, // 4445
+      lisk, // 4446
+      metalL2, // 4447
+      soneium, // 4448
+      swellchain, // 4449
+      superseed, // 4450
+      base, // 44451
+      mode, // 44452
+      ink, // 44453
+    ].map((chain, i) => {
+      const rpcUrl = testMode
+        ? `http://localhost:${i + 4444}`
+        : import.meta.env[`VITE_RPC_URI_${chain.id}`];
+
+      if (!rpcUrl) {
+        throw new Error(
+          `RPC URL not defined for chain ${chain.name} (${chain.id})`
+        );
+      }
+      return {
+        chain,
+        rpcUrl,
+      };
+    }),
+    testMode,
+  });
 
   if (!testMode) {
     return config;
@@ -18,16 +58,32 @@ export const initDrome = async (testMode: boolean = false) => {
   return config;
 };
 
-export const getDromeConfig = async (testMode: boolean = false) => {
-  const d = await initDrome(testMode);
-  return d.dromeConfig;
+export const getConfig = async (testMode: boolean = false) => {
+  const d = await init(testMode);
+  return d.sugarConfig;
 };
 
 // Honey health check function
 export async function checkHoneyStatus(): Promise<boolean> {
   try {
     // Check if honey is running by testing connectivity to the expected ports
-    const expectedPorts = [4444, 4445]; // OP, Base based on honey.yaml
+    /*
+      optimism,  // 4444
+      unichain,  // 4445
+      [MISSING] fraxtal,   
+      lisk,      // 4446
+      metalL2,   // 4447
+      soneium,   // 4448
+      swellchain,// 4449
+      superseed, // 4450
+      base,      // 44451
+      mode,      // 44452
+      [MISSING] celo,
+      ink,       // 44453
+    */
+    const expectedPorts = [
+      4444, 4445, 4446, 4447, 4448, 4449, 4450, 4451, 4452, 4453,
+    ];
 
     for (const port of expectedPorts) {
       const response = await fetch(`http://localhost:${port}`, {
