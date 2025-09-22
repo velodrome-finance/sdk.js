@@ -5,7 +5,7 @@ import AbstractGraph from "graphology-types";
 import { Address } from "viem";
 import { PoolForSwap } from "../../../../pools.js";
 import { RouteElement, RoutePath, Token } from "./types.js";
-import { DromeConfig } from "../../../../../config.js";
+import { Config } from "../../../../../config.js";
 import { getChainConfig } from "../../../../utils.js";
 
 /**
@@ -71,7 +71,7 @@ export function getPaths({
   mustIncludeTokens,
   mustExcludeTokens,
 }: {
-  config: DromeConfig
+  config: Config
   chainId: number;
   pools: PoolForSwap[];
   fromToken: Token;

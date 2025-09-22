@@ -1,15 +1,15 @@
 import { parseUnits } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { checkHoneyStatus, initDrome } from "@/lib/test-helpers.js";
+import { checkHoneyStatus, init } from "@/lib/test-helpers.js";
 
 import { type Token } from "./primitives";
 import { getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
 
 interface TestContext {
-  config: Awaited<ReturnType<typeof initDrome>>;
-  supersimConfig: Awaited<ReturnType<typeof initDrome>>;
+  config: Awaited<ReturnType<typeof init>>;
+  supersimConfig: Awaited<ReturnType<typeof init>>;
   tokens: {
     velo: Token;
     weth: Token;
@@ -21,12 +21,12 @@ interface TestContext {
 const test = it.extend<TestContext>({
   // eslint-disable-next-line no-empty-pattern
   config: async ({}, use) => {
-    const config = await initDrome();
+    const config = await init();
     await use(config);
   },
   // eslint-disable-next-line no-empty-pattern
   supersimConfig: async ({}, use) => {
-    const supersimConfig = await initDrome(true);
+    const supersimConfig = await init(true);
     await use(supersimConfig);
   },
   tokens: async ({ config }, use) => {

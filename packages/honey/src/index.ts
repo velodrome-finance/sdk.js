@@ -359,6 +359,28 @@ export function runSupersim(honeyConfig: Honey): ChildProcess {
     { env }
   );
 
+  // Pipe supersim output so users can see what's happening
+  supersimProcess.stdout?.on("data", (data) => {
+    const text = data.toString();
+    // Write raw to preserve line breaks and partial chunks
+    global.process.stdout.write(`[supersim] ${text}`);
+  });
+
+  supersimProcess.stderr?.on("data", (data) => {
+    const text = data.toString();
+    global.process.stderr.write(`[supersim] ${text}`);
+  });
+
+  supersimProcess.on("error", (err) => {
+    console.error(`[supersim] process error:`, err);
+  });
+
+  supersimProcess.on("close", (code, signal) => {
+    console.log(
+      `[supersim] exited with code ${code}${signal ? `, signal ${signal}` : ""}`
+    );
+  });
+
   console.log("Waiting for supersim to be ready...");
 
   return supersimProcess;
@@ -460,7 +482,7 @@ export async function addTokensByAddress(
             }
           } else {
             console.error(
-              `Failed to transfer tokens on ${chainName}: ${errorMsg}`
+              `Failed to transfer tokens (${tokenAddress}) on ${chainName}: ${errorMsg}`
             );
             return; // Non-retryable error, exit
           }

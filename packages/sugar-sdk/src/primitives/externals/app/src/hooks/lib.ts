@@ -1,7 +1,7 @@
 // src commit 7033ad288c0bf70324bf7fd93e2af244d213cf79
 import { Address, encodePacked } from "viem";
 import { RouteElement } from "./types.js";
-import { DromeConfig } from "../../../../../config.js";
+import { Config } from "../../../../../config.js";
 
 export const poolTypes = {
   basic: (type: number) => type === 0 || type === -1,
@@ -10,7 +10,11 @@ export const poolTypes = {
   stable: (type: number) => type === 0 || (type > 0 && type <= 50),
 } as const;
 
-export function prepareRoute(config: DromeConfig, nodes: RouteElement[],  type: "swap" | "quote"): {
+export function prepareRoute(
+  config: Config,
+  nodes: RouteElement[],
+  type: "swap" | "quote"
+): {
   types: string[];
   values: (Address | number | boolean)[];
 } {
@@ -63,7 +67,7 @@ export function prepareRoute(config: DromeConfig, nodes: RouteElement[],  type: 
 }
 
 export function packRoute(
-  config: DromeConfig,
+  config: Config,
   nodes: RouteElement[],
   type: "swap" | "quote" = "swap"
 ) {
