@@ -111,9 +111,9 @@ export const baseConfig = {
   PRICE_THRESHOLD_FILTER: 10,
   QUOTER_STABLE_POOL_FILLER: 2097152,
   QUOTER_VOLATILE_POOL_FILLER: 4194304,
-  POOLS_COUNT_UPPER_BOUND: 7000,
+  POOLS_COUNT_UPPER_BOUND: 10000,
   PRICE_MAPS: {"0xafcc6ae807187a31e84138f3860d4ce27973e01b":{chainId:10,substituteToken:"0x4200000000000000000000000000000000000042"},"0xab77a4cc84bb8bcc0fcb54a00eca32680d6f96ca":{chainId:10,substituteToken:"0x4200000000000000000000000000000000000042"}} as PriceMap,
-  PRICES_CHUNK_SIZE: 20,
+  PRICES_CHUNK_SIZE: 15,
   DEFAULT_TOKEN_ORDER: ["ETH","WETH","AERO","VELO","USDC","OP","USDC.e","USDT","DAI","tBTC","cbBTC"],
   TOKEN_BRIDGE: "0x1A9d17828897d6289C6dff9DC9F5cc3bAEa17814" as Address,
   MAX_HOPS: 3,
@@ -353,7 +353,7 @@ export const baseConfig = {
       TOKEN_SYMBOL: "OP",
     },
   },
-} as Config;
+} satisfies Config;
 
 export type SugarWagmiConfig = WagmiCoreConfig & { sugarConfig: Config };
 
@@ -369,10 +369,12 @@ export function init<T extends WagmiCoreConfig>(
   return Object.assign(wagmiConfig, { sugarConfig });
 }
 
-interface ConfigSpec {
+interface _ConfigSpec {
   chains: { chain: Chain; rpcUrl: string }[];
   testMode?: boolean; 
 }
+
+type ConfigSpec = Omit<_ConfigSpec, "testMode">;
 
 /**
  * Builds a {@link SugarWagmiConfig} seeded with the provided chains and RPC
@@ -380,7 +382,7 @@ interface ConfigSpec {
  * Returned configs are filtered down to the requested chains while preserving
  * the defaults defined in {@link baseConfig}.
  */
-export const getDefaultConfig = ({ chains, testMode }: ConfigSpec): SugarWagmiConfig => {
+const _getDefaultConfig = ({ chains, testMode }: _ConfigSpec): SugarWagmiConfig => {
   const requestedChainIds = chains.map((c) => c.chain.id);
   const wagmiChains = chains.map(({ chain, rpcUrl }) => {
     return {
@@ -428,3 +430,17 @@ export const getDefaultConfig = ({ chains, testMode }: ConfigSpec): SugarWagmiCo
     })
   );
 };
+
+export const _getTestConfig = ({ chains }: ConfigSpec) => {
+  return _getDefaultConfig({ chains, testMode: true });
+}
+
+/**
+ * Builds a {@link SugarWagmiConfig} seeded with the provided chains and RPC
+ * endpoints, optionally wiring in a mock connector for test scenarios.
+ * Returned configs are filtered down to the requested chains while preserving
+ * the defaults defined in {@link baseConfig}.
+ */
+export const getDefaultConfig = ({ chains }: ConfigSpec): SugarWagmiConfig => {
+  return _getDefaultConfig({ chains });
+}
