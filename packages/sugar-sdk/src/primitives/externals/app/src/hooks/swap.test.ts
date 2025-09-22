@@ -6,7 +6,7 @@ import { packRoute } from "./lib";
 import { CONTRACT_BALANCE_FOR_V3_SWAPS, setupPlanner } from "./swap";
 import { RouteElement, Token } from "./types";
 
-import { getDromeConfig } from "@/lib/test-helpers";
+import { getConfig } from "@/lib/test-helpers";
 
 vi.mock("./lib", async () => {
   const router = await vi.importActual("./lib");
@@ -14,22 +14,23 @@ vi.mock("./lib", async () => {
 });
 
 interface TestContext {
-  dromeConfig: Awaited<ReturnType<typeof getDromeConfig>>;
+  sugarConfig: Awaited<ReturnType<typeof getConfig>>;
   DEFAULT_CHAIN_ID: number;
   UNIVERSAL_ROUTER_ADDRESS: Address;
 }
 
 const test = it.extend<TestContext>({
   // eslint-disable-next-line no-empty-pattern
-  dromeConfig: async ({}, use) => {
-    const dromeConfig = await getDromeConfig();
-    await use(dromeConfig);
+  sugarConfig: async ({}, use) => {
+    const sugarConfig = await getConfig();
+    await use(sugarConfig);
   },
-  DEFAULT_CHAIN_ID: async ({ dromeConfig }, use) => {
-    await use(dromeConfig.DEFAULT_CHAIN_ID);
+  DEFAULT_CHAIN_ID: async ({ sugarConfig }, use) => {
+    await use(sugarConfig.DEFAULT_CHAIN_ID);
   },
-  UNIVERSAL_ROUTER_ADDRESS: async ({ dromeConfig, DEFAULT_CHAIN_ID }, use) => {
-    await use(dromeConfig.chains[DEFAULT_CHAIN_ID].UNIVERSAL_ROUTER_ADDRESS);
+  UNIVERSAL_ROUTER_ADDRESS: async ({ sugarConfig, DEFAULT_CHAIN_ID }, use) => {
+    const cfg = sugarConfig.chains.find((c) => c.CHAIN.id === DEFAULT_CHAIN_ID)!;
+    await use(cfg.UNIVERSAL_ROUTER_ADDRESS);
   },
 });
 const packedRoute = "0x0000000000000000000000000000000000000007";
@@ -97,14 +98,14 @@ describe("Swap setupPlanner", () => {
     vi.clearAllMocks();
   });
 
-  test("works for simple v2 swap", ({ dromeConfig, DEFAULT_CHAIN_ID }) => {
+  test("works for simple v2 swap", ({ sugarConfig, DEFAULT_CHAIN_ID }) => {
     const routePlanner = new RoutePlanner();
     const quote = buildQuote([unstableV2PoolRouteElement]);
 
     vi.spyOn(routePlanner, "addCommand");
 
     setupPlanner({
-        config: dromeConfig,
+        config: sugarConfig,
       chainId: DEFAULT_CHAIN_ID,
       account: MY_WALLET as Address,
       quote,
@@ -120,7 +121,7 @@ describe("Swap setupPlanner", () => {
     );
   });
 
-  test("works for v2 swaps that require token wrap", ({ dromeConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
+  test("works for v2 swaps that require token wrap", ({ sugarConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
     const routePlanner = new RoutePlanner();
     const quote = Object.assign({}, buildQuote([unstableV2PoolRouteElement]), {
       fromToken: nativeToken,
@@ -129,7 +130,7 @@ describe("Swap setupPlanner", () => {
     vi.spyOn(routePlanner, "addCommand");
 
     setupPlanner({
-        config: dromeConfig,
+        config: sugarConfig,
       chainId: DEFAULT_CHAIN_ID,
       account: MY_WALLET as Address,
       quote,
@@ -150,7 +151,7 @@ describe("Swap setupPlanner", () => {
     );
   });
 
-  test("works for v2 swaps that require token unwrap", ({ dromeConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
+  test("works for v2 swaps that require token unwrap", ({ sugarConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
     const routePlanner = new RoutePlanner();
     const quote = Object.assign({}, buildQuote([unstableV2PoolRouteElement]), {
       toToken: nativeToken,
@@ -164,7 +165,7 @@ describe("Swap setupPlanner", () => {
       quote,
       slippagePct: "1.0",
       routePlanner,
-      config: dromeConfig,
+      config: sugarConfig,
     });
 
     expect(routePlanner.addCommand).toHaveBeenCalledTimes(2);
@@ -187,7 +188,7 @@ describe("Swap setupPlanner", () => {
     );
   });
 
-  test("works for simple v3 swap", ({ dromeConfig, DEFAULT_CHAIN_ID }) => {
+  test("works for simple v3 swap", ({ sugarConfig, DEFAULT_CHAIN_ID }) => {
     const routePlanner = new RoutePlanner();
     const quote = buildQuote([v3PoolRouteElement]);
 
@@ -199,11 +200,11 @@ describe("Swap setupPlanner", () => {
       quote,
       slippagePct: "1.0",
       routePlanner,
-      config: dromeConfig,
+      config: sugarConfig,
     });
 
     expect(packRoute).toHaveBeenCalledTimes(1);
-    expect(packRoute).toHaveBeenCalledWith(dromeConfig, [v3PoolRouteElement]);
+    expect(packRoute).toHaveBeenCalledWith(sugarConfig, [v3PoolRouteElement]);
     expect(routePlanner.addCommand).toHaveBeenCalledTimes(1);
     expect(routePlanner.addCommand).toHaveBeenNthCalledWith(
       1,
@@ -212,7 +213,7 @@ describe("Swap setupPlanner", () => {
     );
   });
 
-  test("works for simple hybrid swaps: v2 + v2 + v3", ({ dromeConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
+  test("works for simple hybrid swaps: v2 + v2 + v3", ({ sugarConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
     const routePlanner = new RoutePlanner();
     const quote = buildQuote([
       // v2 pool + v3 pool
@@ -229,7 +230,7 @@ describe("Swap setupPlanner", () => {
       quote,
       slippagePct: "1.0",
       routePlanner,
-        config: dromeConfig,
+        config: sugarConfig,
     });
 
     expect(routePlanner.addCommand).toHaveBeenCalledTimes(2);
@@ -260,7 +261,7 @@ describe("Swap setupPlanner", () => {
     );
   });
 
-  test("works for a more advanced  hybrid swaps: v2 + v3 + v2", ({ dromeConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
+  test("works for a more advanced  hybrid swaps: v2 + v3 + v2", ({ sugarConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
     const routePlanner = new RoutePlanner();
     const quote = buildQuote([
       // v2 pool + v3 pool + v2
@@ -277,7 +278,7 @@ describe("Swap setupPlanner", () => {
       quote,
       slippagePct: "1.0",
       routePlanner,
-      config: dromeConfig,
+      config: sugarConfig,
     });
 
     expect(routePlanner.addCommand).toHaveBeenCalledTimes(3);
@@ -312,7 +313,7 @@ describe("Swap setupPlanner", () => {
     );
   });
 
-  test("works for a super convoluted made up hybrid swap: v3 + v2 + v3 + v3 + v2", ({ dromeConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
+  test("works for a super convoluted made up hybrid swap: v3 + v2 + v3 + v3 + v2", ({ sugarConfig, DEFAULT_CHAIN_ID, UNIVERSAL_ROUTER_ADDRESS }) => {
     const routePlanner = new RoutePlanner();
     const quote = buildQuote([
       // v3 + v2 + v3 + v3 + v2
@@ -337,7 +338,7 @@ describe("Swap setupPlanner", () => {
       quote,
       slippagePct: "1.0",
       routePlanner,
-      config: dromeConfig,
+      config: sugarConfig,
     });
 
     expect(routePlanner.addCommand).toHaveBeenCalledTimes(4);

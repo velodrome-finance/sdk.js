@@ -258,6 +258,22 @@ export function runSupersim(honeyConfig) {
         `--l2.starting.port=${honeyConfig.starting_port}`,
         `--chains=${honeyConfig.chains.map((chain) => chain.name.toLowerCase()).join(",")}`,
     ], { env });
+    // Pipe supersim output so users can see what's happening
+    supersimProcess.stdout?.on("data", (data) => {
+        const text = data.toString();
+        // Write raw to preserve line breaks and partial chunks
+        global.process.stdout.write(`[supersim] ${text}`);
+    });
+    supersimProcess.stderr?.on("data", (data) => {
+        const text = data.toString();
+        global.process.stderr.write(`[supersim] ${text}`);
+    });
+    supersimProcess.on("error", (err) => {
+        console.error(`[supersim] process error:`, err);
+    });
+    supersimProcess.on("close", (code, signal) => {
+        console.log(`[supersim] exited with code ${code}${signal ? `, signal ${signal}` : ""}`);
+    });
     console.log("Waiting for supersim to be ready...");
     return supersimProcess;
 }
@@ -328,7 +344,7 @@ export async function addTokensByAddress(walletAddress, tokenRequests, honeyConf
                         }
                     }
                     else {
-                        console.error(`Failed to transfer tokens on ${chainName}: ${errorMsg}`);
+                        console.error(`Failed to transfer tokens (${tokenAddress}) on ${chainName}: ${errorMsg}`);
                         return; // Non-retryable error, exit
                     }
                 }
@@ -442,6 +458,7 @@ async function main() {
         }
         // Check final balances (ETH + tokens)
         await checkTokenBalancesAllChains(walletAddress, honeyConfig);
+        console.log("🍯 Honey is running");
         // Keep the process running
         global.process.on("SIGINT", () => {
             console.log("Shutting down supersim...");

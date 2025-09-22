@@ -1,6 +1,6 @@
 import { Address, Hex } from "viem";
 
-import { DromeConfig } from "../config.js";
+import { Config } from "../config.js";
 import { routeQuoterAbi, universalRouterAbi } from "./abis.js";
 import { packRoute } from "./externals/app/src/hooks/lib.js";
 import { setupPlanner } from "./externals/app/src/hooks/swap.js";
@@ -13,7 +13,7 @@ export function getSwapQuoteParams<ChainId extends number>({
   path,
   amountIn,
 }: {
-  config: DromeConfig;
+  config: Config;
   chainId: ChainId;
   path: RouteElement[];
   amountIn: bigint;
@@ -38,7 +38,7 @@ export function executeSwapParams<ChainId extends number>({
   inputs,
   value,
 }: {
-  config: DromeConfig;
+  config: Config;
   chainId: ChainId;
   commands: Hex;
   inputs: Hex[];
@@ -55,7 +55,7 @@ export function executeSwapParams<ChainId extends number>({
 }
 
 export function getQuoteForSwapVars(
-  config: DromeConfig,
+  config: Config,
   fromToken: Token,
   toToken: Token
 ) {
@@ -74,7 +74,7 @@ export function getQuoteForSwapVars(
 }
 
 export function getSwapVars(
-  config: DromeConfig,
+  config: Config,
   quote: Quote,
   slippagePct = quote.path.nodes.some((n) => n.type >= 50) ? "1" : "0.5",
   accountAddress?: Address

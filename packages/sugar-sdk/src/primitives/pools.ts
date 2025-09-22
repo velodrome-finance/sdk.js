@@ -1,6 +1,6 @@
 import { ContractFunctionReturnType } from "viem";
 
-import { DromeConfig } from "../config.js";
+import { Config } from "../config.js";
 import { lpSugarAbi } from "./abis.js";
 import { ContractFunction, getChainConfig } from "./utils.js";
 
@@ -17,7 +17,7 @@ export function getPoolsParams<ChainId extends number>({
   offset,
   count,
 }: {
-  config: DromeConfig;
+  config: Config;
   chainId: ChainId;
   offset: number;
   count: number;
@@ -37,7 +37,7 @@ export function getPoolsForSwapParams<ChainId extends number>({
   offset,
   count,
 }: {
-  config: DromeConfig;
+  config: Config;
   chainId: ChainId;
   offset: number;
   count: number;

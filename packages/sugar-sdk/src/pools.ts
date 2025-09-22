@@ -12,13 +12,13 @@ export async function getPoolsForSwaps({ config, chainId }: ChainParams) {
     const pools = await readContract(
       config,
       getPoolsForSwapParams({
-        config: config.dromeConfig,
+        config: config.sugarConfig,
         chainId,
         offset,
-        count: config.dromeConfig.POOLS_PAGE_SIZE,
+        count: config.sugarConfig.POOLS_PAGE_SIZE,
       })
     );
-    offset += config.dromeConfig.POOLS_PAGE_SIZE;
+    offset += config.sugarConfig.POOLS_PAGE_SIZE;
     result = result.concat(pools);
     if (pools.length === 0) {
       finished = true;
