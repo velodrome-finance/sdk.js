@@ -57,7 +57,7 @@ export default defineConfig(() => {
   const config = baseConfig.chains.find((c) => c.CHAIN.id === chainId);
 
   if (!config) {
-    throw new Error(`No config found for chainId ${chainId}`);
+    throw new Error("Optimism config is required for abi generation");
   }
 
   return {

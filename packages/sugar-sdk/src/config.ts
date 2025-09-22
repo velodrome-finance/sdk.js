@@ -353,7 +353,7 @@ export const baseConfig = {
       TOKEN_SYMBOL: "OP",
     },
   },
-} as Config;
+} satisfies Config;
 
 export type SugarWagmiConfig = WagmiCoreConfig & { sugarConfig: Config };
 
@@ -369,18 +369,14 @@ export function init<T extends WagmiCoreConfig>(
   return Object.assign(wagmiConfig, { sugarConfig });
 }
 
-interface ConfigSpec {
+interface _ConfigSpec {
   chains: { chain: Chain; rpcUrl: string }[];
   testMode?: boolean; 
 }
 
-/**
- * Builds a {@link SugarWagmiConfig} seeded with the provided chains and RPC
- * endpoints, optionally wiring in a mock connector for test scenarios.
- * Returned configs are filtered down to the requested chains while preserving
- * the defaults defined in {@link baseConfig}.
- */
-export const getDefaultConfig = ({ chains, testMode }: ConfigSpec): SugarWagmiConfig => {
+type ConfigSpec = Omit<_ConfigSpec, "testMode">;
+
+const _getDefaultConfig = ({ chains, testMode }: _ConfigSpec): SugarWagmiConfig => {
   const requestedChainIds = chains.map((c) => c.chain.id);
   const wagmiChains = chains.map(({ chain, rpcUrl }) => {
     return {
@@ -428,3 +424,17 @@ export const getDefaultConfig = ({ chains, testMode }: ConfigSpec): SugarWagmiCo
     })
   );
 };
+
+export const _getTestConfig = ({ chains }: ConfigSpec) => {
+  return _getDefaultConfig({ chains, testMode: true });
+}
+
+/**
+ * Builds a {@link SugarWagmiConfig} seeded with the provided chains and RPC
+ * endpoints.
+ * Returned configs are filtered down to the requested chains while preserving
+ * the defaults defined in {@link baseConfig}.
+ */
+export const getDefaultConfig = ({ chains }: ConfigSpec): SugarWagmiConfig => {
+  return _getDefaultConfig({ chains });
+}
