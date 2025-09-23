@@ -36,7 +36,7 @@ describe("env", () => {
       swellchain,
       unichain,
     ].forEach((chain) => {
-      expect(import.meta.env[`VITE_RPC_URI_${chain.id}`]).toBeDefined();
+      expect(import.meta.env[`VITE_RPC_URL_${chain.id}`]).toBeDefined();
     });
   });
 });
@@ -45,8 +45,8 @@ describe("sugar-sdk integration smoke tests", () => {
   it("can fetch tokens", async () => {
     const config = getDefaultConfig({
       chains: [
-        { chain: base, rpcUrl: import.meta.env.VITE_RPC_URI_8453 },
-        { chain: optimism, rpcUrl: import.meta.env.VITE_RPC_URI_10 },
+        { chain: base, rpcUrl: import.meta.env.VITE_RPC_URL_8453 },
+        { chain: optimism, rpcUrl: import.meta.env.VITE_RPC_URL_10 },
       ],
     });
     const tokens = await getListedTokens({ config });
@@ -56,8 +56,8 @@ describe("sugar-sdk integration smoke tests", () => {
   it("can pull raw quote data on optimism and base", async () => {
     const config = getDefaultConfig({
       chains: [
-        { chain: base, rpcUrl: import.meta.env.VITE_RPC_URI_8453 },
-        { chain: optimism, rpcUrl: import.meta.env.VITE_RPC_URI_10 },
+        { chain: base, rpcUrl: import.meta.env.VITE_RPC_URL_8453 },
+        { chain: optimism, rpcUrl: import.meta.env.VITE_RPC_URL_10 },
       ],
     });
     const tokens = await getListedTokens({

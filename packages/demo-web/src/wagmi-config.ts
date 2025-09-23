@@ -17,11 +17,11 @@ import {
 import { type Chain } from "viem";
 
 function getRpcUrl(chain: Chain) {
-  const rpc = import.meta.env[`VITE_RPC_URI_${chain.id}`];
+  const rpc = import.meta.env[`VITE_RPC_URL_${chain.id}`];
 
   if (!rpc) {
     throw new Error(
-      `Missing RPC URL. Please pass ${`VITE_RPC_URI_${chain.id}`} as an environment variable.`
+      `Missing RPC URL. Please pass ${`VITE_RPC_URL_${chain.id}`} as an environment variable.`
     );
   }
 

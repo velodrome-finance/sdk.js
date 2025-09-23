@@ -7,18 +7,18 @@ on:
   workflow_dispatch:
 
 env:
-  VITE_RPC_URI_10: ${{ secrets.VITE_RPC_URI_10 }}
-  VITE_RPC_URI_8453: ${{ secrets.VITE_RPC_URI_8453 }}
-  VITE_RPC_URI_34443: ${{ secrets.VITE_RPC_URI_34443 }}
-  VITE_RPC_URI_1135: ${{ secrets.VITE_RPC_URI_1135 }}
-  VITE_RPC_URI_252: ${{ secrets.VITE_RPC_URI_252 }}
-  VITE_RPC_URI_1750: ${{ secrets.VITE_RPC_URI_1750 }}
-  VITE_RPC_URI_57073: ${{ secrets.VITE_RPC_URI_57073 }}
-  VITE_RPC_URI_1868: ${{ secrets.VITE_RPC_URI_1868 }}
-  VITE_RPC_URI_5330: ${{ secrets.VITE_RPC_URI_5330 }}
-  VITE_RPC_URI_1923: ${{ secrets.VITE_RPC_URI_1923 }}
-  VITE_RPC_URI_130: ${{ secrets.VITE_RPC_URI_130 }}
-  VITE_RPC_URI_42220: ${{ secrets.VITE_RPC_URI_42220 }}
+  VITE_RPC_URL_10: ${{ secrets.VITE_RPC_URL_10 }}
+  VITE_RPC_URL_8453: ${{ secrets.VITE_RPC_URL_8453 }}
+  VITE_RPC_URL_34443: ${{ secrets.VITE_RPC_URL_34443 }}
+  VITE_RPC_URL_1135: ${{ secrets.VITE_RPC_URL_1135 }}
+  VITE_RPC_URL_252: ${{ secrets.VITE_RPC_URL_252 }}
+  VITE_RPC_URL_1750: ${{ secrets.VITE_RPC_URL_1750 }}
+  VITE_RPC_URL_57073: ${{ secrets.VITE_RPC_URL_57073 }}
+  VITE_RPC_URL_1868: ${{ secrets.VITE_RPC_URL_1868 }}
+  VITE_RPC_URL_5330: ${{ secrets.VITE_RPC_URL_5330 }}
+  VITE_RPC_URL_1923: ${{ secrets.VITE_RPC_URL_1923 }}
+  VITE_RPC_URL_130: ${{ secrets.VITE_RPC_URL_130 }}
+  VITE_RPC_URL_42220: ${{ secrets.VITE_RPC_URL_42220 }}
 
 jobs:
   build-and-release:

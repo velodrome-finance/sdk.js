@@ -20,17 +20,16 @@ import {
 import { fileURLToPath } from "url";
 import { parseArgs } from "util";
 import { parseUnits } from "viem";
-import { optimism } from "viem/chains";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 loadEnv({ path: resolve(__dirname, ".env") });
 
 const getRpcUrl = (chainId: number) => {
-  const value = process.env[`RPC_URI_${chainId}`];
+  const value = process.env[`RPC_URL_${chainId}`];
 
   if (!value) {
     throw new Error(
-      `Missing RPC URI for chain ${chainId}. Define RPC_URI_${chainId} in packages/claudius/.env.`
+      `Missing RPC URL for chain ${chainId}. Define RPC_URL_${chainId} in packages/claudius/.env.`
     );
   }
 
