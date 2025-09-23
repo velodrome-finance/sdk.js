@@ -1,5 +1,7 @@
 import {
   base,
+  celo,
+  fraxtal,
   getCallDataForSwap,
   getDefaultConfig,
   getListedTokens,
@@ -22,6 +24,8 @@ describe("env", () => {
   it("is set up", () => {
     [
       base,
+      celo,
+      fraxtal,
       ink,
       lisk,
       metalL2,

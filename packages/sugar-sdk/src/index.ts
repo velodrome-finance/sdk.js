@@ -1,5 +1,7 @@
 export {
   base,
+  celo,
+  fraxtal,
   getDefaultConfig,
   init,
   ink,
