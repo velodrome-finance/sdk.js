@@ -26,7 +26,7 @@
   "description": "",
   "workspaces": [
     "packages/sugar-sdk",
-    "packages/demo",
+    "packages/demo-web",
     "packages/demo-node",
     "packages/honey",
     "packages/claudius"

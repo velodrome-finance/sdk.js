@@ -1,16 +1,14 @@
 {
-  "name": "demo",
+  "name": "demo-web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev-aero": "vite --mode aero",
-    "dev-velo": "vite --mode velo",
-    "build-aero": "tsc -b && vite build --mode aero",
-    "build-velo": "tsc -b && vite build --mode velo",
+    "dev": "vite",
+    "build-aero": "tsc -b && vite build",
+    "build-velo": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview-aero": "vite preview --mode aero",
-    "preview-velo": "vite preview --mode velo",
+    "preview": "vite preview",
     "postinstall": "flowbite-react patch"
   },
   "dependencies": {
