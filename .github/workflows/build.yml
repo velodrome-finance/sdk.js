@@ -27,10 +27,12 @@ jobs:
     - name: Run Honey 🍯
       uses: ./.github/actions/honey
 
-    - name: Run tests
-      run: npm test
-
     - name: Build Sugar SDK
       run: |
         cd packages/sugar-sdk
         npm run build
+
+    - name: Run tests
+      run: npm test
+
+    
