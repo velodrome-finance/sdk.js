@@ -1,15 +1,41 @@
 #!/usr/bin/env tsx
 
-import { createConfig, http } from "@wagmi/core";
+import { config as loadEnv } from "dotenv";
+import { dirname, resolve } from "path";
 import {
+  base,
+  getDefaultConfig,
   getListedTokens,
   getQuoteForSwap,
-  initDrome,
-  velodromeConfig,
+  ink,
+  lisk,
+  metalL2,
+  mode,
+  optimism,
+  soneium,
+  superseed,
+  swellchain,
+  unichain,
 } from "sugar-sdk";
+import { fileURLToPath } from "url";
 import { parseArgs } from "util";
 import { parseUnits } from "viem";
 import { optimism } from "viem/chains";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+loadEnv({ path: resolve(__dirname, ".env") });
+
+const getRpcUrl = (chainId: number) => {
+  const value = process.env[`RPC_URI_${chainId}`];
+
+  if (!value) {
+    throw new Error(
+      `Missing RPC URI for chain ${chainId}. Define RPC_URI_${chainId} in packages/claudius/.env.`
+    );
+  }
+
+  return value;
+};
 
 const USAGE = `
 Usage: tsx quote.ts --fromToken <address> --toToken <address> --amount <amount> [--chainId <chainId>]
@@ -54,41 +80,21 @@ async function main() {
       process.exit(1);
     }
 
-    // Create Wagmi config with all supported chains
-    const wagmiConfig = createConfig({
-      chains: [
-        optimism,
-        // fraxtal,
-        // bob,
-        // lisk,
-        // celo,
-        // polygon,
-        // soneiumMinato,
-        // unichain,
-        // ink,
-        // fuse,
-        // sonic,
-      ],
-      transports: {
-        [optimism.id]: http(),
-        // [fraxtal.id]: http(),
-        // [bob.id]: http(),
-        // [lisk.id]: http(),
-        // [celo.id]: http(),
-        // [polygon.id]: http(),
-        // [soneiumMinato.id]: http(),
-        // [unichain.id]: http(),
-        // [ink.id]: http(),
-        // [fuse.id]: http(),
-        // [sonic.id]: http(),
-      },
-    });
-
-    // TODO: fix this
-    velodromeConfig.CHAIN_IDS = [10];
-
     // Initialize Drome config
-    const config = initDrome(wagmiConfig, velodromeConfig);
+    const config = getDefaultConfig({
+      chains: [
+        base,
+        ink,
+        lisk,
+        metalL2,
+        mode,
+        optimism,
+        soneium,
+        superseed,
+        swellchain,
+        unichain,
+      ].map((chain) => ({ chain, rpcUrl: getRpcUrl(chain.id) })),
+    });
 
     // Get all tokens for the specified chain
     console.log(`Fetching tokens for chain ID ${chainId}...`);
