@@ -15,7 +15,7 @@
     "flowbite-react": "^0.11.8",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "sugar-sdk": "^0.1.0",
+    "sugar-sdk": "^0.2.0",
     "use-debounce": "^10.0.5",
     "viem": "2.28.2",
     "wagmi": "^2.17.2"
