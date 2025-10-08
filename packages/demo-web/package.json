@@ -18,7 +18,7 @@
     "sugar-sdk": "^0.2.0",
     "use-debounce": "^10.0.5",
     "viem": "2.28.2",
-    "wagmi": "^2.17.2"
+    "wagmi": "2.17.2"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.10",
