@@ -68,7 +68,6 @@ export type Config = {
   readonly MAX_HOPS: number;
   readonly QUOTER_STABLE_POOL_FILLER: number;
   readonly QUOTER_VOLATILE_POOL_FILLER: number;
-  readonly PRICES_CHUNK_SIZE: number;
   readonly PRICE_MAPS: PriceMap;
   readonly POOLS_PAGE_SIZE: number;
   readonly TOKENS_PAGE_SIZE: number;
@@ -111,7 +110,6 @@ export const baseConfig = {
   QUOTER_STABLE_POOL_FILLER: 2097152,
   QUOTER_VOLATILE_POOL_FILLER: 4194304,
   PRICE_MAPS: {"0xafcc6ae807187a31e84138f3860d4ce27973e01b":{chainId:10,substituteToken:"0x4200000000000000000000000000000000000042"},"0xab77a4cc84bb8bcc0fcb54a00eca32680d6f96ca":{chainId:10,substituteToken:"0x4200000000000000000000000000000000000042"}} as PriceMap,
-  PRICES_CHUNK_SIZE: 15,
   DEFAULT_TOKEN_ORDER: ["ETH","WETH","AERO","VELO","USDC","OP","USDC.e","USDT","DAI","tBTC","cbBTC"],
   TOKEN_BRIDGE: "0x1A9d17828897d6289C6dff9DC9F5cc3bAEa17814" as Address,
   MAX_HOPS: 3,

@@ -97,7 +97,7 @@ export function getTokenPricesVars(
     new Set(CONNECTOR_TOKENS.concat(STABLE_TOKEN))
   );
   const tokenChunks = splitEvery(
-    config.PRICES_CHUNK_SIZE,
+    Math.max(3, Math.min(Math.ceil(rawTokens.length / 60), 20)), // keep chunk size between 3 and 20,
     uniqBy((t) => t.token_address, rawTokens)
   );
 
