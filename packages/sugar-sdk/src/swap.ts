@@ -86,7 +86,7 @@ export async function getCallDataForSwap({
   const { planner } = getSwapVars(
     config.sugarConfig,
     quote,
-    `${slippage * 100}`,
+    `${Math.ceil(slippage * 100)}`,
     account
   );
 
