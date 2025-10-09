@@ -1,25 +1,24 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
   name: "Sugar SDK"
-  text: "Sugar SDK docs"
-  tagline: My great project tagline
+  text: "Multi-chain DeFi made simple"
+  tagline: TypeScript client for accessing smart contracts across 12+ chains
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Get Started
+      link: /getting-started
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: API Reference
+      link: /api/overview
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Multi-chain Support
+    details: Access liquidity pools and swap tokens across Optimism, Base, Mode, Celo, and 8 other chains from a single SDK
+  - title: Type-safe
+    details: Built with TypeScript and powered by wagmi/viem for full type safety and autocomplete
+  - title: Battle-tested
+    details: Used in production by Velodrome Finance to power swaps and liquidity operations
 ---
 
