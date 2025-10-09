@@ -4,7 +4,6 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { splitEvery } from "ramda";
 import { Address, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
@@ -19,7 +18,12 @@ import {
   Quote,
   Token,
 } from "./primitives/index.js";
-import { BaseParams, ChainParams, ensureConnectedChain } from "./utils.js";
+import {
+  BaseParams,
+  ChainParams,
+  ensureConnectedChain,
+  processBatchesConcurrently,
+} from "./utils.js";
 
 // ERC20 ABI for approve and allowance functions
 const erc20Abi = [
@@ -132,41 +136,22 @@ export async function getQuoteForSwap({
     return null;
   }
 
-  const pathsBatches = splitEvery(50, paths);
-  const concurrentLimit = 10;
-
-  const executeBatch = async (batch: typeof paths) => {
-    return readContracts(config, {
-      contracts: batch.map((path) =>
-        getSwapQuoteParams({
-          config: config.sugarConfig,
-          chainId,
-          path: path.nodes,
-          amountIn,
-        })
-      ),
-    });
-  };
-
-  const batchPromises = [];
-  const executing: Promise<any>[] = [];
-
-  for (const batch of pathsBatches) {
-    const promise = executeBatch(batch).then((result) => {
-      executing.splice(executing.indexOf(promise), 1);
-      return result;
-    });
-
-    batchPromises.push(promise);
-    executing.push(promise);
-
-    if (executing.length >= concurrentLimit) {
-      await Promise.race(executing);
-    }
-  }
-
-  const results = await Promise.all(batchPromises);
-  const quoteResponses = results.flat();
+  const quoteResponses = await processBatchesConcurrently({
+    items: paths,
+    batchSize: 50,
+    concurrentLimit: 10,
+    processBatch: async (batch) =>
+      readContracts(config, {
+        contracts: batch.map((path) =>
+          getSwapQuoteParams({
+            config: config.sugarConfig,
+            chainId,
+            path: path.nodes,
+            amountIn,
+          })
+        ),
+      }),
+  });
 
   const quotes = quoteResponses
     .map((response, i) => {
