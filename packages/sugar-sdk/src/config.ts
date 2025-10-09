@@ -23,14 +23,21 @@ import {
 } from "@wagmi/core";
 import { privateKeyToAccount} from "viem/accounts";
 
-// OMG, there are private keys in this file. What is this amateur hour?
-// Calm down, these are presets from Anvil. No need to panic.
-// see https://getfoundry.sh/anvil/overview#getting-started
+/**
+ * Test account private key from Anvil's default accounts.
+ * @remarks
+ * This is a well-known test private key from Foundry's Anvil.
+ * See https://getfoundry.sh/anvil/overview#getting-started
+ * @internal
+ */
 const TEST_ACCOUNT_PK =
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
 
-// Re-export chains for consumers
+/**
+ * Re-exported chain definitions for consumer convenience.
+ * Includes all supported chains from wagmi/core/chains.
+ */
 export {
   base,
   celo,
@@ -46,6 +53,11 @@ export {
   unichain,
 };
 
+/**
+ * List of all blockchain networks supported by Sugar SDK.
+ * Includes Optimism, Unichain, Fraxtal, Lisk, Metal L2, Soneium, Swellchain,
+ * Superseed, Base, Mode, Celo, and Ink.
+ */
 export const supportedChains = [
   optimism,  // 10
   unichain,  // 130
@@ -61,50 +73,100 @@ export const supportedChains = [
   ink,       // 57073
 ];
 
-
+/**
+ * Main configuration type for Sugar SDK.
+ * Contains all settings, chain configurations, and token mappings needed for SDK operation.
+ */
 export type Config = {
+  /** Default ordering for displaying tokens in UI */
   readonly DEFAULT_TOKEN_ORDER: string[];
+  /** Price threshold filter value for token pricing */
   readonly PRICE_THRESHOLD_FILTER: number;
+  /** Maximum number of hops allowed in swap routing */
   readonly MAX_HOPS: number;
+  /** Filler value for stable pool quoter calculations */
   readonly QUOTER_STABLE_POOL_FILLER: number;
+  /** Filler value for volatile pool quoter calculations */
   readonly QUOTER_VOLATILE_POOL_FILLER: number;
+  /** Mapping of token addresses to their price substitutes across chains */
   readonly PRICE_MAPS: PriceMap;
+  /** Number of pools to fetch per page */
   readonly POOLS_PAGE_SIZE: number;
+  /** Number of tokens to fetch per page */
   readonly TOKENS_PAGE_SIZE: number;
+  /** Address of the token bridge contract (optional) */
   readonly TOKEN_BRIDGE?: Address;
+  /** Default chain ID to use when no chain is specified */
   readonly DEFAULT_CHAIN_ID: number;
+  /** Array of chain-specific configurations */
   readonly chains: ReadonlyArray<ChainConfig>;
+  /** Mapping of token addresses to their custom configurations */
   readonly tokens: { [tokenAddress: Address]: TokenConfig; };
+  /** Optional error handler callback */
   onError?: (error: unknown) => void;
 };
 
+/**
+ * Configuration for a specific blockchain network.
+ * Contains all contract addresses and settings for interacting with DEX contracts on that chain.
+ */
 export type ChainConfig = {
+  /** The chain definition from wagmi/core/chains */
   CHAIN: Chain;
+  /** Addresses of tokens used for routing connections */
   CONNECTOR_TOKENS: Address[];
+  /** Address of the primary stable token on this chain */
   STABLE_TOKEN: Address;
+  /** Addresses of tokens shown by default in UI */
   DEFAULT_TOKENS: Address[];
+  /** Address of wrapped native token (e.g., WETH) */
   WRAPPED_NATIVE_TOKEN?: Address;
+  /** Alternative WETH address if different from wrapped native token */
   WETH_ADDRESS?: Address;
+  /** Addresses of tokens that should be excluded from normal operations */
   UNSAFE_TOKENS?: Address[];
+  /** Address of the LP Sugar contract for pool data */
   LP_SUGAR_ADDRESS: Address;
+  /** Address of the Rewards Sugar contract */
   REWARDS_SUGAR_ADDRESS: Address;
+  /** Address of the DEX router contract */
   ROUTER_ADDRESS: Address;
+  /** Address of the prices oracle contract */
   PRICES_ADDRESS: Address;
+  /** Address of the voter/gauge contract */
   VOTER_ADDRESS: Address;
+  /** Address of the quoter contract for swap quotes */
   QUOTER_ADDRESS: Address;
+  /** Address of the universal router contract */
   UNIVERSAL_ROUTER_ADDRESS: Address;
+  /** Address of the Slipstream (concentrated liquidity) Sugar contract */
   SLIPSTREAM_SUGAR_ADDRESS: Address;
+  /** Address of the Non-Fungible Position Manager contract */
   NFPM_ADDRESS: Address;
+  /** Address of the VE Sugar contract (optional) */
   VE_SUGAR_ADDRESS?: Address;
+  /** Address of the Relay Sugar contract (optional) */
   RELAY_SUGAR_ADDRESS?: Address;
 };
 
+/**
+ * Configuration for a specific token.
+ */
 export type TokenConfig = {
+  /** Custom display symbol for the token */
   TOKEN_SYMBOL?: string;
 };
 
+/**
+ * Maps token addresses to their price substitute configuration.
+ * Used when a token's price needs to be fetched from a different chain.
+ */
 export type PriceMap = Record<Address, { chainId: number,  substituteToken: Address }>;
 
+/**
+ * Base configuration object with default settings for the Sugar SDK.
+ * Contains default values for all supported chains and tokens.
+ */
 export const baseConfig = {
   PRICE_THRESHOLD_FILTER: 10,
   QUOTER_STABLE_POOL_FILLER: 2097152,
@@ -351,12 +413,28 @@ export const baseConfig = {
   },
 } satisfies Config;
 
+/**
+ * Combined Wagmi and Sugar configuration type.
+ * Extends the standard Wagmi config with Sugar-specific settings.
+ */
 export type SugarWagmiConfig = WagmiCoreConfig & { sugarConfig: Config };
 
 /**
- * Attaches the sugar configuration onto an existing wagmi config instance so
- * downstream callers can consume both wagmi and sugar specific settings from a
- * single object.
+ * Attaches Sugar SDK configuration to an existing Wagmi config instance.
+ *
+ * This allows downstream code to access both Wagmi and Sugar-specific settings
+ * from a single unified configuration object.
+ *
+ * @param wagmiConfig - The Wagmi core configuration instance
+ * @param sugarConfig - The Sugar SDK configuration to attach
+ * @returns A combined configuration object with both Wagmi and Sugar settings
+ *
+ * @example
+ * ```typescript
+ * const wagmiConfig = createConfig({ ... });
+ * const config = init(wagmiConfig, baseConfig);
+ * // Now config has both wagmiConfig properties and config.sugarConfig
+ * ```
  */
 export function init<T extends WagmiCoreConfig>(
   wagmiConfig: T,
@@ -426,10 +504,24 @@ export const _getTestConfig = ({ chains }: ConfigSpec) => {
 }
 
 /**
- * Builds a {@link SugarWagmiConfig} seeded with the provided chains and RPC
- * endpoints.
- * Returned configs are filtered down to the requested chains while preserving
- * the defaults defined in {@link baseConfig}.
+ * Creates a default Sugar SDK configuration with the specified chains and RPC endpoints.
+ *
+ * Builds a complete Wagmi + Sugar configuration ready for use. The returned config
+ * includes only the specified chains while preserving all default settings from baseConfig.
+ *
+ * @param params - Configuration parameters
+ * @param params.chains - Array of chain configurations with RPC URLs
+ * @returns A fully configured SugarWagmiConfig instance
+ *
+ * @example
+ * ```typescript
+ * const config = getDefaultConfig({
+ *   chains: [
+ *     { chain: optimism, rpcUrl: "https://mainnet.optimism.io" },
+ *     { chain: base, rpcUrl: "https://mainnet.base.org" }
+ *   ]
+ * });
+ * ```
  */
 export const getDefaultConfig = ({ chains }: ConfigSpec): SugarWagmiConfig => {
   return _getDefaultConfig({ chains });

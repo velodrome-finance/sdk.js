@@ -8,7 +8,28 @@ import {
 } from "./primitives/index.js";
 import { ChainParams } from "./utils.js";
 
-export async function getPoolsForSwaps({ config, chainId }: ChainParams) {
+/**
+ * Retrieves all liquidity pools available for swapping on the specified chain.
+ *
+ * Automatically handles pagination to fetch all pools efficiently, using optimal
+ * batch sizes determined by the total pool count.
+ *
+ * @param params - Chain parameters
+ * @param params.config - The Sugar SDK configuration
+ * @param params.chainId - The chain ID to fetch pools from
+ * @returns Promise that resolves to an array of PoolForSwap objects containing pool data optimized for swap routing
+ *
+ * @example
+ * ```typescript
+ * const pools = await getPoolsForSwaps({ config, chainId: 10 });
+ * console.log(`Found ${pools.length} pools on Optimism`);
+ * // Each pool in the array is of type PoolForSwap
+ * ```
+ */
+export async function getPoolsForSwaps({
+  config,
+  chainId,
+}: ChainParams): Promise<PoolForSwap[]> {
   const { limit, upperBound } = await getPoolsPagination({ config, chainId });
 
   const pools = await paginate<PoolForSwap>({
@@ -29,7 +50,23 @@ export async function getPoolsForSwaps({ config, chainId }: ChainParams) {
   return [...pools];
 }
 
-export async function getPoolsPagination({ config, chainId }: ChainParams) {
+/**
+ * Calculates optimal pagination parameters for fetching pools from a chain.
+ *
+ * Determines the best page size based on total pool count to maximize efficiency
+ * while avoiding gas limits. Aims for ~90 pools per batch for optimal performance.
+ *
+ * @param params - Chain parameters
+ * @param params.config - The Sugar SDK configuration
+ * @param params.chainId - The chain ID to calculate pagination for
+ * @returns Promise that resolves to an object with `limit` (page size as number) and `upperBound` (total pool count as number)
+ *
+ * @internal
+ */
+export async function getPoolsPagination({
+  config,
+  chainId,
+}: ChainParams): Promise<{ limit: number; upperBound: number }> {
   const poolCount = Number(
     (await readContract(
       config,
