@@ -133,28 +133,40 @@ export async function getQuoteForSwap({
   }
 
   const pathsBatches = splitEvery(50, paths);
-  const concurrentBatchSize = 10; // Process 10 batches at a time
+  const concurrentLimit = 10;
 
-  const quoteResponses = [];
+  const executeBatch = async (batch: typeof paths) => {
+    return readContracts(config, {
+      contracts: batch.map((path) =>
+        getSwapQuoteParams({
+          config: config.sugarConfig,
+          chainId,
+          path: path.nodes,
+          amountIn,
+        })
+      ),
+    });
+  };
 
-  for (let i = 0; i < pathsBatches.length; i += concurrentBatchSize) {
-    const batchGroup = pathsBatches.slice(i, i + concurrentBatchSize);
-    const batchPromises = batchGroup.map((batch) =>
-      readContracts(config, {
-        contracts: batch.map((path) =>
-          getSwapQuoteParams({
-            config: config.sugarConfig,
-            chainId,
-            path: path.nodes,
-            amountIn,
-          })
-        ),
-      })
-    );
+  const batchPromises = [];
+  const executing: Promise<any>[] = [];
 
-    const batchResults = await Promise.all(batchPromises);
-    quoteResponses.push(...batchResults.flat());
+  for (const batch of pathsBatches) {
+    const promise = executeBatch(batch).then((result) => {
+      executing.splice(executing.indexOf(promise), 1);
+      return result;
+    });
+
+    batchPromises.push(promise);
+    executing.push(promise);
+
+    if (executing.length >= concurrentLimit) {
+      await Promise.race(executing);
+    }
   }
+
+  const results = await Promise.all(batchPromises);
+  const quoteResponses = results.flat();
 
   const quotes = quoteResponses
     .map((response, i) => {
