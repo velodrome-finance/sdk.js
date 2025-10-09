@@ -7,7 +7,8 @@ import {
   TEST_ACCOUNT_ADDRESS,
 } from "@/lib/test-helpers.js";
 
-import { type Token } from "./primitives";
+import { approve } from "./approval.js";
+import { type Token } from "./primitives/index.js";
 // Import the swap functions
 import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
@@ -151,7 +152,7 @@ describe("Test swap functionality", () => {
 
   test(
     "quote and swap from WETH to USDC",
-    { retry: 3, timeout: 30000 },
+    { timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
       const amountIn = parseUnits("1", tokens.opWeth.decimals);
       const quote = await getQuoteForSwap({
@@ -169,6 +170,17 @@ describe("Test swap functionality", () => {
       expect(quote!.path).toBeDefined();
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
+      expect(quote!.spenderAddress).toBeDefined();
+
+      // Approve tokens before swap
+      await approve({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: quote!.spenderAddress,
+        amount: quote!.amount,
+        chainId: quote!.fromToken.chainId,
+      });
 
       const r = await swap({ config: supersimConfig, quote: quote! });
       expect(r).toBeDefined();
@@ -178,7 +190,7 @@ describe("Test swap functionality", () => {
 
   test(
     "quote and swap from VELO to USDC",
-    { timeout: 30000, retry: 3 },
+    { timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
       const amountIn = parseUnits("100", tokens.opVelo.decimals);
       const quote = await getQuoteForSwap({
@@ -197,11 +209,22 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
+      // Approve tokens before swap
+      await approve({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: quote!.spenderAddress,
+        amount: quote!.amount,
+        chainId: quote!.fromToken.chainId,
+      });
+
       const r = await swap({
         config: supersimConfig,
         quote: quote!,
         slippagePct: "5",
       }); // 5% slippage tolerance
+
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
     }
@@ -209,7 +232,7 @@ describe("Test swap functionality", () => {
 
   test(
     "quote and swap from ETH to VELO",
-    { timeout: 30000, retry: 3 },
+    { timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
       const amountIn = parseUnits("0.1", tokens.opEth.decimals);
       const quote = await getQuoteForSwap({
@@ -228,6 +251,16 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
+      // Approve tokens before swap
+      await approve({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: quote!.spenderAddress,
+        amount: quote!.amount,
+        chainId: quote!.fromToken.chainId,
+      });
+
       const r = await swap({ config: supersimConfig, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
@@ -236,7 +269,7 @@ describe("Test swap functionality", () => {
 
   test(
     "quote and swap from VELO to ETH",
-    { timeout: 30000, retry: 3 },
+    { timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
       const amountIn = parseUnits("1000", tokens.opVelo.decimals);
       const quote = await getQuoteForSwap({
@@ -255,6 +288,16 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
+      // Approve tokens before swap
+      await approve({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: quote!.spenderAddress,
+        amount: quote!.amount,
+        chainId: quote!.fromToken.chainId,
+      });
+
       const r = await swap({ config: supersimConfig, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
@@ -263,7 +306,7 @@ describe("Test swap functionality", () => {
 
   test(
     "quote and swap from VELO to WETH",
-    { timeout: 30000, retry: 3 },
+    { timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
       const amountIn = parseUnits("1000", tokens.opVelo.decimals);
       const quote = await getQuoteForSwap({
@@ -282,9 +325,90 @@ describe("Test swap functionality", () => {
       expect(quote!.path.nodes).toBeInstanceOf(Array);
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
 
+      // Approve tokens before swap
+      await approve({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: quote!.spenderAddress,
+        amount: quote!.amount,
+        chainId: quote!.fromToken.chainId,
+      });
+
       const r = await swap({ config: supersimConfig, quote: quote! });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
+    }
+  );
+
+  test(
+    "swap without waiting for receipt",
+    { timeout: 30000 },
+    async ({ config, supersimConfig, tokens }) => {
+      const amountIn = parseUnits("100", tokens.opVelo.decimals);
+      const quote = await getQuoteForSwap({
+        config,
+        fromToken: tokens.opVelo,
+        toToken: tokens.opUsdc,
+        amountIn,
+      });
+
+      expect(quote).toBeTruthy();
+
+      // Approve tokens before swap
+      await approve({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: quote!.spenderAddress,
+        amount: quote!.amount,
+        chainId: quote!.fromToken.chainId,
+      });
+
+      // Call swap without waiting for receipt
+      const hash = await swap({
+        config: supersimConfig,
+        quote: quote!,
+        waitForReceipt: false,
+      });
+
+      expect(hash).toBeDefined();
+      expect(hash.startsWith("0x")).toBe(true);
+      // Hash should be returned immediately without waiting for confirmation
+    }
+  );
+
+  test(
+    "separate approval and swap",
+    { timeout: 30000 },
+    async ({ config, supersimConfig, tokens }) => {
+      const amountIn = parseUnits("1", tokens.opWeth.decimals);
+      const quote = await getQuoteForSwap({
+        config,
+        fromToken: tokens.opWeth,
+        toToken: tokens.opUsdc,
+        amountIn,
+      });
+
+      expect(quote).toBeTruthy();
+
+      // Manually approve tokens before swap - demonstrating separate approval workflow
+      await approve({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: quote!.spenderAddress,
+        amount: quote!.amount,
+        chainId: quote!.fromToken.chainId,
+      });
+
+      const hash = await swap({
+        config: supersimConfig,
+        quote: quote!,
+      });
+
+      expect(hash).toBeDefined();
+      expect(hash.startsWith("0x")).toBe(true);
     }
   );
 });
