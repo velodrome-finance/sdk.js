@@ -113,8 +113,11 @@ export function getCustomPricesVars(config: Config): Array<{
   chainId: number;
   tokens: Array<{ token_address: Address; decimals: number }>;
 }> {
-  return Object.values(config.PRICE_MAPS).map(
-    ({ chainId, substituteToken }) => {
+  const configuredChainIds = config.chains.map((c) => c.CHAIN.id);
+
+  return Object.values(config.PRICE_MAPS)
+    .filter(({ chainId }) => configuredChainIds.includes(chainId))
+    .map(({ chainId, substituteToken }) => {
       const chainConfig = getChainConfig(config, chainId);
 
       //including 2 more tokens as USD pricing requires both ETH and stablecoin prices in the tokenlist
@@ -134,8 +137,7 @@ export function getCustomPricesVars(config: Config): Array<{
       ];
 
       return { chainId, tokens };
-    }
-  );
+    });
 }
 
 /**
