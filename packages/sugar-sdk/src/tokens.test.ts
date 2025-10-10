@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { base, getDefaultConfig } from "./config.js";
 import { init } from "./lib/test-helpers.js";
 import { getListedTokens } from "./tokens.js";
 
@@ -19,5 +20,16 @@ describe("Test fetching tokens", () => {
     expect(new Set(chainIds).size).toEqual(10);
     expect(chainIds).toContain(10);
     expect(chainIds).toContain(8453);
+  });
+  it("should work with a subset of chains", async () => {
+    const config = getDefaultConfig({
+      chains: [
+        { chain: base, rpcUrl: import.meta.env[`VITE_RPC_URL_${base.id}`] },
+      ],
+    });
+    const tokens = await getListedTokens({ config });
+    const chainIds = tokens.map((token) => token.chainId);
+    expect(new Set(chainIds).size).toEqual(1);
+    expect(chainIds).toContain(base.id);
   });
 });
