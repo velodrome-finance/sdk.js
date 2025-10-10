@@ -75,7 +75,7 @@ Executes a token swap transaction on-chain.
 function swap(params: {
   config: SugarWagmiConfig;
   quote: Quote;
-  slippagePct?: string;
+  slippage?: number;
   waitForReceipt?: boolean;
   privateKey?: Hex;
 }): Promise<string>
@@ -85,7 +85,7 @@ function swap(params: {
 
 - `config` - The Sugar SDK configuration
 - `quote` - Quote from `getQuoteForSwap()`
-- `slippagePct` - Slippage tolerance as percentage string (default: "50" for 0.5%)
+- `slippage` - Slippage tolerance as decimal between 0 and 1 (default: 0.005 for 0.5%)
 - `waitForReceipt` - Wait for confirmation (default: true)
 - `privateKey` - Optional private key for direct transaction signing. If provided, executes swap using this key instead of a connected wallet
 
@@ -119,7 +119,7 @@ if (!quote) {
 const txHash = await swap({
   config,
   quote,
-  slippagePct: "50", // 0.5% slippage
+  slippage: 0.005, // 0.5% slippage
 });
 
 console.log(`Swap complete: ${txHash}`);
@@ -147,7 +147,7 @@ if (!quote) {
 const txHash = await swap({
   config,
   quote,
-  slippagePct: "50",
+  slippage: 0.005, // 0.5% slippage
   privateKey: process.env.PRIVATE_KEY as Hex, // Load from environment
 });
 
@@ -158,12 +158,12 @@ console.log(`Swap complete: ${txHash}`);
 
 ### Slippage Values
 
-The `slippagePct` parameter is a percentage string:
+The `slippage` parameter is a decimal between 0 and 1:
 
-- `"50"` = 0.5% (recommended for most swaps)
-- `"100"` = 1%
-- `"500"` = 5%
-- `"1000"` = 10%
+- `0.005` = 0.5% (recommended for most swaps, this is the default)
+- `0.01` = 1%
+- `0.05` = 5%
+- `0.1` = 10%
 
 If actual price moves beyond this tolerance, the transaction reverts.
 
@@ -407,7 +407,7 @@ if (!quote) {
 const txHash = await swap({
   config,
   quote,
-  slippagePct: "50",
+  slippage: 0.005,
 });
 
 console.log(`Success: ${txHash}`);
@@ -435,7 +435,7 @@ await approve({
 });
 
 // Now execute swap
-await swap({ config, quote, slippagePct: "50" });
+await swap({ config, quote, slippage: 0.005 });
 ```
 
 ### Using Calldata
@@ -483,7 +483,7 @@ try {
   const txHash = await swap({
     config,
     quote,
-    slippagePct: "50",
+    slippage: 0.005,
   });
 
   console.log(`Success: ${txHash}`);

@@ -53,7 +53,7 @@ import { swap } from "sugar-sdk";
 const txHash = await swap({
   config,
   quote,
-  slippagePct: "50", // 0.5% slippage tolerance
+  slippage: 0.005, // 0.5% slippage tolerance
 });
 
 console.log(`Swap completed: ${txHash}`);
@@ -61,13 +61,13 @@ console.log(`Swap completed: ${txHash}`);
 
 ### Slippage Protection
 
-The `slippagePct` parameter protects you from price movement:
+The `slippage` parameter protects you from price movement:
 
-- `"50"` = 0.5% slippage (safe for most swaps)
-- `"100"` = 1% slippage (for volatile markets)
-- `"500"` = 5% slippage (use with caution)
+- `0.005` = 0.5% slippage (safe for most swaps, this is the default)
+- `0.01` = 1% slippage (for volatile markets)
+- `0.05` = 5% slippage (use with caution)
 
-If the price moves beyond your slippage tolerance, the transaction reverts.
+The value must be a decimal between 0 and 1. If the price moves beyond your slippage tolerance, the transaction reverts.
 
 ## Complete Example
 
@@ -116,7 +116,7 @@ console.log(`Price impact: ${quote.priceImpact}%`);
 const txHash = await swap({
   config,
   quote,
-  slippagePct: "50",
+  slippage: 0.005, // 0.5% slippage
 });
 
 console.log(`Success! Transaction: ${txHash}`);
@@ -157,7 +157,7 @@ const quote = await getQuoteForSwap({
 const txHash = await swap({
   config,
   quote,
-  slippagePct: "50",
+  slippage: 0.005, // 0.5% slippage
   privateKey: process.env.PRIVATE_KEY as Hex, // Load from environment
 });
 
@@ -192,7 +192,7 @@ await approve({
 });
 
 // Now execute the swap
-await swap({ config, quote, slippagePct: "50" });
+await swap({ config, quote, slippage: 0.005 });
 ```
 
 ## Working Without Receipt Confirmation
@@ -203,7 +203,7 @@ By default, `swap()` waits for the transaction to be confirmed. For faster respo
 const txHash = await swap({
   config,
   quote,
-  slippagePct: "50",
+  slippage: 0.005,
   waitForReceipt: false, // Returns immediately after submitting
 });
 
@@ -228,7 +228,7 @@ try {
     throw new Error("No liquidity route found");
   }
 
-  const txHash = await swap({ config, quote, slippagePct: "50" });
+  const txHash = await swap({ config, quote, slippage: 0.005 });
   console.log(`Success: ${txHash}`);
 } catch (error) {
   console.error("Swap failed:", error.message);
