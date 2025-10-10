@@ -77,6 +77,7 @@ function swap(params: {
   quote: Quote;
   slippagePct?: string;
   waitForReceipt?: boolean;
+  privateKey?: Hex;
 }): Promise<string>
 ```
 
@@ -86,6 +87,7 @@ function swap(params: {
 - `quote` - Quote from `getQuoteForSwap()`
 - `slippagePct` - Slippage tolerance as percentage string (default: "50" for 0.5%)
 - `waitForReceipt` - Wait for confirmation (default: true)
+- `privateKey` - Optional private key for direct transaction signing. If provided, executes swap using this key instead of a connected wallet
 
 ### Returns
 
@@ -94,8 +96,9 @@ function swap(params: {
 ### Throws
 
 - If transaction fails or reverts
-- If user rejects transaction
+- If user rejects transaction (when using connected wallet)
 - If insufficient balance or allowance
+- If no connected account is found and no private key is provided
 
 ### Example
 
@@ -121,6 +124,37 @@ const txHash = await swap({
 
 console.log(`Swap complete: ${txHash}`);
 ```
+
+### Example with Private Key
+
+For backend services or scripts, use a private key instead of a connected wallet:
+
+```typescript
+import { getQuoteForSwap, swap } from "sugar-sdk";
+import type { Hex } from "viem";
+
+const quote = await getQuoteForSwap({
+  config,
+  fromToken: usdc,
+  toToken: weth,
+  amountIn: 1000000000n,
+});
+
+if (!quote) {
+  throw new Error("No swap route found");
+}
+
+const txHash = await swap({
+  config,
+  quote,
+  slippagePct: "50",
+  privateKey: process.env.PRIVATE_KEY as Hex, // Load from environment
+});
+
+console.log(`Swap complete: ${txHash}`);
+```
+
+**Security Note**: Never hardcode private keys. Always use environment variables or secure key management systems.
 
 ### Slippage Values
 
@@ -154,7 +188,10 @@ console.log("Swap submitted (pending...)");
 ### Details
 
 This function:
-- Automatically switches to correct chain if needed
+- Supports two execution modes:
+  - **Connected wallet**: Uses wagmi connectors for user-facing dApps
+  - **Private key**: Direct signing for backend services and scripts
+- Automatically switches to correct chain if needed (when using connected wallet)
 - Submits transaction via Universal Router
 - Optionally waits for confirmation
 - Validates transaction success

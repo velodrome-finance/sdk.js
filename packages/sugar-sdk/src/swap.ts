@@ -216,15 +216,22 @@ export async function getQuoteForSwap({
  * Automatically switches to the correct chain if needed. Optionally waits for the
  * transaction to be confirmed.
  *
+ * Supports two execution modes:
+ * - With a connected wallet (via wagmi connectors)
+ * - With a private key for direct transaction signing
+ *
  * @param params - Swap execution parameters
  * @param params.config - The Sugar SDK configuration
  * @param params.quote - The swap quote to execute (from getQuoteForSwap)
  * @param params.slippagePct - Slippage tolerance as percentage string (e.g., "50" for 0.5%)
  * @param params.waitForReceipt - Whether to wait for transaction confirmation (default: true)
+ * @param params.privateKey - Optional private key for direct transaction signing. If provided, the swap will be executed using this key instead of a connected wallet
  * @returns Promise that resolves to the transaction hash as a string
  * @throws Error if the transaction fails or is reverted
+ * @throws Error if no connected account is found and no private key is provided
  *
  * @example
+ * // Using a connected wallet
  * ```typescript
  * const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
  * const txHash = await swap({
@@ -234,6 +241,19 @@ export async function getQuoteForSwap({
  * });
  * console.log(`Swap executed: ${txHash}`);
  * // txHash: string (e.g., "0x1234...")
+ * ```
+ *
+ * @example
+ * // Using a private key
+ * ```typescript
+ * const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
+ * const txHash = await swap({
+ *   config,
+ *   quote,
+ *   slippagePct: "50",
+ *   privateKey: "0x..." as Hex, // Private key for signing
+ * });
+ * console.log(`Swap executed: ${txHash}`);
  * ```
  */
 export async function swap({

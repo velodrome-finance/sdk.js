@@ -122,6 +122,59 @@ const txHash = await swap({
 console.log(`Success! Transaction: ${txHash}`);
 ```
 
+## Using Private Keys for Swaps
+
+If you prefer to execute swaps directly without connecting a wallet (e.g., for backend services, automation, or scripts), you can provide a private key:
+
+```typescript
+import {
+  getDefaultConfig,
+  getListedTokens,
+  getQuoteForSwap,
+  swap,
+  optimism
+} from "sugar-sdk";
+import type { Hex } from "viem";
+
+// Setup config (no wallet connection needed)
+const config = getDefaultConfig({
+  chains: [{ chain: optimism, rpcUrl: "https://mainnet.optimism.io" }]
+});
+
+// Get tokens and quote
+const tokens = await getListedTokens({ config });
+const usdc = tokens.find(t => t.symbol === "USDC" && t.chainId === 10);
+const weth = tokens.find(t => t.symbol === "WETH" && t.chainId === 10);
+
+const quote = await getQuoteForSwap({
+  config,
+  fromToken: usdc,
+  toToken: weth,
+  amountIn: 1000000000n,
+});
+
+// Execute swap with private key
+const txHash = await swap({
+  config,
+  quote,
+  slippagePct: "50",
+  privateKey: process.env.PRIVATE_KEY as Hex, // Load from environment
+});
+
+console.log(`Swap executed: ${txHash}`);
+```
+
+### Private Key vs Connected Wallet
+
+| Feature | Private Key | Connected Wallet |
+|---------|-------------|-----------------|
+| Use case | Backend services, scripts | User-facing dApps |
+| User interaction | None | Requires approval |
+| Security | Store securely (env vars, vaults) | Managed by wallet |
+| Flexibility | Full programmatic control | Limited to wallet capabilities |
+
+**Security Warning**: Never hardcode private keys or commit them to version control. Always use environment variables or secure key management systems.
+
 ## Handling Token Approvals
 
 Before swapping, you may need to approve the router to spend your tokens. The SDK doesn't automatically approve, but you can use the `approve` function:
