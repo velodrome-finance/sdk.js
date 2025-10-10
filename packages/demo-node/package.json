@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "vitest",
-    "test:watch": "vitest --watch",
-    "swap": "tsx swap.ts"
+    "test:watch": "vitest --watch"
   },
   "dependencies": {
     "@wagmi/core": "^2.0.0",

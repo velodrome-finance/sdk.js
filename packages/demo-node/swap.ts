@@ -43,8 +43,11 @@ Arguments:
 Note: This script only supports Base chain (chainId: ${base.id})
 
 Examples:
-  tsx swap.ts --fromToken 0x4200000000000000000000000000000000000006 --toToken 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913 --amount 10000000000000000 --privateKey 0x...
-  tsx swap.ts --fromToken 0x4200000000000000000000000000000000000006 --toToken 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913 --amount 100000000 --slippage 0.01 --privateKey 0x...
+
+// Swap 1 USDC to Aero with 1% slippage tolerance
+tsx swap.ts --fromToken 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913 --toToken 0x940181a94a35a4569e4529a3cdfb74e38fd98631 --amount 1000000 --slippage 0.01 --privateKey YOUR_PRIVATE_KEY
+// Swap 0.0005 ETH to Aero with 1% slippage tolerance
+tsx swap.ts --fromToken eth --toToken 0x940181a94a35a4569e4529a3cdfb74e38fd98631 --amount 500000000000000 --slippage 0.01 --privateKey YOUR_PRIVATE_KEY
 `;
 
 async function main() {
