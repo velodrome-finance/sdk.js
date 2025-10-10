@@ -259,15 +259,19 @@ export async function getQuoteForSwap({
 export async function swap({
   config,
   quote,
-  slippagePct,
+  slippage = 0.005,
   waitForReceipt = true,
   privateKey,
 }: BaseParams & {
   quote: Quote;
-  slippagePct?: string;
+  slippage?: number;
   waitForReceipt?: boolean;
   privateKey?: Hex;
 }): Promise<string> {
+  if (typeof slippage !== "undefined" && (slippage < 0 || slippage > 1)) {
+    throw new Error("Invalid slippage value. Should be between 0 and 1.");
+  }
+
   // Determine account address based on whether privateKey is provided
   let accountAddress: Address;
   if (privateKey) {
@@ -286,7 +290,9 @@ export async function swap({
   const { chainId, planner, amount } = getSwapVars(
     config.sugarConfig,
     quote,
-    slippagePct,
+    typeof slippage !== "undefined"
+      ? `${Math.ceil(slippage * 100)}`
+      : undefined,
     accountAddress
   );
 

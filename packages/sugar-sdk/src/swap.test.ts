@@ -270,8 +270,7 @@ describe("Test swap functionality", () => {
       const r = await swap({
         config: supersimConfig,
         quote: quote!,
-        slippagePct: "5",
-      }); // 5% slippage tolerance
+      });
 
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
