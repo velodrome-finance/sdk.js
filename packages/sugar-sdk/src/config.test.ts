@@ -79,4 +79,21 @@ describe("getDefaultConfig", () => {
     expect(config.sugarConfig.chains.length).toEqual(1);
     expect(config.sugarConfig.chains[0].CHAIN.id).toEqual(base.id);
   });
+
+  it("accepts and stores privateKey", () => {
+    const testPrivateKey =
+      "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" as `0x${string}`;
+    const config = getDefaultConfig({
+      chains: [{ chain: base, rpcUrl: "https://mainnet.base.org/" }],
+      privateKey: testPrivateKey,
+    });
+    expect(config.sugarConfig.privateKey).toEqual(testPrivateKey);
+  });
+
+  it("works without privateKey", () => {
+    const config = getDefaultConfig({
+      chains: [{ chain: base, rpcUrl: "https://mainnet.base.org/" }],
+    });
+    expect(config.sugarConfig.privateKey).toBeUndefined();
+  });
 });

@@ -104,6 +104,8 @@ export type Config = {
   readonly tokens: { [tokenAddress: Address]: TokenConfig; };
   /** Optional error handler callback */
   onError?: (error: unknown) => void;
+  /** Optional private key for direct transaction signing */
+  readonly privateKey?: `0x${string}`;
 };
 
 /**
@@ -445,12 +447,13 @@ export function init<T extends WagmiCoreConfig>(
 
 interface _ConfigSpec {
   chains: { chain: Chain; rpcUrl: string }[];
-  testMode?: boolean; 
+  testMode?: boolean;
+  privateKey?: `0x${string}`;
 }
 
 type ConfigSpec = Omit<_ConfigSpec, "testMode">;
 
-const _getDefaultConfig = ({ chains, testMode }: _ConfigSpec): SugarWagmiConfig => {
+const _getDefaultConfig = ({ chains, testMode, privateKey }: _ConfigSpec): SugarWagmiConfig => {
   const requestedChainIds = chains.map((c) => c.chain.id);
   const wagmiChains = chains.map(({ chain, rpcUrl }) => {
     return {
@@ -495,6 +498,7 @@ const _getDefaultConfig = ({ chains, testMode }: _ConfigSpec): SugarWagmiConfig 
       chains: baseConfig.chains.filter((c) =>
         requestedChainIds.includes(c.CHAIN.id)
       ),
+      privateKey,
     })
   );
 };
@@ -511,9 +515,11 @@ export const _getTestConfig = ({ chains }: ConfigSpec) => {
  *
  * @param params - Configuration parameters
  * @param params.chains - Array of chain configurations with RPC URLs
+ * @param params.privateKey - Optional private key for direct transaction signing. When provided, all contract writes will use this key instead of connected wallets
  * @returns A fully configured SugarWagmiConfig instance
  *
  * @example
+ * // Basic configuration
  * ```typescript
  * const config = getDefaultConfig({
  *   chains: [
@@ -522,7 +528,18 @@ export const _getTestConfig = ({ chains }: ConfigSpec) => {
  *   ]
  * });
  * ```
+ *
+ * @example
+ * // Configuration with private key for automated transactions
+ * ```typescript
+ * const config = getDefaultConfig({
+ *   chains: [
+ *     { chain: optimism, rpcUrl: "https://mainnet.optimism.io" }
+ *   ],
+ *   privateKey: "0x..." as `0x${string}`
+ * });
+ * ```
  */
-export const getDefaultConfig = ({ chains }: ConfigSpec): SugarWagmiConfig => {
-  return _getDefaultConfig({ chains });
+export const getDefaultConfig = ({ chains, privateKey }: ConfigSpec): SugarWagmiConfig => {
+  return _getDefaultConfig({ chains, privateKey });
 }
