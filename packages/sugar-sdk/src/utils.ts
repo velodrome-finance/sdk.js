@@ -1,5 +1,7 @@
-import { getAccount, switchChain } from "@wagmi/core";
+import { getAccount, getClient, switchChain, writeContract } from "@wagmi/core";
 import { splitEvery } from "ramda";
+import { Abi, createWalletClient, Hex, http } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 
 import { SugarWagmiConfig } from "./config.js";
 
@@ -103,4 +105,102 @@ export async function processBatchesConcurrently<T, R>({
 
   const results = await Promise.all(batchPromises);
   return results.flat();
+}
+
+/**
+ * Parameters for writing to a contract.
+ */
+export interface WriteContractParams {
+  /** Contract address */
+  address: string;
+  /** Contract ABI */
+  abi: Abi;
+  /** Function name to call */
+  functionName: string;
+  /** Function arguments */
+  args?: readonly unknown[];
+  /** Value to send with the transaction */
+  value?: bigint;
+}
+
+/**
+ * Writes to a contract with automatic routing based on configuration.
+ *
+ * This helper function automatically chooses the correct method for writing to contracts:
+ * - If a private key is configured in `config.sugarConfig.privateKey`, it uses viem's wallet client for direct signing
+ * - Otherwise, it uses wagmi's writeContract with the connected wallet, ensuring the chain is switched if needed
+ *
+ * This eliminates the need for duplicate code in functions that support both private key and wallet-based transactions.
+ *
+ * @param params - Write contract parameters
+ * @param params.config - The Sugar SDK configuration
+ * @param params.chainId - The chain ID where the contract is deployed
+ * @param params.contractParams - The contract write parameters (address, abi, functionName, args, value)
+ * @returns Promise that resolves to the transaction hash
+ * @throws Error if no client is found for the specified chain when using private key mode
+ *
+ * @example
+ * ```typescript
+ * const hash = await writeContractWithConfig({
+ *   config,
+ *   chainId: 10,
+ *   contractParams: {
+ *     address: "0x...",
+ *     abi: erc20Abi,
+ *     functionName: "approve",
+ *     args: ["0x...", 1000000n],
+ *   }
+ * });
+ * ```
+ */
+export async function writeContractWithConfig({
+  config,
+  chainId,
+  contractParams,
+}: ChainParams & {
+  contractParams: WriteContractParams;
+}): Promise<Hex> {
+  const { privateKey } = config.sugarConfig;
+
+  if (privateKey) {
+    // Use viem's wallet client for private key transactions
+    const account = privateKeyToAccount(privateKey);
+
+    // Get the viem client from wagmi for the specific chain
+    const viemClient = getClient(config, { chainId });
+
+    if (!viemClient) {
+      throw new Error(`No client found for chain ${chainId}`);
+    }
+
+    // Get the RPC URL from the chain configuration and create a new transport
+    const rpcUrl = viemClient.chain.rpcUrls.default.http[0];
+    const transport = http(rpcUrl, { batch: true });
+
+    // Create wallet client reusing the chain config and RPC transport
+    const walletClient = createWalletClient({
+      account,
+      chain: viemClient.chain,
+      transport,
+    });
+
+    return await walletClient.writeContract({
+      address: contractParams.address as Hex,
+      abi: contractParams.abi,
+      functionName: contractParams.functionName,
+      args: contractParams.args,
+      value: contractParams.value,
+    });
+  } else {
+    // Use wagmi's writeContract for injected wallet transactions
+    await ensureConnectedChain({ config, chainId });
+    return await writeContract(config, {
+      chainId,
+      address: contractParams.address as Hex,
+      abi: contractParams.abi,
+      functionName: contractParams.functionName,
+      args: contractParams.args,
+      value: contractParams.value,
+    });
+  }
 }
