@@ -98,6 +98,7 @@ async function main() {
     // Initialize Sugar SDK config for Base chain only
     const config = getDefaultConfig({
       chains: [{ chain: base, rpcUrl: getRpcUrl() }],
+      privateKey,
     });
 
     // Get all tokens for Base chain
@@ -183,7 +184,6 @@ async function main() {
       spenderAddress: quote!.spenderAddress,
       amount: quote!.amount,
       chainId: quote!.fromToken.chainId,
-      privateKey,
     });
 
     // Execute swap
@@ -192,7 +192,6 @@ async function main() {
       config,
       quote,
       slippage,
-      privateKey,
       waitForReceipt,
     });
 
