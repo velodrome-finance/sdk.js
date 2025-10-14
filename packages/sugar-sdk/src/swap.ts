@@ -1,12 +1,9 @@
 import {
   getAccount,
-  getClient,
   readContracts,
   waitForTransactionReceipt,
-  writeContract,
 } from "@wagmi/core";
-import { Address, createWalletClient, Hex, http } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
+import { Address, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
 import { applyPct } from "./primitives/externals/app/src/hooks/math.js";
@@ -22,8 +19,8 @@ import {
 } from "./primitives/index.js";
 import {
   BaseParams,
-  ensureConnectedChain,
   processBatchesConcurrently,
+  writeContractWithConfig,
 } from "./utils.js";
 
 /**
@@ -218,21 +215,21 @@ export async function getQuoteForSwap({
  *
  * Supports two execution modes:
  * - With a connected wallet (via wagmi connectors)
- * - With a private key for direct transaction signing
+ * - With a private key for direct transaction signing (configured via `getDefaultConfig`)
  *
  * @param params - Swap execution parameters
  * @param params.config - The Sugar SDK configuration
  * @param params.quote - The swap quote to execute (from getQuoteForSwap)
  * @param params.slippage - Slippage tolerance as decimal between 0 and 1 (e.g., 0.005 for 0.5%, default: 0.005)
  * @param params.waitForReceipt - Whether to wait for transaction confirmation (default: true)
- * @param params.privateKey - Optional private key for direct transaction signing. If provided, the swap will be executed using this key instead of a connected wallet
  * @returns Promise that resolves to the transaction hash as a string
  * @throws Error if the transaction fails or is reverted
- * @throws Error if no connected account is found and no private key is provided
+ * @throws Error if no connected account is found and no private key is configured
  *
  * @example
  * // Using a connected wallet
  * ```typescript
+ * const config = getDefaultConfig({ chains: [{ chain: optimism, rpcUrl: "..." }] });
  * const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
  * const txHash = await swap({
  *   config,
@@ -244,14 +241,17 @@ export async function getQuoteForSwap({
  * ```
  *
  * @example
- * // Using a private key
+ * // Using a private key (configured in getDefaultConfig)
  * ```typescript
+ * const config = getDefaultConfig({
+ *   chains: [{ chain: optimism, rpcUrl: "..." }],
+ *   privateKey: "0x..." as `0x${string}`
+ * });
  * const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
  * const txHash = await swap({
  *   config,
  *   quote,
  *   slippage: 0.005, // 0.5% slippage
- *   privateKey: "0x..." as Hex, // Private key for signing
  * });
  * console.log(`Swap executed: ${txHash}`);
  * ```
@@ -261,27 +261,30 @@ export async function swap({
   quote,
   slippage = 0.005,
   waitForReceipt = true,
-  privateKey,
 }: BaseParams & {
   quote: Quote;
   slippage?: number;
   waitForReceipt?: boolean;
-  privateKey?: Hex;
 }): Promise<string> {
   if (typeof slippage !== "undefined" && (slippage < 0 || slippage > 1)) {
     throw new Error("Invalid slippage value. Should be between 0 and 1.");
   }
 
-  // Determine account address based on whether privateKey is provided
+  // Determine account address based on whether privateKey is configured
   let accountAddress: Address;
+  const { privateKey } = config.sugarConfig;
+
   if (privateKey) {
+    // Use account address from private key
+    const { privateKeyToAccount } = await import("viem/accounts");
     const account = privateKeyToAccount(privateKey);
     accountAddress = account.address;
   } else {
+    // Use connected wallet account
     const account = getAccount(config);
     if (!account.address) {
       throw new Error(
-        "No connected account found. Please connect a wallet or provide a private key."
+        "No connected account found. Please connect a wallet or configure a private key."
       );
     }
     accountAddress = account.address;
@@ -305,45 +308,18 @@ export async function swap({
     value: amount,
   });
 
-  let hash: Hex;
-
-  if (privateKey) {
-    // re: https://wagmi.sh/core/guides/viem#private-key-mnemonic-accounts
-    // XX: there does not seem to be a more elegant way to hook into wagmi connector system upstairs
-    // so we are descending into viem's abyss here
-    // Use viem's wallet client for private key transactions
-    const account = privateKeyToAccount(privateKey);
-
-    // Get the viem client from wagmi for the specific chain
-    const viemClient = getClient(config, { chainId });
-
-    if (!viemClient) {
-      throw new Error(`No client found for chain ${chainId}`);
-    }
-
-    // Get the RPC URL from the chain configuration and create a new transport
-    const rpcUrl = viemClient.chain.rpcUrls.default.http[0];
-    const transport = http(rpcUrl, { batch: true });
-
-    // Create wallet client reusing the chain config and RPC transport
-    const walletClient = createWalletClient({
-      account,
-      chain: viemClient.chain,
-      transport,
-    });
-
-    hash = await walletClient.writeContract({
+  // Use the helper to write the contract
+  const hash = await writeContractWithConfig({
+    config,
+    chainId,
+    contractParams: {
       address: swapParams.address,
       abi: swapParams.abi,
       functionName: swapParams.functionName,
       args: swapParams.args,
       value: swapParams.value,
-    });
-  } else {
-    await ensureConnectedChain({ config, chainId });
-    // Use wagmi's writeContract for injected wallet transactions
-    hash = await writeContract(config, swapParams);
-  }
+    },
+  });
 
   if (!waitForReceipt) {
     return hash;

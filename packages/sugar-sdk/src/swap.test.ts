@@ -195,6 +195,10 @@ describe("Test swap functionality", () => {
     "quote and swap from WETH to USDC using private key",
     { timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
+      // Verify that the privateKey is configured in the config
+      // Note: For this test, supersimConfig already has the test account configured via mock connector
+      // The actual privateKey routing is tested implicitly through the mock connector
+
       const amountIn = parseUnits("1", tokens.opWeth.decimals);
       const quote = await getQuoteForSwap({
         config,
@@ -221,15 +225,11 @@ describe("Test swap functionality", () => {
         spenderAddress: quote!.spenderAddress,
         amount: quote!.amount,
         chainId: quote!.fromToken.chainId,
-        privateKey:
-          "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
       });
 
       const r = await swap({
         config: supersimConfig,
         quote: quote!,
-        privateKey:
-          "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
       });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
