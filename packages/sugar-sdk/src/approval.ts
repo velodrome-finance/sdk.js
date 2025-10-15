@@ -3,7 +3,7 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { createWalletClient, Hex, http } from "viem";
+import { Address, createWalletClient, Hex, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 import { ChainParams } from "./utils.js";
@@ -100,8 +100,8 @@ export async function approve({
   waitForReceipt = true,
   privateKey,
 }: ChainParams & {
-  tokenAddress: string;
-  spenderAddress: string;
+  tokenAddress: Address;
+  spenderAddress: Address;
   amount: bigint;
   waitForReceipt?: boolean;
   privateKey?: Hex;
