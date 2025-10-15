@@ -51,11 +51,13 @@ export async function paginate<T>({
   upperBound,
   fetchData,
   configuration,
+  canLoadMore,
 }: {
   limit: number;
   upperBound: number;
   fetchData: (limit: number, offset: number) => Promise<readonly T[]>;
   configuration?: PaginationBatch[];
+  canLoadMore?: boolean;
 }): Promise<readonly T[]> {
   const batches = await Promise.all(
     (
@@ -67,23 +69,16 @@ export async function paginate<T>({
     ).map(({ limit, offset }) => fetchData(limit, offset))
   );
 
-  // Check if the last batch returned non-zero items per page
   const loadMore =
-    batches.length > 0 && batches[batches.length - 1].length !== 0;
+    canLoadMore && batches.length && batches.at(-1)!.length !== 0;
 
   if (batches.length !== 0 && loadMore) {
-    console.warn(`${fetchData.name}: passed optimistic pagination bound`);
-
-    /*eslint no-constant-condition: ["error", { "checkLoops": false }]*/
     while (true) {
       const nextBatch = await fetchData(limit, batches.length * limit);
-
-      if (nextBatch.length === 0) {
-        break;
-      }
-
+      if (nextBatch.length < limit) break;
       batches.push(nextBatch);
     }
+    console.warn(`${fetchData.name}: passed optimistic pagination bound`);
   }
   return batches.reduce((s, batch) => [...s, ...batch], []);
 }
