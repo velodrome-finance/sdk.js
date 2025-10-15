@@ -4,7 +4,6 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { splitEvery } from "ramda";
 import { Address, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
@@ -19,7 +18,12 @@ import {
   Quote,
   Token,
 } from "./primitives/index.js";
-import { BaseParams, ChainParams, ensureConnectedChain } from "./utils.js";
+import {
+  BaseParams,
+  ChainParams,
+  ensureConnectedChain,
+  processBatchesConcurrently,
+} from "./utils.js";
 
 // ERC20 ABI for approve and allowance functions
 const erc20Abi = [
@@ -107,10 +111,14 @@ export async function getQuoteForSwap({
   fromToken,
   toToken,
   amountIn,
+  batchSize = 50,
+  concurrentLimit = 10,
 }: BaseParams & {
   fromToken: Token;
   toToken: Token;
   amountIn: bigint;
+  batchSize?: number;
+  concurrentLimit?: number;
 }) {
   const { chainId, mustExcludeTokens } = getQuoteForSwapVars(
     config.sugarConfig,
@@ -132,14 +140,11 @@ export async function getQuoteForSwap({
     return null;
   }
 
-  const pathsBatches = splitEvery(50, paths);
-  const concurrentBatchSize = 10; // Process 10 batches at a time
-
-  const quoteResponses = [];
-
-  for (let i = 0; i < pathsBatches.length; i += concurrentBatchSize) {
-    const batchGroup = pathsBatches.slice(i, i + concurrentBatchSize);
-    const batchPromises = batchGroup.map((batch) =>
+  const quoteResponses = await processBatchesConcurrently({
+    items: paths,
+    batchSize,
+    concurrentLimit,
+    processBatch: async (batch) =>
       readContracts(config, {
         contracts: batch.map((path) =>
           getSwapQuoteParams({
@@ -149,12 +154,8 @@ export async function getQuoteForSwap({
             amountIn,
           })
         ),
-      })
-    );
-
-    const batchResults = await Promise.all(batchPromises);
-    quoteResponses.push(...batchResults.flat());
-  }
+      }),
+  });
 
   const quotes = quoteResponses
     .map((response, i) => {

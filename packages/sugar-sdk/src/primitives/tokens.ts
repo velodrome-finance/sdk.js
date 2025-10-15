@@ -62,8 +62,11 @@ export function getTokenPricesParams<ChainId extends number>({
 }
 
 export function getCustomPricesVars(config: Config) {
-  return Object.values(config.PRICE_MAPS).map(
-    ({ chainId, substituteToken }) => {
+  const configuredChainIds = config.chains.map((c) => c.CHAIN.id);
+
+  return Object.values(config.PRICE_MAPS)
+    .filter(({ chainId }) => configuredChainIds.includes(chainId))
+    .map(({ chainId, substituteToken }) => {
       const chainConfig = getChainConfig(config, chainId);
 
       //including 2 more tokens as USD pricing requires both ETH and stablecoin prices in the tokenlist
@@ -83,8 +86,7 @@ export function getCustomPricesVars(config: Config) {
       ];
 
       return { chainId, tokens };
-    }
-  );
+    });
 }
 
 export function getTokenPricesVars(
@@ -97,7 +99,7 @@ export function getTokenPricesVars(
     new Set(CONNECTOR_TOKENS.concat(STABLE_TOKEN))
   );
   const tokenChunks = splitEvery(
-    config.PRICES_CHUNK_SIZE,
+    Math.max(3, Math.min(Math.ceil(rawTokens.length / 60), 20)), // keep chunk size between 3 and 20,
     uniqBy((t) => t.token_address, rawTokens)
   );
 

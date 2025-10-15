@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xC8229d65581afE8f04344A6706FF45faECC426f9)
+ * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x766133beae539ed33a7e27dfa3a840deaad88947)
  */
 export const lpSugarAbi = [
   {
@@ -51,6 +51,13 @@ export const lpSugarAbi = [
         ],
       },
     ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'count',
+    outputs: [{ name: '', type: 'uint256' }],
     stateMutability: 'view',
   },
   {
@@ -362,14 +369,14 @@ export const lpSugarAbi = [
 ] as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xC8229d65581afE8f04344A6706FF45faECC426f9)
+ * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x766133beae539ed33a7e27dfa3a840deaad88947)
  */
 export const lpSugarAddress = {
-  10: '0xC8229d65581afE8f04344A6706FF45faECC426f9',
+  10: '0x766133BEae539ed33A7E27dfA3A840deAAd88947',
 } as const
 
 /**
- * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0xC8229d65581afE8f04344A6706FF45faECC426f9)
+ * [__View Contract on Op Mainnet Optimism Explorer__](https://optimistic.etherscan.io/address/0x766133beae539ed33a7e27dfa3a840deaad88947)
  */
 export const lpSugarConfig = {
   address: lpSugarAddress,

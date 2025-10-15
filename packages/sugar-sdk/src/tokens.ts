@@ -3,6 +3,7 @@ import { mergeAll } from "ramda";
 import { uniqBy } from "ramda";
 import { Address, extractChain, isAddress } from "viem";
 
+import { getPoolsPagination } from "./pools.js";
 import {
   getCustomPricesVars,
   getTokenPricesParams as getTokenRatesParams,
@@ -62,10 +63,12 @@ async function getTokensFromChain({
   customPrices: Record<Address, bigint>;
 }) {
   const accountAddress = getAccount(config).address;
+  const { upperBound } = await getPoolsPagination({ config, chainId });
 
   const rawTokens = await paginate({
-    limit: config.sugarConfig.TOKENS_PAGE_SIZE,
-    upperBound: config.sugarConfig.POOLS_COUNT_UPPER_BOUND,
+    // TODO: once https://github.com/velodrome-finance/sugar/pull/130/commits/4c6f795383dd5338ebdd8b258ae8a94a45e52487 is deployed we can paginate this call
+    limit: 1000, // currently limit is for tokens or pools, while offset is only for pools
+    upperBound,
     fetchData: (limit, offset) => {
       return readContract(
         config,

@@ -4,6 +4,22 @@ import { Config } from "../config.js";
 import { lpSugarAbi } from "./abis.js";
 import { ContractFunction, getChainConfig } from "./utils.js";
 
+export function getPoolsCountParams<ChainId extends number>({
+  config,
+  chainId,
+}: {
+  config: Config;
+  chainId: ChainId;
+}) {
+  return {
+    chainId,
+    address: getChainConfig(config, chainId).LP_SUGAR_ADDRESS,
+    abi: lpSugarAbi,
+    functionName: "count",
+    args: [],
+  } satisfies ContractFunction<typeof lpSugarAbi, "view", "count">;
+}
+
 /**
  * Gets a section from the list of all pools.
  * @param chainId The target chain id.
