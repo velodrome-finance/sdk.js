@@ -111,10 +111,14 @@ export async function getQuoteForSwap({
   fromToken,
   toToken,
   amountIn,
+  batchSize = 50,
+  concurrentLimit = 10,
 }: BaseParams & {
   fromToken: Token;
   toToken: Token;
   amountIn: bigint;
+  batchSize?: number;
+  concurrentLimit?: number;
 }) {
   const { chainId, mustExcludeTokens } = getQuoteForSwapVars(
     config.sugarConfig,
@@ -138,8 +142,8 @@ export async function getQuoteForSwap({
 
   const quoteResponses = await processBatchesConcurrently({
     items: paths,
-    batchSize: 50,
-    concurrentLimit: 10,
+    batchSize,
+    concurrentLimit,
     processBatch: async (batch) =>
       readContracts(config, {
         contracts: batch.map((path) =>
