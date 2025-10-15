@@ -216,6 +216,10 @@ export async function getQuoteForSwap({
  * Automatically switches to the correct chain if needed. Optionally waits for the
  * transaction to be confirmed.
  *
+ * **IMPORTANT**: Before calling this function, you must approve the spender contract to spend
+ * your tokens. Call the ERC20 `approve` function on the `fromToken` contract with the spender
+ * address set to `quote.spenderAddress` and an appropriate amount (at least `quote.amount`).
+ *
  * Supports two execution modes:
  * - With a connected wallet (via wagmi connectors)
  * - With a private key for direct transaction signing
@@ -234,6 +238,16 @@ export async function getQuoteForSwap({
  * // Using a connected wallet
  * ```typescript
  * const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
+ *
+ * // Approve the spender to spend your tokens
+ * await writeContract(config, {
+ *   address: fromToken.address,
+ *   abi: erc20Abi,
+ *   functionName: 'approve',
+ *   args: [quote.spenderAddress, quote.amount],
+ * });
+ *
+ * // Execute the swap
  * const txHash = await swap({
  *   config,
  *   quote,
@@ -247,6 +261,16 @@ export async function getQuoteForSwap({
  * // Using a private key
  * ```typescript
  * const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
+ *
+ * // Approve the spender to spend your tokens (using wallet client with private key)
+ * await walletClient.writeContract({
+ *   address: fromToken.address,
+ *   abi: erc20Abi,
+ *   functionName: 'approve',
+ *   args: [quote.spenderAddress, quote.amount],
+ * });
+ *
+ * // Execute the swap
  * const txHash = await swap({
  *   config,
  *   quote,

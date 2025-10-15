@@ -103,7 +103,7 @@ function swap(params: {
 ### Example
 
 ```typescript
-import { getQuoteForSwap, swap } from "sugar-sdk";
+import { getQuoteForSwap, swap, approve } from "sugar-sdk";
 
 const quote = await getQuoteForSwap({
   config,
@@ -115,6 +115,15 @@ const quote = await getQuoteForSwap({
 if (!quote) {
   throw new Error("No swap route found");
 }
+
+// IMPORTANT: Approve tokens before swapping
+await approve({
+  config,
+  tokenAddress: usdc.address,
+  spenderAddress: quote.spenderAddress,
+  amount: quote.amount,
+  chainId: usdc.chainId,
+});
 
 const txHash = await swap({
   config,
@@ -130,7 +139,7 @@ console.log(`Swap complete: ${txHash}`);
 For backend services or scripts, use a private key instead of a connected wallet:
 
 ```typescript
-import { getQuoteForSwap, swap } from "sugar-sdk";
+import { getQuoteForSwap, swap, approve } from "sugar-sdk";
 import type { Hex } from "viem";
 
 const quote = await getQuoteForSwap({
@@ -143,6 +152,16 @@ const quote = await getQuoteForSwap({
 if (!quote) {
   throw new Error("No swap route found");
 }
+
+// IMPORTANT: Approve tokens before swapping (also requires privateKey)
+await approve({
+  config,
+  tokenAddress: usdc.address,
+  spenderAddress: quote.spenderAddress,
+  amount: quote.amount,
+  chainId: usdc.chainId,
+  privateKey: process.env.PRIVATE_KEY as Hex,
+});
 
 const txHash = await swap({
   config,
@@ -196,7 +215,7 @@ This function:
 - Optionally waits for confirmation
 - Validates transaction success
 
-**Note:** Does NOT handle token approvals. Use [`approve()`](/api/approvals) first if needed.
+**IMPORTANT:** This function does NOT handle token approvals. Before calling `swap()`, you MUST call [`approve()`](/api/approvals) to grant the spender contract permission to spend your tokens. Use `quote.spenderAddress` as the spender and approve at least `quote.amount` of the `fromToken`.
 
 ---
 
@@ -383,7 +402,7 @@ Same as `Quote.priceImpact`.
 ### Basic Swap Flow
 
 ```typescript
-import { getListedTokens, getQuoteForSwap, swap } from "sugar-sdk";
+import { getListedTokens, getQuoteForSwap, approve, swap } from "sugar-sdk";
 
 // 1. Get tokens
 const tokens = await getListedTokens({ config });
@@ -403,7 +422,16 @@ if (!quote) {
   process.exit(1);
 }
 
-// 3. Execute swap
+// 3. Approve tokens (required before first swap)
+await approve({
+  config,
+  tokenAddress: usdc.address,
+  spenderAddress: quote.spenderAddress,
+  amount: quote.amount,
+  chainId: usdc.chainId,
+});
+
+// 4. Execute swap
 const txHash = await swap({
   config,
   quote,

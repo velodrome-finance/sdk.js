@@ -78,6 +78,7 @@ import {
   getDefaultConfig,
   getListedTokens,
   getQuoteForSwap,
+  approve,
   swap,
   optimism
 } from "sugar-sdk";
@@ -112,7 +113,16 @@ if (!quote) {
 console.log(`Expected output: ${quote.amountOut} WETH`);
 console.log(`Price impact: ${quote.priceImpact}%`);
 
-// 5. Execute swap
+// 5. Approve tokens (required before first swap)
+await approve({
+  config,
+  tokenAddress: usdc.address,
+  spenderAddress: quote.spenderAddress,
+  amount: quote.amount,
+  chainId: usdc.chainId,
+});
+
+// 6. Execute swap
 const txHash = await swap({
   config,
   quote,
@@ -131,6 +141,7 @@ import {
   getDefaultConfig,
   getListedTokens,
   getQuoteForSwap,
+  approve,
   swap,
   optimism
 } from "sugar-sdk";
@@ -151,6 +162,16 @@ const quote = await getQuoteForSwap({
   fromToken: usdc,
   toToken: weth,
   amountIn: 1000000000n,
+});
+
+// Approve tokens (required before first swap)
+await approve({
+  config,
+  tokenAddress: usdc.address,
+  spenderAddress: quote.spenderAddress,
+  amount: quote.amount,
+  chainId: usdc.chainId,
+  privateKey: process.env.PRIVATE_KEY as Hex,
 });
 
 // Execute swap with private key
@@ -175,14 +196,14 @@ console.log(`Swap executed: ${txHash}`);
 
 **Security Warning**: Never hardcode private keys or commit them to version control. Always use environment variables or secure key management systems.
 
-## Handling Token Approvals
+## Token Approvals (Required)
 
-Before swapping, you may need to approve the router to spend your tokens. The SDK doesn't automatically approve, but you can use the `approve` function:
+**IMPORTANT:** Before executing your first swap with a token, you MUST approve the router to spend your tokens. The SDK does not automatically handle approvals - you must explicitly call the `approve` function:
 
 ```typescript
 import { approve } from "sugar-sdk";
 
-// Approve USDC for swapping
+// Approve tokens before swapping (required)
 await approve({
   config,
   tokenAddress: usdc.address,
@@ -194,6 +215,8 @@ await approve({
 // Now execute the swap
 await swap({ config, quote, slippage: 0.005 });
 ```
+
+The approval needs to be done once per token (or whenever you need to increase the allowance). Use `quote.spenderAddress` to get the correct spender address for approvals.
 
 ## Working Without Receipt Confirmation
 
