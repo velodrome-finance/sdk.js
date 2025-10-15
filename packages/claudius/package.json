@@ -6,19 +6,17 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
     "quote": "tsx quote.ts"
   },
   "dependencies": {
-    "sugar-sdk": "^0.1.0",
-    "viem": "2.28.2",
-    "@wagmi/core": "^2.15.6"
+    "@wagmi/core": "^2.22.1",
+    "sugar-sdk": "^0.2.0",
+    "viem": "2.38.2",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
-    "typescript": "^5.8.2",
-    "vitest": "^1.0.0",
-    "tsx": "^4.7.1"
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.2"
   },
   "files": [
     "dist"

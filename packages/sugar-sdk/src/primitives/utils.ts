@@ -7,6 +7,87 @@ import {
 
 import { Config } from "../config.js";
 
+interface PaginationBatch {
+  limit: number;
+  offset: number;
+}
+
+export const setupPaginationBatches = ({
+  limit,
+  upperBound,
+}: {
+  limit: number;
+  upperBound: number;
+}): PaginationBatch[] => {
+  const result: PaginationBatch[] = [];
+
+  while (upperBound > 0) {
+    const offset = limit * result.length;
+    result.push({ limit, offset });
+    upperBound -= limit;
+  }
+
+  return result;
+};
+
+/**
+ *  Pagination helper for async functions
+ *
+ *  Usage example:
+ *
+ *  async function allLps(limit: number, offset: number) {
+ *     return readContract({
+ *       address: LP_SUGAR_ADDRESS,
+ *       abi: LP_SUGAR_ABI,
+ *       functionName: "all",
+ *       args: [BigNumber.from(limit), BigNumber.from(offset)],
+ *     });
+ *  }
+ *
+ *  const pools = await paginate<Pool>({ limit: 100, upperBound: 1000, fetchData: allLps });
+ */
+export async function paginate<T>({
+  limit,
+  upperBound,
+  fetchData,
+  configuration,
+}: {
+  limit: number;
+  upperBound: number;
+  fetchData: (limit: number, offset: number) => Promise<readonly T[]>;
+  configuration?: PaginationBatch[];
+}): Promise<readonly T[]> {
+  const batches = await Promise.all(
+    (
+      configuration ||
+      setupPaginationBatches({
+        limit,
+        upperBound,
+      })
+    ).map(({ limit, offset }) => fetchData(limit, offset))
+  );
+
+  // Check if the last batch returned non-zero items per page
+  const loadMore =
+    batches.length > 0 && batches[batches.length - 1].length !== 0;
+
+  if (batches.length !== 0 && loadMore) {
+    console.warn(`${fetchData.name}: passed optimistic pagination bound`);
+
+    /*eslint no-constant-condition: ["error", { "checkLoops": false }]*/
+    while (true) {
+      const nextBatch = await fetchData(limit, batches.length * limit);
+
+      if (nextBatch.length === 0) {
+        break;
+      }
+
+      batches.push(nextBatch);
+    }
+  }
+  return batches.reduce((s, batch) => [...s, ...batch], []);
+}
+
 /**
  * Call a paginated function repeatedly until all records are returned.
  * @param callback Async function that loads the page.

@@ -4,9 +4,11 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { Hex } from "viem";
+import { splitEvery } from "ramda";
+import { Address, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
+import { applyPct } from "./primitives/externals/app/src/hooks/math.js";
 import {
   executeSwapParams,
   getBestQuote,
@@ -50,6 +52,56 @@ const erc20Abi = [
   },
 ] as const;
 
+interface CallDataForSwap {
+  commands: Hex;
+  inputs: Hex[];
+  minAmountOut: bigint;
+  priceImpact: bigint;
+}
+
+export async function getCallDataForSwap({
+  config,
+  fromToken,
+  toToken,
+  amountIn,
+  account,
+  slippage,
+}: BaseParams & {
+  fromToken: Token;
+  toToken: Token;
+  amountIn: bigint;
+  account: Address;
+  slippage: number;
+}): Promise<CallDataForSwap | null> {
+  if (slippage < 0 || slippage > 1) {
+    throw new Error("Invalid slippage value. Should be between 0 and 1.");
+  }
+
+  const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
+
+  if (!quote) {
+    return null;
+  }
+
+  const { planner } = getSwapVars(
+    config.sugarConfig,
+    quote,
+    `${Math.round(slippage * 100)}`,
+    account
+  );
+
+  return {
+    commands: planner.commands as Hex,
+    inputs: planner.inputs as Hex[],
+    minAmountOut: applyPct(
+      quote.amountOut,
+      quote.toToken.decimals,
+      slippage * 100
+    ),
+    priceImpact: quote.priceImpact,
+  };
+}
+
 export async function getQuoteForSwap({
   config,
   fromToken,
@@ -80,16 +132,29 @@ export async function getQuoteForSwap({
     return null;
   }
 
-  const quoteResponses = await readContracts(config, {
-    contracts: paths.map((path) =>
-      getSwapQuoteParams({
-        config: config.sugarConfig,
-        chainId,
-        path: path.nodes,
-        amountIn,
+  const pathsBatches = splitEvery(50, paths);
+  const concurrentBatchSize = 10; // Process 10 batches at a time
+
+  const quoteResponses = [];
+
+  for (let i = 0; i < pathsBatches.length; i += concurrentBatchSize) {
+    const batchGroup = pathsBatches.slice(i, i + concurrentBatchSize);
+    const batchPromises = batchGroup.map((batch) =>
+      readContracts(config, {
+        contracts: batch.map((path) =>
+          getSwapQuoteParams({
+            config: config.sugarConfig,
+            chainId,
+            path: path.nodes,
+            amountIn,
+          })
+        ),
       })
-    ),
-  });
+    );
+
+    const batchResults = await Promise.all(batchPromises);
+    quoteResponses.push(...batchResults.flat());
+  }
 
   const quotes = quoteResponses
     .map((response, i) => {

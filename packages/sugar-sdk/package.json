@@ -1,6 +1,6 @@
 {
   "name": "sugar-sdk",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "main": "index.js",
   "scripts": {
     "check": "npx tsc --noEmit",
@@ -32,13 +32,13 @@
   },
   "devDependencies": {
     "@types/ramda": "^0.30.2",
-    "@wagmi/cli": "2.1.15",
+    "@wagmi/cli": "^2.5.1",
     "graphology-types": "^0.24.7",
-    "vitest": "^2.0.0"
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "@wagmi/core": "^2.0.0",
-    "viem": "^2.0.0"
+    "viem": "^2.x"
   },
   "dependencies": {
     "graphology": "^0.25.1",

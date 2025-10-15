@@ -1,14 +1,15 @@
 import { getAccount, getBalance, readContract } from "@wagmi/core";
 import { mergeAll } from "ramda";
+import { uniqBy } from "ramda";
 import { Address, extractChain, isAddress } from "viem";
 
 import {
-  depaginate,
   getCustomPricesVars,
   getTokenPricesParams as getTokenRatesParams,
   getTokenPricesVars,
   getTokensParams,
   mergeTokens,
+  paginate,
   RawTokenRateWithDecimals,
   transformTokenPrices,
   transformTokens,
@@ -62,21 +63,30 @@ async function getTokensFromChain({
 }) {
   const accountAddress = getAccount(config).address;
 
-  const rawTokens = await depaginate(
-    (offset, count) =>
-      readContract(
+  const rawTokens = await paginate({
+    limit: config.sugarConfig.TOKENS_PAGE_SIZE,
+    upperBound: config.sugarConfig.POOLS_COUNT_UPPER_BOUND,
+    fetchData: (limit, offset) => {
+      return readContract(
         config,
         getTokensParams({
           config: config.sugarConfig,
           chainId,
           offset,
-          count,
+          count: limit,
           accountAddress,
         })
-      ),
-    config.sugarConfig.TOKENS_PAGE_SIZE,
-    config.sugarConfig.POOLS_COUNT_UPPER_BOUND
-  );
+      );
+    },
+  }).then((toks) => {
+    return uniqBy((t) => t.token_address, toks).map((tok) => ({
+      ...tok,
+      // Remap back some attributes
+      balance: tok.account_balance,
+      address: tok.token_address.toLowerCase(),
+      chainId,
+    }));
+  });
 
   const nativeTokenBalance =
     accountAddress && isAddress(accountAddress)

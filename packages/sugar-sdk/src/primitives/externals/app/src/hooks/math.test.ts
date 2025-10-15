@@ -1,4 +1,4 @@
-import { formatEther, formatUnits, parseEther, parseUnits } from "viem";
+import { parseEther, parseUnits } from "viem";
 import { expect, test } from "vitest";
 
 import {
@@ -96,4 +96,7 @@ test("#pctOf", async () => {
   expect(pctOf(parseUnits("0.01", 8), parseUnits("1", 8), 12)).toEqual(
     parseUnits("10000", 12)
   );
+
+  // get percentage in decimals
+  expect(pctOf(parseEther("1"), parseEther("0.01"), 18, true)).toEqual(parseEther("0.01"));
 });

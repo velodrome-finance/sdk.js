@@ -1,0 +1,18 @@
+{
+  "name": "demo-node",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  },
+  "dependencies": {
+    "@wagmi/core": "^2.22.1",
+    "sugar-sdk": "^0.2.0",
+    "viem": "^2.38.2"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}

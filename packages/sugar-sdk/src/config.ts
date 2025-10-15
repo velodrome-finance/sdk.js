@@ -376,12 +376,6 @@ interface _ConfigSpec {
 
 type ConfigSpec = Omit<_ConfigSpec, "testMode">;
 
-/**
- * Builds a {@link SugarWagmiConfig} seeded with the provided chains and RPC
- * endpoints, optionally wiring in a mock connector for test scenarios.
- * Returned configs are filtered down to the requested chains while preserving
- * the defaults defined in {@link baseConfig}.
- */
 const _getDefaultConfig = ({ chains, testMode }: _ConfigSpec): SugarWagmiConfig => {
   const requestedChainIds = chains.map((c) => c.chain.id);
   const wagmiChains = chains.map(({ chain, rpcUrl }) => {
@@ -437,7 +431,7 @@ export const _getTestConfig = ({ chains }: ConfigSpec) => {
 
 /**
  * Builds a {@link SugarWagmiConfig} seeded with the provided chains and RPC
- * endpoints, optionally wiring in a mock connector for test scenarios.
+ * endpoints.
  * Returned configs are filtered down to the requested chains while preserving
  * the defaults defined in {@link baseConfig}.
  */

@@ -34,7 +34,7 @@ export const init = async (testMode: boolean = false) => {
     ].map((chain, i) => {
       const rpcUrl = testMode
         ? `http://localhost:${i + 4444}`
-        : import.meta.env[`VITE_RPC_URI_${chain.id}`];
+        : import.meta.env[`VITE_RPC_URL_${chain.id}`];
 
       if (!rpcUrl) {
         throw new Error(
