@@ -18,10 +18,11 @@ function calcPriceImpact(quote: Quote) {
   // Bring quoted amount to the same decimals base aka 18, eg. for USDC
   const execAmount = parseEther(formatUnits(amountOut, toToken.decimals));
 
-  return pctOf(estAmount, estAmount - execAmount, 18);
+  return pctOf(estAmount, estAmount - execAmount, 18, true);
 }
 
-const oneHundredPercent = 100n * 10n ** 18n;
+// 100% in decimal points (1.0)
+const oneHundredPercent = 1n * 10n ** 18n;
 function impactTooHigh(q: Quote): boolean {
   if (!q.toToken.listed || !q.fromToken.listed) return false;
   const impact = calcPriceImpact(q);

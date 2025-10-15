@@ -1,16 +1,13 @@
 {
-  "name": "demo",
+  "name": "demo-web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev-aero": "vite --mode aero",
-    "dev-velo": "vite --mode velo",
-    "build-aero": "tsc -b && vite build --mode aero",
-    "build-velo": "tsc -b && vite build --mode velo",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview-aero": "vite preview --mode aero",
-    "preview-velo": "vite preview --mode velo",
+    "preview": "vite preview",
     "postinstall": "flowbite-react patch"
   },
   "dependencies": {
@@ -18,10 +15,10 @@
     "flowbite-react": "^0.11.8",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "sugar-sdk": "^0.1.0",
+    "sugar-sdk": "^0.2.0",
     "use-debounce": "^10.0.5",
-    "viem": "2.28.2",
-    "wagmi": "2.15.6"
+    "viem": "^2.38.2",
+    "wagmi": "^2.18.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.10",

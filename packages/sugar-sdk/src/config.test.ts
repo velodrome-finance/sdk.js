@@ -54,9 +54,9 @@ describe("getDefaultConfig", () => {
 
     const config = getDefaultConfig({
       chains: chains.map((chain) => {
-        const rpcUrl = import.meta.env[`VITE_RPC_URI_${chain.id}`];
+        const rpcUrl = import.meta.env[`VITE_RPC_URL_${chain.id}`];
         if (!rpcUrl) {
-          throw new Error(`Missing RPC URI for chain ${chain.id}`);
+          throw new Error(`Missing RPC URL for chain ${chain.id}`);
         }
         return {
           chain,

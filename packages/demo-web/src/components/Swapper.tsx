@@ -1,35 +1,56 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, HelperText, Spinner, TextInput } from "flowbite-react";
-import { useState } from "react";
-import { getListedTokens, getQuoteForSwap, swap, type Token } from "sugar-sdk";
+import { useEffect, useMemo, useState } from "react";
+import {
+  getListedTokens,
+  getQuoteForSwap,
+  type SugarWagmiConfig,
+  swap,
+  type Token,
+} from "sugar-sdk";
 import { useDebounce } from "use-debounce";
-import { BaseError, type Chain } from "viem";
-import { erc20Abi, extractChain, formatUnits, parseUnits } from "viem";
-import { useConfig, useWriteContract } from "wagmi";
+import { BaseError, extractChain, formatUnits, parseUnits } from "viem";
+import { useConfig } from "wagmi";
 import { hashFn } from "wagmi/query";
 
 import { ChainPicker } from "./ChainPicker.tsx";
 import { TokenPicker } from "./TokenPicker.tsx";
 
-function isNativeToken(chains: Chain[], token: Token) {
-  const chain = extractChain({ chains, id: token.chainId });
-  return token.address === chain.nativeCurrency.symbol.toLowerCase();
-}
-
 export function Swapper() {
-  const config = useConfig();
-  const isVelodrome = config.dromeConfig.type === "velodrome";
-  const chains = config.dromeConfig.CHAIN_IDS.map((id) =>
-    extractChain({ chains: config.chains, id })
+  const config = useConfig() as SugarWagmiConfig;
+  const sugarChainIds = useMemo(
+    () => config.sugarConfig.chains.map((chain) => chain.CHAIN.id),
+    [config]
   );
-  const [selectedChain, setSelectedChain] = useState(chains[0]);
+  const [selectedChainId, setSelectedChainId] = useState<number>(
+    () => sugarChainIds[0]
+  );
 
-  const { data: tokens } = useQuery({
+  useEffect(() => {
+    if (!sugarChainIds.includes(selectedChainId)) {
+      setSelectedChainId(sugarChainIds[0]);
+    }
+  }, [selectedChainId, sugarChainIds]);
+
+  const chains = useMemo(
+    () =>
+      sugarChainIds.map((id) => extractChain({ chains: config.chains, id })),
+    [config.chains, sugarChainIds]
+  );
+  const selectedChain = useMemo(
+    () => extractChain({ chains: config.chains, id: selectedChainId }),
+    [config.chains, selectedChainId]
+  );
+  const showChainPicker = chains.length > 1;
+
+  const { data: allTokens } = useQuery({
     queryKey: ["tokens"],
-    queryFn: () => getListedTokens(config),
-    select: (tokens) =>
-      tokens.filter((token) => token.chainId === selectedChain.id),
+    queryFn: () => getListedTokens({ config }),
   });
+  const tokens = useMemo(
+    () => allTokens?.filter((token) => token.chainId === selectedChain.id),
+    [allTokens, selectedChain.id]
+  );
   const [fromToken, setFromToken] = useState<Token | null>(null);
   const [toToken, setToToken] = useState<Token | null>(null);
 
@@ -48,16 +69,18 @@ export function Swapper() {
     queryKeyHashFn: hashFn,
     enabled: !inputError && !!fromToken && !!toToken && debouncedAmount > 0n,
     queryFn: () =>
-      getQuoteForSwap(config, fromToken!, toToken!, debouncedAmount),
+      getQuoteForSwap({
+        config,
+        fromToken: fromToken!,
+        toToken: toToken!,
+        amountIn: debouncedAmount,
+      }),
   });
 
-  const approveMutation = useWriteContract();
   const swapMutation = useMutation({
-    mutationFn: () => swap(config, quote!),
+    mutationFn: () => swap({ config, quote: quote! }),
   });
-  const swapSuccessful =
-    swapMutation.isSuccess &&
-    (approveMutation.isSuccess || isNativeToken(chains, fromToken!));
+  const swapSuccessful = swapMutation.isSuccess;
 
   function handleAmountInput(input: string) {
     const sanitizedInput = input.replace(",", ".").replace(/[^0-9.]/g, "");
@@ -86,29 +109,11 @@ export function Swapper() {
   }
 
   function handleSwapClick() {
-    const { fromToken, toToken, amount } = quote!;
-
-    if (isNativeToken(chains, fromToken)) {
-      // no token approval needed for native currency
-      swapMutation.mutate();
+    if (!quote) {
       return;
     }
 
-    approveMutation.writeContract(
-      {
-        chainId: fromToken.chainId,
-        abi: erc20Abi,
-        address: fromToken.wrappedAddress || fromToken.address,
-        functionName: "approve",
-        args: [
-          config.dromeConfig.chains[toToken.chainId].UNIVERSAL_ROUTER_ADDRESS,
-          amount,
-        ],
-      },
-      {
-        onSuccess: () => swapMutation.mutate(),
-      }
-    );
+    swapMutation.mutate();
   }
 
   function getDisplayError() {
@@ -118,13 +123,6 @@ export function Swapper() {
 
     if (quoteStatus !== "pending" && !quote) {
       return "No quote available.";
-    }
-
-    if (approveMutation.error) {
-      if (approveMutation.error instanceof BaseError) {
-        return approveMutation.error.shortMessage;
-      }
-      return approveMutation.error.message;
     }
 
     if (swapMutation.error) {
@@ -145,7 +143,6 @@ export function Swapper() {
 
     setInputError(null);
     swapMutation.reset();
-    approveMutation.reset();
   }
 
   if (!tokens) {
@@ -158,24 +155,26 @@ export function Swapper() {
 
   return (
     <div
-      className={`grid grid-cols-[80px_1fr] grid-rows-[${isVelodrome ? "1fr_" : ""}1fr_1fr_1fr_1fr_30px] gap-4`}
+      className={`grid grid-cols-[80px_1fr] grid-rows-[${showChainPicker ? "1fr_" : ""}1fr_1fr_1fr_1fr_30px] gap-4`}
     >
-      {isVelodrome && (
+      {showChainPicker && (
         <ChainPicker
           chains={chains}
           selectedChain={selectedChain}
-          onChainSelected={(chain) => (
-            setSelectedChain(chain), resetSwapState(true)
-          )}
+          onChainSelected={(chain) => {
+            setSelectedChainId(chain.id);
+            resetSwapState(true);
+          }}
           className="col-span-2"
         />
       )}
       <TokenPicker
         tokens={tokens}
         selectedTokenAddress={fromToken?.address ?? ""}
-        onTokenSelect={(token) => (
-          setFromToken(token), updateAmount(displayAmount, token)
-        )}
+        onTokenSelect={(token) => {
+          setFromToken(token);
+          updateAmount(displayAmount, token);
+        }}
         excludeTokenAddresses={[toToken?.address ?? ""]}
       />
       <TextInput
@@ -186,7 +185,10 @@ export function Swapper() {
       <TokenPicker
         tokens={tokens}
         selectedTokenAddress={toToken?.address ?? ""}
-        onTokenSelect={(token) => (setToToken(token), resetSwapState())}
+        onTokenSelect={(token) => {
+          setToToken(token);
+          resetSwapState();
+        }}
         excludeTokenAddresses={[fromToken?.address ?? ""]}
       />
       <TextInput
@@ -196,12 +198,7 @@ export function Swapper() {
         }
       />
       <Button
-        disabled={
-          !quote ||
-          !!inputError ||
-          approveMutation.isPending ||
-          swapMutation.isPending
-        }
+        disabled={!quote || !!inputError || swapMutation.isPending}
         onClick={handleSwapClick}
         className="col-span-2"
       >
