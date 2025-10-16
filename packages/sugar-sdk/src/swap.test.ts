@@ -458,4 +458,58 @@ describe("Test swap functionality", () => {
       expect(hash.startsWith("0x")).toBe(true);
     }
   );
+
+  test("works for Base", { timeout: 20000 }, async ({ config, tokens }) => {
+    const callData = await getCallDataForSwap({
+      config,
+      fromToken: tokens.baseAero,
+      toToken: tokens.baseUsdc,
+      amountIn: parseUnits("100", tokens.baseAero.decimals),
+      account: TEST_ACCOUNT_ADDRESS,
+      slippage: 0.01,
+    });
+    expect(callData).not.toBeNull();
+    const pi = formatUnits(callData!.priceImpact, 18);
+    // make sure price impact is in decimals for % (ie 2% is 0.02 not 2.0)
+    expect(Math.abs(parseFloat(pi))).toBeLessThan(0.01);
+  });
+
+  test("handles invalid slippage values", async ({ config, tokens }) => {
+    await expect(
+      getCallDataForSwap({
+        config,
+        fromToken: tokens.opUsdc,
+        toToken: tokens.opVelo,
+        amountIn: parseUnits("100", tokens.opUsdc.decimals),
+        account: TEST_ACCOUNT_ADDRESS,
+        slippage: -0.01, // Invalid slippage (negative)
+      })
+    ).rejects.toThrow("Invalid slippage value. Should be between 0 and 1.");
+
+    await expect(
+      getCallDataForSwap({
+        config,
+        fromToken: tokens.opUsdc,
+        toToken: tokens.opVelo,
+        amountIn: parseUnits("100", tokens.opUsdc.decimals),
+        account: TEST_ACCOUNT_ADDRESS,
+        slippage: 1.1, // Invalid slippage (> 1)
+      })
+    ).rejects.toThrow("Invalid slippage value. Should be between 0 and 1.");
+  });
+
+  test("handles missing quotes", async ({ config, tokens }) => {
+    const d = await getCallDataForSwap({
+      config,
+      fromToken: Object.assign({}, tokens.opUsdc, {
+        // not a real token
+        address: "0x7f9adfbd38b669f03d1d11000bc76b9aaea28a81",
+      }),
+      toToken: tokens.opVelo,
+      amountIn: parseUnits("100", tokens.opUsdc.decimals),
+      account: TEST_ACCOUNT_ADDRESS,
+      slippage: 0.01,
+    });
+    expect(d).toBeNull();
+  });
 });

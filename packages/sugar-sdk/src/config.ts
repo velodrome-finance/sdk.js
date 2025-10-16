@@ -504,6 +504,7 @@ export const _getTestConfig = ({ chains }: ConfigSpec) => {
 }
 
 /**
+<<<<<<< HEAD
  * Creates a default Sugar SDK configuration with the specified chains and RPC endpoints.
  *
  * Builds a complete Wagmi + Sugar configuration ready for use. The returned config
@@ -522,6 +523,12 @@ export const _getTestConfig = ({ chains }: ConfigSpec) => {
  *   ]
  * });
  * ```
+=======
+ * Builds a {@link SugarWagmiConfig} seeded with the provided chains and RPC
+ * endpoints.
+ * Returned configs are filtered down to the requested chains while preserving
+ * the defaults defined in {@link baseConfig}.
+>>>>>>> main
  */
 export const getDefaultConfig = ({ chains }: ConfigSpec): SugarWagmiConfig => {
   return _getDefaultConfig({ chains });

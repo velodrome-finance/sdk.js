@@ -33,6 +33,13 @@ interface CallDataForSwap {
   priceImpact: bigint;
 }
 
+interface CallDataForSwap {
+  commands: Hex;
+  inputs: Hex[];
+  minAmountOut: bigint;
+  priceImpact: bigint;
+}
+
 export async function getCallDataForSwap({
   config,
   fromToken,
@@ -60,7 +67,7 @@ export async function getCallDataForSwap({
   const { planner } = getSwapVars(
     config.sugarConfig,
     quote,
-    `${Math.ceil(slippage * 100)}`,
+    `${Math.round(slippage * 100)}`,
     account
   );
 
@@ -81,10 +88,14 @@ export async function getQuoteForSwap({
   fromToken,
   toToken,
   amountIn,
+  batchSize = 50,
+  concurrentLimit = 10,
 }: BaseParams & {
   fromToken: Token;
   toToken: Token;
   amountIn: bigint;
+  batchSize?: number;
+  concurrentLimit?: number;
 }) {
   const { chainId, mustExcludeTokens, spenderAddress } = getQuoteForSwapVars(
     config.sugarConfig,
@@ -108,8 +119,8 @@ export async function getQuoteForSwap({
 
   const quoteResponses = await processBatchesConcurrently({
     items: paths,
-    batchSize: 50,
-    concurrentLimit: 10,
+    batchSize,
+    concurrentLimit,
     processBatch: async (batch) =>
       readContracts(config, {
         contracts: batch.map((path) =>
