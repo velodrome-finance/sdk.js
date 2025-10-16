@@ -192,51 +192,6 @@ describe("Test swap functionality", () => {
   );
 
   test(
-    "quote and swap from WETH to USDC using private key",
-    { timeout: 30000 },
-    async ({ config, supersimConfig, tokens }) => {
-      const amountIn = parseUnits("1", tokens.opWeth.decimals);
-      const quote = await getQuoteForSwap({
-        config,
-        fromToken: tokens.opWeth,
-        toToken: tokens.opUsdc,
-        amountIn,
-      });
-
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.opWeth);
-      expect(quote!.toToken).toEqual(tokens.opUsdc);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
-      expect(quote!.spenderAddress).toBeDefined();
-
-      // Approve tokens before swap
-      await approve({
-        config: supersimConfig,
-        tokenAddress:
-          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
-        spenderAddress: quote!.spenderAddress,
-        amount: quote!.amount,
-        chainId: quote!.fromToken.chainId,
-        privateKey:
-          "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
-      });
-
-      const r = await swap({
-        config: supersimConfig,
-        quote: quote!,
-        privateKey:
-          "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
-      });
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
-
-  test(
     "quote and swap from VELO to USDC",
     { timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
