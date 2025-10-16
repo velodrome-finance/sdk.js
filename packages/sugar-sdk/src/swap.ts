@@ -4,7 +4,7 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { Address, Hex } from "viem";
+import { Address, encodeFunctionData, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
 import { applyPct } from "./primitives/externals/app/src/hooks/math.js";
@@ -153,6 +153,66 @@ export async function getQuoteForSwap({
   return getBestQuote([quotes]);
 }
 
+interface UnsignedSwapTransaction {
+  to: Address;
+  data: Hex;
+  value: bigint;
+  chainId: number;
+}
+
+/**
+ * Get unsigned transaction data for a swap that can be signed externally
+ * @param config - Wagmi configuration
+ * @param quote - Quote object from getQuoteForSwap
+ * @param account - Address that will execute the swap
+ * @param slippage - Slippage tolerance (0 to 1, default: 0.005 = 0.5%)
+ * @returns Unsigned transaction data ready to be signed
+ */
+export async function getUnsignedSwapTransaction({
+  config,
+  quote,
+  account,
+  slippage = 0.005,
+}: BaseParams & {
+  quote: Quote;
+  account: Address;
+  slippage?: number;
+}): Promise<UnsignedSwapTransaction> {
+  if (slippage < 0 || slippage > 1) {
+    throw new Error("Invalid slippage value. Should be between 0 and 1.");
+  }
+
+  const { chainId, planner, amount } = getSwapVars(
+    config.sugarConfig,
+    quote,
+    `${Math.ceil(slippage * 100)}`,
+    account
+  );
+
+  // Get the swap parameters
+  const swapParams = executeSwapParams({
+    config: config.sugarConfig,
+    chainId,
+    commands: planner.commands as Hex,
+    inputs: planner.inputs as Hex[],
+    value: amount,
+  });
+
+  // Encode the function call data
+  const data = encodeFunctionData({
+    abi: swapParams.abi,
+    functionName: swapParams.functionName,
+    args: swapParams.args,
+  });
+
+  return {
+    to: swapParams.address,
+    data,
+    value: swapParams.value,
+    chainId: swapParams.chainId,
+  };
+}
+
 export async function swap({
   config,
   quote,
@@ -208,3 +268,4 @@ export async function swap({
 }
 
 export { Quote } from "./primitives";
+export type { UnsignedSwapTransaction };

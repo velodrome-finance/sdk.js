@@ -1,4 +1,6 @@
 import { formatUnits, parseUnits } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { getTransactionCount } from "viem/actions";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
@@ -10,8 +12,14 @@ import {
 import { approve } from "./approval.js";
 import { type Token } from "./primitives/index.js";
 // Import the swap functions
-import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
+import {
+  getCallDataForSwap,
+  getQuoteForSwap,
+  getUnsignedSwapTransaction,
+  swap,
+} from "./swap.js";
 import { getListedTokens } from "./tokens.js";
+import { submitSignedTransaction } from "./utils.js";
 
 interface TestContext {
   config: Awaited<ReturnType<typeof init>>;
@@ -467,4 +475,87 @@ describe("Test swap functionality", () => {
     });
     expect(d).toBeNull();
   });
+
+  test(
+    "getUnsignedSwapTransaction and submitSignedTransaction",
+    { timeout: 30000 },
+    async ({ config, supersimConfig, tokens }) => {
+      const amountIn = parseUnits("100", tokens.opVelo.decimals);
+
+      // ====== CLIENT 1: Read-only client (no wallet connection) ======
+      // This simulates a backend service or app that generates transaction data
+
+      // Step 1: Get quote using read-only config
+      const quote = await getQuoteForSwap({
+        config, // Read-only, no wallet needed
+        fromToken: tokens.opVelo,
+        toToken: tokens.opUsdc,
+        amountIn,
+      });
+
+      expect(quote).toBeTruthy();
+
+      // Step 2: Get unsigned transaction data using read-only config
+      const unsignedTx = await getUnsignedSwapTransaction({
+        config, // Read-only, no wallet needed
+        quote: quote!,
+        account: TEST_ACCOUNT_ADDRESS,
+        slippage: 0.05, // 5% slippage for test
+      });
+
+      // Verify unsigned transaction structure
+      expect(unsignedTx).toBeDefined();
+      expect(unsignedTx.to).toBeDefined();
+      expect(unsignedTx.data).toBeDefined();
+      expect(unsignedTx.value).toBeDefined();
+      expect(unsignedTx.chainId).toBe(quote!.fromToken.chainId);
+
+      // ====== CLIENT 2: Wallet client (has private key) ======
+      // This simulates the user's wallet signing and submitting the transaction
+
+      // Step 3: Approve tokens using wallet client
+      await approve({
+        config: supersimConfig, // Wallet-connected config
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: quote!.spenderAddress,
+        amount: quote!.amount,
+        chainId: quote!.fromToken.chainId,
+      });
+
+      // Step 4: Sign transaction with wallet client
+      const client = supersimConfig.getClient({
+        chainId: unsignedTx.chainId,
+      });
+      const nonce = await getTransactionCount(client, {
+        address: TEST_ACCOUNT_ADDRESS,
+      });
+
+      const account = privateKeyToAccount(
+        "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+      );
+
+      const signedTransaction = await account.signTransaction({
+        to: unsignedTx.to,
+        data: unsignedTx.data,
+        value: unsignedTx.value,
+        chainId: unsignedTx.chainId,
+        nonce,
+        gas: 1000000n,
+        maxFeePerGas: 10000000000n, // 10 gwei
+        maxPriorityFeePerGas: 10000000000n, // 10 gwei
+      });
+
+      // Step 5: Submit signed transaction using wallet client
+      const hash = await submitSignedTransaction({
+        config: supersimConfig, // Wallet-connected config
+        signedTransaction,
+        waitForReceipt: true,
+      });
+
+      expect(hash).toBeDefined();
+      expect(hash.startsWith("0x")).toBe(true);
+      expect(hash.length).toBe(66);
+    }
+  );
 });
