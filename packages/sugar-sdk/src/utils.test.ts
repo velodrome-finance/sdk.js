@@ -1,6 +1,6 @@
 import { parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { getBalance, getTransactionCount, signTransaction } from "viem/actions";
+import { getBalance, getTransactionCount } from "viem/actions";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
@@ -62,8 +62,8 @@ describe("submitSignedTransaction", () => {
       // Create account from private key
       const account = privateKeyToAccount(TEST_PRIVATE_KEY);
 
-      // Prepare a simple ETH transfer transaction
-      const transaction = {
+      // Sign the transaction using account.signTransaction
+      const signedTransaction = await account.signTransaction({
         to: recipientAddress,
         value: amountToSend,
         chainId,
@@ -71,12 +71,6 @@ describe("submitSignedTransaction", () => {
         gas: 21000n, // Standard gas for ETH transfer
         maxFeePerGas: 1000000000n, // 1 gwei
         maxPriorityFeePerGas: 1000000000n, // 1 gwei
-      };
-
-      // Sign the transaction
-      const signedTransaction = await signTransaction(client, {
-        account,
-        ...transaction,
       });
 
       // Submit signed transaction using our new function
