@@ -185,7 +185,7 @@ export async function getUnsignedSwapTransaction({
   const { chainId, planner, amount } = getSwapVars(
     config.sugarConfig,
     quote,
-    `${Math.ceil(slippage * 100)}`,
+    `${Math.round(slippage * 100)}`,
     account
   );
 
@@ -237,7 +237,7 @@ export async function swap({
     config.sugarConfig,
     quote,
     typeof slippage !== "undefined"
-      ? `${Math.ceil(slippage * 100)}`
+      ? `${Math.round(slippage * 100)}`
       : undefined,
     accountAddress
   );
