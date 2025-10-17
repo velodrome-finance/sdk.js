@@ -92,7 +92,7 @@ export async function submitSignedTransaction({
   const receipt = await waitForTransactionReceipt(config, { hash });
 
   if (receipt.status !== "success") {
-    throw new Error(`Transaction failed: ${receipt.status}`);
+    throw new Error(`Transaction failed: ${receipt.status}. Hash: ${hash}`);
   }
 
   return hash;
