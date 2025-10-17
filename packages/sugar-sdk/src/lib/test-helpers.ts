@@ -1,7 +1,14 @@
 import { connect } from "@wagmi/core";
 import type { Chain } from "@wagmi/core/chains";
-import { type Address, encodeAbiParameters, keccak256, pad, toHex } from "viem";
-import { setStorageAt } from "viem/actions";
+import {
+  type Address,
+  encodeAbiParameters,
+  keccak256,
+  pad,
+  parseUnits,
+  toHex,
+} from "viem";
+import { mine, setBalance, setStorageAt } from "viem/actions";
 
 import {
   _getTestConfig,
@@ -138,30 +145,98 @@ export const getConfig = async (options?: InitOptions | boolean) => {
 };
 
 /**
+ * Token funding configuration for Anvil testing
+ */
+export interface TokenFundingConfig {
+  /**
+   * The ERC20 token contract address to fund
+   */
+  address: Address;
+  /**
+   * The amount to fund (as a bigint in the token's smallest unit)
+   * Or a string amount with decimals (e.g., "1000")
+   */
+  amount: bigint | string;
+  /**
+   * The number of decimals for the token (required if amount is a string)
+   */
+  decimals?: number;
+  /**
+   * The storage slot where the balances mapping is stored (default: 0)
+   * Most ERC20 tokens use slot 0, but some may differ
+   */
+  storageSlot?: number;
+}
+
+/**
+ * Options for initializing Anvil-based testing
+ */
+export interface InitWithAnvilOptions {
+  /**
+   * Tokens to automatically fund the test account with
+   */
+  fundTokens?: TokenFundingConfig[];
+  /**
+   * ETH amount to fund the test account with (in ETH, e.g., "10000")
+   * Default: "10000" ETH
+   */
+  fundEth?: string;
+  /**
+   * The account address to fund (defaults to TEST_ACCOUNT_ADDRESS)
+   */
+  accountAddress?: Address;
+}
+
+/**
  * Initialize config for Anvil-based testing.
  * Helper to create config pointing to specific Anvil instance(s).
+ * Automatically funds the test account with ETH and optionally with ERC20 tokens.
  *
  * @param anvilInstances - Anvil instance(s) to use for testing
+ * @param options - Funding and configuration options
  * @returns Configured test instance
  *
  * @example
  * import { anvilBase } from '~test/src/anvil.js';
  *
- * const config = await initWithAnvil(anvilBase);
+ * const config = await initWithAnvil(anvilBase, {
+ *   fundTokens: [
+ *     {
+ *       address: '0x940181a94a35a4569e4529a3cdfb74e38fd98631', // AERO
+ *       amount: '1000',
+ *       decimals: 18
+ *     }
+ *   ]
+ * });
  *
  * @example
- * // Multiple anvil instances
- * const config = await initWithAnvil({
- *   8453: anvilBase,
- *   10: anvilOptimism
- * });
+ * // Multiple anvil instances with token funding
+ * const config = await initWithAnvil(
+ *   { 8453: anvilBase, 10: anvilOptimism },
+ *   { fundTokens: [{ address: '0x...', amount: 1000n }] }
+ * );
  */
 export const initWithAnvil = async (
   anvilInstances:
-    | { rpcUrl: { http: string }; chain: Chain }
-    | Record<number, { rpcUrl: { http: string }; chain: Chain }>
+    | { rpcUrl: { http: string }; chain: Chain; getClient: any }
+    | Record<
+        number,
+        { rpcUrl: { http: string }; chain: Chain; getClient: any }
+      >,
+  options?: InitWithAnvilOptions
 ) => {
+  const {
+    fundTokens = [],
+    fundEth = "10000",
+    accountAddress = TEST_ACCOUNT_ADDRESS,
+  } = options || {};
+
   // Handle single instance or multiple instances
+  const instancesArray =
+    "rpcUrl" in anvilInstances
+      ? [anvilInstances]
+      : Object.values(anvilInstances);
+
   const chainUrls =
     "rpcUrl" in anvilInstances
       ? { [anvilInstances.chain.id]: anvilInstances.rpcUrl.http }
@@ -171,6 +246,36 @@ export const initWithAnvil = async (
             instance.rpcUrl.http,
           ])
         );
+
+  // Fund the account with ETH and tokens on each anvil instance
+  for (const instance of instancesArray) {
+    const client = instance.getClient();
+
+    // Fund with ETH
+    await setBalance(client, {
+      address: accountAddress as Address,
+      value: parseUnits(fundEth, 18),
+    });
+
+    // Fund with ERC20 tokens
+    for (const token of fundTokens) {
+      const amount =
+        typeof token.amount === "string"
+          ? parseUnits(token.amount, token.decimals || 18)
+          : token.amount;
+
+      await setERC20Balance(
+        client,
+        token.address,
+        accountAddress as Address,
+        amount,
+        token.storageSlot
+      );
+    }
+
+    // Mine a block to apply the changes
+    await mine(client, { blocks: 1 });
+  }
 
   return init({ chainUrls });
 };

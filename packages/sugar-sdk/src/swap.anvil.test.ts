@@ -1,18 +1,14 @@
-import { connect, getAccount } from "@wagmi/core";
+import { connect } from "@wagmi/core";
 import { type Address, formatUnits, parseUnits } from "viem";
 import {
   call,
-  getBlock,
   getTransaction,
   getTransactionReceipt,
   mine,
-  readContract,
-  setBalance,
-  setNextBlockTimestamp,
 } from "viem/actions";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { init, setERC20Balance } from "@/lib/test-helpers.js";
+import { init } from "@/lib/test-helpers.js";
 import { anvilBase } from "~test/src/anvil.js";
 import { account } from "~test/src/constants.js";
 
@@ -38,13 +34,6 @@ interface TestContext {
 }
 
 const test = it.extend<TestContext>({
-  // eslint-disable-next-line no-empty-pattern
-  config: async ({}, use) => {
-    const config = await initWithAnvil(anvilBase);
-    await connect(config, { connector: config.connectors[1] });
-
-    await use(config);
-  },
   // eslint-disable-next-line no-empty-pattern
   readonlyConfig: async ({}, use) => {
     const config = await init();
@@ -93,6 +82,26 @@ const test = it.extend<TestContext>({
       baseEth,
     };
     await use(tokens);
+  },
+
+  config: async ({ tokens }, use) => {
+    const config = await initWithAnvil(anvilBase, {
+      fundTokens: [
+        {
+          address: tokens.baseAero.address as Address,
+          amount: "1000",
+          decimals: tokens.baseAero.decimals,
+        },
+        {
+          address: tokens.baseWeth.address as Address,
+          amount: "1000",
+          decimals: tokens.baseWeth.decimals,
+        },
+      ],
+    });
+    await connect(config, { connector: config.connectors[1] });
+
+    await use(config);
   },
 });
 
@@ -159,109 +168,20 @@ describe("getCallDataForSwap", () => {
   });
 });
 
-describe("Test swap functionality with Anvil", () => {
+describe("swap", () => {
   let client: ReturnType<typeof anvilBase.getClient>;
 
   beforeAll(async () => {
     // Get a client for Base Anvil instance
+    // ETH and token funding is now handled automatically by initWithAnvil
     client = anvilBase.getClient();
-
-    // Fund test account with ETH
-    await setBalance(client, {
-      address: account.address,
-      value: parseUnits("10000", 18),
-    });
-
-    // Mine a block to apply the changes
-    await mine(client, { blocks: 1 });
-  }, 30000);
+  });
 
   test(
     "quote and swap from AERO to USDC",
     { timeout: 30000 },
     async ({ config, readonlyConfig, tokens }) => {
-      // XX: let's see if really need this
-      // Advance block timestamp AHEAD of current time to prevent deadline expiration issues
-      // Adding 120 seconds buffer to account for test execution time
-      // const currentTime = Math.floor(Date.now() / 1000);
-      // const futureTime = currentTime + 120;
-      // await setNextBlockTimestamp(client, { timestamp: BigInt(futureTime) });
-      // await mine(client, { blocks: 1 });
-      // console.log(
-      //   "Advanced blockchain time to:",
-      //   futureTime,
-      //   "(current:",
-      //   currentTime,
-      //   ")"
-      // );
-
-      // Check which account wagmi is connected to
-      const wagmiAccount = getAccount(config);
-      console.log("Wagmi connected account:", wagmiAccount.address);
-
-      // We need to fund the connected account since that's what will be used for approval/swap
-      const account = wagmiAccount.address!;
-      console.log("Using account for funding and operations:", account);
-
-      // Read AERO token balance
-      const aeroBalance = await readContract(client, {
-        address: tokens.baseAero.address as `0x${string}`,
-        abi: [
-          {
-            inputs: [{ name: "account", type: "address" }],
-            name: "balanceOf",
-            outputs: [{ name: "", type: "uint256" }],
-            stateMutability: "view",
-            type: "function",
-          },
-        ],
-        functionName: "balanceOf",
-        args: [account],
-      });
-
-      console.log(
-        "AERO balance:",
-        formatUnits(aeroBalance, tokens.baseAero.decimals),
-        "AERO"
-      );
-      console.log("AERO balance (raw):", aeroBalance);
-
-      // Fund the account with AERO tokens
       const amountIn = parseUnits("100", tokens.baseAero.decimals);
-      const fundAmount = parseUnits("1000", tokens.baseAero.decimals); // Fund with 1000 AERO
-
-      console.log(
-        "Funding account with",
-        formatUnits(fundAmount, tokens.baseAero.decimals),
-        "AERO"
-      );
-      await setERC20Balance(
-        client,
-        tokens.baseAero.address as Address,
-        account,
-        fundAmount
-      );
-
-      // Verify the balance was set
-      const newAeroBalance = await readContract(client, {
-        address: tokens.baseAero.address as `0x${string}`,
-        abi: [
-          {
-            inputs: [{ name: "account", type: "address" }],
-            name: "balanceOf",
-            outputs: [{ name: "", type: "uint256" }],
-            stateMutability: "view",
-            type: "function",
-          },
-        ],
-        functionName: "balanceOf",
-        args: [account],
-      });
-      console.log(
-        "New AERO balance:",
-        formatUnits(newAeroBalance, tokens.baseAero.decimals),
-        "AERO"
-      );
       const quote = await getQuoteForSwap({
         config: readonlyConfig,
         fromToken: tokens.baseAero,
@@ -279,22 +199,8 @@ describe("Test swap functionality with Anvil", () => {
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
       expect(quote!.spenderAddress).toBeDefined();
 
-      console.log("Quote details:");
-      console.log("  - Spender address:", quote!.spenderAddress);
-      console.log(
-        "  - Amount in:",
-        formatUnits(quote!.amount, tokens.baseAero.decimals),
-        "AERO"
-      );
-      console.log(
-        "  - Amount out:",
-        formatUnits(quote!.amountOut, tokens.baseUsdc.decimals),
-        "USDC"
-      );
-      console.log("  - Path nodes:", quote!.path.nodes.length);
-
-      // Approve tokens before swap using private key
-      const approvalHash = await approve({
+      // Approve tokens before swap
+      await approve({
         config,
         tokenAddress:
           quote!.fromToken.wrappedAddress || quote!.fromToken.address,
@@ -304,99 +210,31 @@ describe("Test swap functionality with Anvil", () => {
         waitForReceipt: false,
       });
 
-      console.log("Approval transaction hash:", approvalHash);
-
-      // Get the approval transaction to see which account it's from
-      const approvalTx = await getTransaction(client, {
-        hash: approvalHash as `0x${string}`,
-      });
-      console.log("Approval sent from:", approvalTx.from);
-      console.log("Funding/checking balance for:", account);
-
       // Mine the approval transaction
       await mine(client, { blocks: 1 });
 
-      // Check approval transaction status
-      const approvalReceipt = await getTransactionReceipt(client, {
-        hash: approvalHash as `0x${string}`,
-      });
-      console.log("Approval receipt status:", approvalReceipt.status);
-
-      if (approvalReceipt.status === "reverted") {
-        console.log("Approval REVERTED!");
-
-        // Try to get the revert reason by simulating the transaction
-        const approvalTx = await getTransaction(client, {
-          hash: approvalHash as `0x${string}`,
-        });
-        try {
-          await call(client, {
-            to: approvalTx.to!,
-            data: approvalTx.input,
-            from: approvalTx.from,
-            value: approvalTx.value,
-          });
-        } catch (error: any) {
-          console.log("Approval revert reason:", error.message);
-          console.log("Full error:", error);
-        }
-      }
-
-      // Assert approval succeeded
-      expect(approvalReceipt.status).toBe("success");
-
-      // Check allowance was set correctly
-      const allowance = await readContract(client, {
-        address: tokens.baseAero.address as `0x${string}`,
-        abi: [
-          {
-            inputs: [
-              { name: "owner", type: "address" },
-              { name: "spender", type: "address" },
-            ],
-            name: "allowance",
-            outputs: [{ name: "", type: "uint256" }],
-            stateMutability: "view",
-            type: "function",
-          },
-        ],
-        functionName: "allowance",
-        args: [account, quote!.spenderAddress as Address],
-      });
-      console.log(
-        "Allowance set:",
-        formatUnits(allowance, tokens.baseAero.decimals),
-        "AERO"
-      );
-      console.log(
-        "Amount to swap:",
-        formatUnits(quote!.amount, tokens.baseAero.decimals),
-        "AERO"
-      );
-
       // Check current block timestamp and advance if needed
-      const blockBeforeSwap = await getBlock(client);
-      const timeBeforeSwap = Math.floor(Date.now() / 1000);
-      console.log("Block timestamp before swap:", blockBeforeSwap.timestamp);
-      console.log("Current real time:", timeBeforeSwap);
-      console.log(
-        "Time difference:",
-        timeBeforeSwap - Number(blockBeforeSwap.timestamp),
-        "seconds"
-      );
+      // const blockBeforeSwap = await getBlock(client);
+      // const timeBeforeSwap = Math.floor(Date.now() / 1000);
+      // console.log("Block timestamp before swap:", blockBeforeSwap.timestamp);
+      // console.log("Current real time:", timeBeforeSwap);
+      // console.log(
+      //   "Time difference:",
+      //   timeBeforeSwap - Number(blockBeforeSwap.timestamp),
+      //   "seconds"
+      // );
 
-      // Set Anvil's next block timestamp to current time to avoid deadline expiration
-      if (Number(blockBeforeSwap.timestamp) < timeBeforeSwap) {
-        console.log("Advancing block timestamp to current time...");
-        await setNextBlockTimestamp(client, {
-          timestamp: BigInt(timeBeforeSwap),
-        });
-        await mine(client, { blocks: 1 });
-        const newBlock = await getBlock(client);
-        console.log("New block timestamp:", newBlock.timestamp);
-      }
+      // // Set Anvil's next block timestamp to current time to avoid deadline expiration
+      // if (Number(blockBeforeSwap.timestamp) < timeBeforeSwap) {
+      //   console.log("Advancing block timestamp to current time...");
+      //   await setNextBlockTimestamp(client, {
+      //     timestamp: BigInt(timeBeforeSwap),
+      //   });
+      //   await mine(client, { blocks: 1 });
+      //   const newBlock = await getBlock(client);
+      //   console.log("New block timestamp:", newBlock.timestamp);
+      // }
 
-      // Execute swap using private key
       const hash = await swap({
         config,
         quote: quote!,
