@@ -184,8 +184,6 @@ describe("Test swap functionality with Anvil", () => {
       expect(quote!.path.nodes.length).toBeGreaterThan(0);
       expect(quote!.spenderAddress).toBeDefined();
 
-      console.log(">>>>>>>>>>>> going to approve tokens");
-
       // Approve tokens before swap using private key
       await approve({
         config,
@@ -194,11 +192,8 @@ describe("Test swap functionality with Anvil", () => {
         spenderAddress: quote!.spenderAddress,
         amount: quote!.amount,
         chainId: quote!.fromToken.chainId,
-        privateKey: accounts[0].privateKey,
         waitForReceipt: false,
       });
-
-      console.log(">>>>>>>>>>>> approved, going to swap");
 
       // Mine the approval transaction
       await mine(client, { blocks: 1 });
@@ -207,7 +202,6 @@ describe("Test swap functionality with Anvil", () => {
       const hash = await swap({
         config,
         quote: quote!,
-        privateKey: accounts[0].privateKey,
         waitForReceipt: false,
       });
 
