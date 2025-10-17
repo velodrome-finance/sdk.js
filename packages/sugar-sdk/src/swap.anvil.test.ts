@@ -12,6 +12,7 @@ import { initWithAnvil, logTransactionDetails } from "./lib/test-helpers.js";
 import { type Token } from "./primitives/index.js";
 import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
+import { wait } from "./utils/wait.js";
 
 interface TestContext {
   config: Awaited<ReturnType<typeof init>>;
@@ -205,6 +206,9 @@ describe("swap", () => {
         waitForReceipt: false,
       });
 
+      // Wait for transaction to reach mempool before mining
+      await wait(100);
+
       // Mine the approval transaction
       await mine(client, { blocks: 1 });
 
@@ -216,6 +220,9 @@ describe("swap", () => {
 
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
+
+      // Wait for transaction to reach mempool before mining
+      await wait(100);
 
       // Mine the swap transaction
       await mine(client, { blocks: 1 });
@@ -261,6 +268,9 @@ describe("swap", () => {
         waitForReceipt: false,
       });
 
+      // Wait for transaction to reach mempool before mining
+      await wait(100);
+
       // Mine the approval transaction
       await mine(client, { blocks: 1 });
 
@@ -273,7 +283,8 @@ describe("swap", () => {
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
-      await Promise.resolve(setTimeout(() => {}, 1000));
+      // Wait for transaction to reach mempool before mining
+      await wait(100);
 
       // Mine the swap transaction
       await mine(client, { blocks: 1 });
