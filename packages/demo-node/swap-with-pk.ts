@@ -14,7 +14,7 @@ import { fileURLToPath } from "url";
 import { parseArgs } from "util";
 import { encodeFunctionData, Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { getTransactionCount } from "viem/actions";
+import { estimateGas, getTransactionCount } from "viem/actions";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 loadEnv({ path: resolve(__dirname, ".env") });
@@ -264,6 +264,16 @@ async function main() {
 
     const approvalNonce = startingNonce;
     console.log(`  Approval nonce: ${approvalNonce}`);
+
+    // Estimate gas for approval transaction
+    console.log("  Estimating gas for approval...");
+    const estimatedApprovalGas = await estimateGas(client, {
+      account: accountAddress,
+      to: tokenAddress,
+      data: approvalData,
+      value: 0n,
+    });
+
     console.log("  Signing approval transaction...");
     const signedApproval = await account.signTransaction({
       to: tokenAddress,
@@ -271,7 +281,7 @@ async function main() {
       value: 0n,
       chainId: unsignedTx.chainId,
       nonce: approvalNonce,
-      gas: 100000n,
+      gas: estimatedApprovalGas,
       maxFeePerGas: 1000000000n,
       maxPriorityFeePerGas: 1000000000n,
     });
@@ -291,6 +301,15 @@ async function main() {
     const swapNonce = startingNonce + 1;
     console.log(`  Swap nonce: ${swapNonce}`);
 
+    // Estimate gas for swap transaction
+    console.log("  Estimating gas for swap...");
+    const estimatedSwapGas = await estimateGas(client, {
+      account: accountAddress,
+      to: unsignedTx.to,
+      data: unsignedTx.data,
+      value: unsignedTx.value,
+    });
+
     // Sign the swap transaction with the private key (external signing)
     console.log("  Signing swap transaction...");
     console.log(
@@ -302,7 +321,7 @@ async function main() {
       value: unsignedTx.value,
       chainId: unsignedTx.chainId,
       nonce: swapNonce,
-      gas: 500000n,
+      gas: estimatedSwapGas,
       maxFeePerGas: 1000000000n,
       maxPriorityFeePerGas: 1000000000n,
     });
