@@ -1,13 +1,5 @@
 import { connect, getAccount } from "@wagmi/core";
-import {
-  type Address,
-  encodeAbiParameters,
-  formatUnits,
-  keccak256,
-  pad,
-  parseUnits,
-  toHex,
-} from "viem";
+import { type Address, formatUnits, parseUnits } from "viem";
 import {
   call,
   getBlock,
@@ -17,11 +9,10 @@ import {
   readContract,
   setBalance,
   setNextBlockTimestamp,
-  setStorageAt,
 } from "viem/actions";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { init } from "@/lib/test-helpers.js";
+import { init, setERC20Balance } from "@/lib/test-helpers.js";
 import { anvilBase } from "~test/src/anvil.js";
 import { account } from "~test/src/constants.js";
 
@@ -30,39 +21,6 @@ import { initWithAnvil } from "./lib/test-helpers.js";
 import { type Token } from "./primitives/index.js";
 import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
-
-/**
- * Sets the ERC20 token balance for a given account using Anvil's setStorageAt.
- * This manipulates the storage slot where the balance is stored.
- *
- * @param client - The Anvil test client
- * @param tokenAddress - The ERC20 token contract address
- * @param accountAddress - The account to set the balance for
- * @param balance - The balance amount (in wei/smallest unit)
- * @param storageSlot - The storage slot where balances mapping is stored (default: 0)
- */
-async function setERC20Balance(
-  client: ReturnType<typeof anvilBase.getClient>,
-  tokenAddress: Address,
-  accountAddress: Address,
-  balance: bigint,
-  storageSlot: number = 0
-) {
-  // Calculate the storage slot for this account's balance in the mapping
-  // Storage slot = keccak256(abi.encode(accountAddress, mappingSlot))
-  const slotData = encodeAbiParameters(
-    [{ type: "address" }, { type: "uint256" }],
-    [accountAddress, BigInt(storageSlot)]
-  );
-  const slot = keccak256(slotData);
-
-  // Set the balance at the calculated storage slot
-  await setStorageAt(client, {
-    address: tokenAddress,
-    index: slot,
-    value: pad(toHex(balance), { size: 32 }),
-  });
-}
 
 interface TestContext {
   config: Awaited<ReturnType<typeof init>>;
@@ -222,19 +180,20 @@ describe("Test swap functionality with Anvil", () => {
     "quote and swap from AERO to USDC",
     { timeout: 30000 },
     async ({ config, readonlyConfig, tokens }) => {
+      // XX: let's see if really need this
       // Advance block timestamp AHEAD of current time to prevent deadline expiration issues
       // Adding 120 seconds buffer to account for test execution time
-      const currentTime = Math.floor(Date.now() / 1000);
-      const futureTime = currentTime + 120;
-      await setNextBlockTimestamp(client, { timestamp: BigInt(futureTime) });
-      await mine(client, { blocks: 1 });
-      console.log(
-        "Advanced blockchain time to:",
-        futureTime,
-        "(current:",
-        currentTime,
-        ")"
-      );
+      // const currentTime = Math.floor(Date.now() / 1000);
+      // const futureTime = currentTime + 120;
+      // await setNextBlockTimestamp(client, { timestamp: BigInt(futureTime) });
+      // await mine(client, { blocks: 1 });
+      // console.log(
+      //   "Advanced blockchain time to:",
+      //   futureTime,
+      //   "(current:",
+      //   currentTime,
+      //   ")"
+      // );
 
       // Check which account wagmi is connected to
       const wagmiAccount = getAccount(config);

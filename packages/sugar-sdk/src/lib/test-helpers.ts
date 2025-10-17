@@ -1,5 +1,7 @@
 import { connect } from "@wagmi/core";
 import type { Chain } from "@wagmi/core/chains";
+import { type Address, encodeAbiParameters, keccak256, pad, toHex } from "viem";
+import { setStorageAt } from "viem/actions";
 
 import {
   _getTestConfig,
@@ -180,7 +182,7 @@ export async function checkHoneyStatus(): Promise<boolean> {
     /*
       optimism,  // 4444
       unichain,  // 4445
-      [MISSING] fraxtal,   
+      [MISSING] fraxtal,
       lisk,      // 4446
       metalL2,   // 4447
       soneium,   // 4448
@@ -219,4 +221,37 @@ export async function checkHoneyStatus(): Promise<boolean> {
     console.warn("⚠️ Honey connectivity check failed:", error);
     return false;
   }
+}
+
+/**
+ * Sets the ERC20 token balance for a given account using Anvil's setStorageAt.
+ * This manipulates the storage slot where the balance is stored.
+ *
+ * @param client - The Anvil test client
+ * @param tokenAddress - The ERC20 token contract address
+ * @param accountAddress - The account to set the balance for
+ * @param balance - The balance amount (in wei/smallest unit)
+ * @param storageSlot - The storage slot where balances mapping is stored (default: 0)
+ */
+export async function setERC20Balance(
+  client: any,
+  tokenAddress: Address,
+  accountAddress: Address,
+  balance: bigint,
+  storageSlot: number = 0
+) {
+  // Calculate the storage slot for this account's balance in the mapping
+  // Storage slot = keccak256(abi.encode(accountAddress, mappingSlot))
+  const slotData = encodeAbiParameters(
+    [{ type: "address" }, { type: "uint256" }],
+    [accountAddress, BigInt(storageSlot)]
+  );
+  const slot = keccak256(slotData);
+
+  // Set the balance at the calculated storage slot
+  await setStorageAt(client, {
+    address: tokenAddress,
+    index: slot,
+    value: pad(toHex(balance), { size: 32 }),
+  });
 }
