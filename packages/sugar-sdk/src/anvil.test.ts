@@ -37,7 +37,7 @@ describe("initWithAnvil", () => {
 
     // Test reading multiple account balances
     const balances = await Promise.all(
-      accounts.slice(0, 3).map((account) =>
+      accounts.slice(0, 3).map((account: (typeof accounts)[number]) =>
         getBalance(config, {
           address: account.address,
           chainId: 8453,
@@ -46,7 +46,7 @@ describe("initWithAnvil", () => {
     );
 
     // All test accounts should have balances
-    balances.forEach((balance) => {
+    balances.forEach((balance: Awaited<ReturnType<typeof getBalance>>) => {
       expect(balance.value).toBeGreaterThan(0n);
       expect(balance.symbol).toBe("ETH");
     });

@@ -11,8 +11,10 @@
     "declaration": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "~test/*": ["test/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["test/**/*", "**/*.test.ts"]
 }
