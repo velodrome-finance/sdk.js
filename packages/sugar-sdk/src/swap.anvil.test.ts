@@ -1,11 +1,6 @@
 import { connect } from "@wagmi/core";
 import { type Address, formatUnits, parseUnits } from "viem";
-import {
-  call,
-  getTransaction,
-  getTransactionReceipt,
-  mine,
-} from "viem/actions";
+import { mine } from "viem/actions";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { init } from "@/lib/test-helpers.js";
@@ -13,7 +8,7 @@ import { anvilBase } from "~test/src/anvil.js";
 import { account } from "~test/src/constants.js";
 
 import { approve } from "./approval.js";
-import { initWithAnvil } from "./lib/test-helpers.js";
+import { initWithAnvil, logTransactionDetails } from "./lib/test-helpers.js";
 import { type Token } from "./primitives/index.js";
 import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
@@ -213,28 +208,6 @@ describe("swap", () => {
       // Mine the approval transaction
       await mine(client, { blocks: 1 });
 
-      // Check current block timestamp and advance if needed
-      // const blockBeforeSwap = await getBlock(client);
-      // const timeBeforeSwap = Math.floor(Date.now() / 1000);
-      // console.log("Block timestamp before swap:", blockBeforeSwap.timestamp);
-      // console.log("Current real time:", timeBeforeSwap);
-      // console.log(
-      //   "Time difference:",
-      //   timeBeforeSwap - Number(blockBeforeSwap.timestamp),
-      //   "seconds"
-      // );
-
-      // // Set Anvil's next block timestamp to current time to avoid deadline expiration
-      // if (Number(blockBeforeSwap.timestamp) < timeBeforeSwap) {
-      //   console.log("Advancing block timestamp to current time...");
-      //   await setNextBlockTimestamp(client, {
-      //     timestamp: BigInt(timeBeforeSwap),
-      //   });
-      //   await mine(client, { blocks: 1 });
-      //   const newBlock = await getBlock(client);
-      //   console.log("New block timestamp:", newBlock.timestamp);
-      // }
-
       const hash = await swap({
         config,
         quote: quote!,
@@ -244,67 +217,14 @@ describe("swap", () => {
       expect(hash).toBeDefined();
       expect(hash.startsWith("0x")).toBe(true);
 
-      console.log("Swap transaction hash:", hash);
-
       // Mine the swap transaction
       await mine(client, { blocks: 1 });
 
-      // Get transaction details
-      const tx = await getTransaction(client, { hash: hash as `0x${string}` });
-      console.log("Transaction details:", {
-        from: tx.from,
-        to: tx.to,
-        value: tx.value,
-        gas: tx.gas,
-        gasPrice: tx.gasPrice,
-        nonce: tx.nonce,
-        input: tx.input.slice(0, 66) + "...", // Just show first part of calldata
-      });
-
-      // Get transaction receipt
-      const receipt = await getTransactionReceipt(client, {
-        hash: hash as `0x${string}`,
-      });
-      console.log("Transaction receipt:", {
-        status: receipt.status,
-        blockNumber: receipt.blockNumber,
-        gasUsed: receipt.gasUsed,
-        effectiveGasPrice: receipt.effectiveGasPrice,
-        logs: receipt.logs.length,
-      });
-
-      if (receipt.status === "reverted") {
-        console.log("Swap transaction REVERTED!");
-
-        // Try to get the revert reason by simulating the transaction
-        try {
-          await call(client, {
-            to: tx.to!,
-            data: tx.input,
-            from: tx.from,
-            value: tx.value,
-          });
-        } catch (error: any) {
-          console.log("Swap revert reason:", error.message);
-          console.log("Full error:", error);
-
-          // Also log the shortMessage if available (viem usually provides a nice error message)
-          if (error.shortMessage) {
-            console.log("Short message:", error.shortMessage);
-          }
-          if (error.details) {
-            console.log("Details:", error.details);
-          }
-          if (error.cause) {
-            console.log("Cause:", error.cause);
-          }
-        }
-      } else {
-        console.log("Swap transaction SUCCESS!");
-      }
+      // Log transaction details and check for revert
+      const result = await logTransactionDetails(client, hash as `0x${string}`);
 
       // Assert swap transaction succeeded
-      expect(receipt.status).toBe("success");
+      expect(result.status).toBe("success");
     }
   );
 

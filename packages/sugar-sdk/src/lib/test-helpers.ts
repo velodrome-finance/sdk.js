@@ -8,7 +8,14 @@ import {
   parseUnits,
   toHex,
 } from "viem";
-import { mine, setBalance, setStorageAt } from "viem/actions";
+import {
+  call,
+  getTransaction,
+  getTransactionReceipt,
+  mine,
+  setBalance,
+  setStorageAt,
+} from "viem/actions";
 
 import {
   _getTestConfig,
@@ -359,4 +366,62 @@ export async function setERC20Balance(
     index: slot,
     value: pad(toHex(balance), { size: 32 }),
   });
+}
+
+/**
+ * Logs transaction details and attempts to extract revert reason if transaction failed.
+ * Useful for debugging failed transactions in tests.
+ *
+ * @param client - The test client (e.g., from anvilBase.getClient())
+ * @param hash - The transaction hash to investigate
+ * @returns Object containing transaction status and error details if reverted
+ *
+ * @example
+ * const hash = await swap({ config, quote, waitForReceipt: false });
+ * await mine(client, { blocks: 1 });
+ * const result = await logTransactionDetails(client, hash);
+ * expect(result.status).toBe("success");
+ */
+export async function logTransactionDetails(
+  client: any,
+  hash: `0x${string}`
+): Promise<{ status: "success" | "reverted"; error?: any }> {
+  // Get transaction details
+  const tx = await getTransaction(client, { hash });
+  // Get transaction receipt
+  const receipt = await getTransactionReceipt(client, { hash });
+
+  if (receipt.status === "reverted") {
+    console.log("Transaction REVERTED!");
+
+    // Try to get the revert reason by simulating the transaction
+    let error: any = null;
+    try {
+      await call(client, {
+        to: tx.to!,
+        data: tx.input,
+        account: tx.from,
+        value: tx.value,
+      });
+    } catch (err: any) {
+      error = err;
+      console.log("Revert reason:", err.message);
+      console.log("Full error:", err);
+
+      // Also log the shortMessage if available (viem usually provides a nice error message)
+      if (err.shortMessage) {
+        console.log("Short message:", err.shortMessage);
+      }
+      if (err.details) {
+        console.log("Details:", err.details);
+      }
+      if (err.cause) {
+        console.log("Cause:", err.cause);
+      }
+    }
+
+    return { status: "reverted", error };
+  } else {
+    return { status: "success" };
+  }
 }
