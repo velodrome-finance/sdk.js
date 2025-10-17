@@ -2,7 +2,7 @@ import { getBalance } from "@wagmi/core";
 import { describe, expect, it } from "vitest";
 
 import { anvilBase } from "~test/src/anvil.js";
-import { accounts } from "~test/src/constants.js";
+import { account } from "~test/src/constants.js";
 
 import { initWithAnvil } from "./lib/test-helpers.js";
 
@@ -21,7 +21,7 @@ describe("initWithAnvil", () => {
 
     // Test connectivity by reading account balance
     const balance = await getBalance(config, {
-      address: accounts[0].address,
+      address: account.address,
       chainId: 8453,
     });
 
@@ -35,21 +35,15 @@ describe("initWithAnvil", () => {
   it("config can be used for basic wagmi operations", async () => {
     const config = await initWithAnvil(anvilBase);
 
-    // Test reading multiple account balances
-    const balances = await Promise.all(
-      accounts.slice(0, 3).map((account: (typeof accounts)[number]) =>
-        getBalance(config, {
-          address: account.address,
-          chainId: 8453,
-        })
-      )
-    );
-
-    // All test accounts should have balances
-    balances.forEach((balance: Awaited<ReturnType<typeof getBalance>>) => {
-      expect(balance.value).toBeGreaterThan(0n);
-      expect(balance.symbol).toBe("ETH");
+    // Test reading account balance
+    const balance = await getBalance(config, {
+      address: account.address,
+      chainId: 8453,
     });
+
+    // Test account should have balance
+    expect(balance.value).toBeGreaterThan(0n);
+    expect(balance.symbol).toBe("ETH");
   });
 
   it("supports chainUrls option for manual URL mapping", async () => {
@@ -62,7 +56,7 @@ describe("initWithAnvil", () => {
 
     // Verify connectivity
     const balance = await getBalance(config, {
-      address: accounts[0].address,
+      address: account.address,
       chainId: 8453,
     });
 

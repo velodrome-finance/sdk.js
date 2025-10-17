@@ -23,12 +23,12 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { init } from "@/lib/test-helpers.js";
 import { anvilBase } from "~test/src/anvil.js";
-import { accounts } from "~test/src/constants.js";
+import { account } from "~test/src/constants.js";
 
 import { approve } from "./approval.js";
 import { initWithAnvil } from "./lib/test-helpers.js";
 import { type Token } from "./primitives/index.js";
-import { getQuoteForSwap, swap } from "./swap.js";
+import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
 
 /**
@@ -138,68 +138,68 @@ const test = it.extend<TestContext>({
   },
 });
 
-// describe("getCallDataForSwap", () => {
-//   test(
-//     "works for Base",
-//     { timeout: 20000 },
-//     async ({ readonlyConfig, tokens }) => {
-//       const callData = await getCallDataForSwap({
-//         config: readonlyConfig,
-//         fromToken: tokens.baseAero,
-//         toToken: tokens.baseUsdc,
-//         amountIn: parseUnits("100", tokens.baseAero.decimals),
-//         account: accounts[0].address,
-//         slippage: 0.01,
-//       });
-//       expect(callData).not.toBeNull();
-//       const pi = formatUnits(callData!.priceImpact, 18);
-//       // make sure price impact is in decimals for % (ie 2% is 0.02 not 2.0)
-//       expect(Math.abs(parseFloat(pi))).toBeLessThan(0.01);
-//     }
-//   );
+describe("getCallDataForSwap", () => {
+  test(
+    "works for Base",
+    { timeout: 20000 },
+    async ({ readonlyConfig, tokens }) => {
+      const callData = await getCallDataForSwap({
+        config: readonlyConfig,
+        fromToken: tokens.baseAero,
+        toToken: tokens.baseUsdc,
+        amountIn: parseUnits("100", tokens.baseAero.decimals),
+        account: account.address,
+        slippage: 0.01,
+      });
+      expect(callData).not.toBeNull();
+      const pi = formatUnits(callData!.priceImpact, 18);
+      // make sure price impact is in decimals for % (ie 2% is 0.02 not 2.0)
+      expect(Math.abs(parseFloat(pi))).toBeLessThan(0.01);
+    }
+  );
 
-//   test("handles invalid slippage values", async ({
-//     readonlyConfig,
-//     tokens,
-//   }) => {
-//     await expect(
-//       getCallDataForSwap({
-//         config: readonlyConfig,
-//         fromToken: tokens.baseUsdc,
-//         toToken: tokens.baseAero,
-//         amountIn: parseUnits("100", tokens.baseUsdc.decimals),
-//         account: accounts[0].address,
-//         slippage: -0.01, // Invalid slippage (negative)
-//       })
-//     ).rejects.toThrow("Invalid slippage value. Should be between 0 and 1.");
+  test("handles invalid slippage values", async ({
+    readonlyConfig,
+    tokens,
+  }) => {
+    await expect(
+      getCallDataForSwap({
+        config: readonlyConfig,
+        fromToken: tokens.baseUsdc,
+        toToken: tokens.baseAero,
+        amountIn: parseUnits("100", tokens.baseUsdc.decimals),
+        account: account.address,
+        slippage: -0.01, // Invalid slippage (negative)
+      })
+    ).rejects.toThrow("Invalid slippage value. Should be between 0 and 1.");
 
-//     await expect(
-//       getCallDataForSwap({
-//         config: readonlyConfig,
-//         fromToken: tokens.baseUsdc,
-//         toToken: tokens.baseAero,
-//         amountIn: parseUnits("100", tokens.baseUsdc.decimals),
-//         account: accounts[0].address,
-//         slippage: 1.1, // Invalid slippage (> 1)
-//       })
-//     ).rejects.toThrow("Invalid slippage value. Should be between 0 and 1.");
-//   });
+    await expect(
+      getCallDataForSwap({
+        config: readonlyConfig,
+        fromToken: tokens.baseUsdc,
+        toToken: tokens.baseAero,
+        amountIn: parseUnits("100", tokens.baseUsdc.decimals),
+        account: account.address,
+        slippage: 1.1, // Invalid slippage (> 1)
+      })
+    ).rejects.toThrow("Invalid slippage value. Should be between 0 and 1.");
+  });
 
-//   test("handles missing quotes", async ({ readonlyConfig, tokens }) => {
-//     const d = await getCallDataForSwap({
-//       config: readonlyConfig,
-//       fromToken: Object.assign({}, tokens.baseUsdc, {
-//         // not a real token
-//         address: "0x7f9adfbd38b669f03d1d11000bc76b9aaea28a81",
-//       }),
-//       toToken: tokens.baseAero,
-//       amountIn: parseUnits("100", tokens.baseUsdc.decimals),
-//       account: accounts[0].address,
-//       slippage: 0.01,
-//     });
-//     expect(d).toBeNull();
-//   });
-// });
+  test("handles missing quotes", async ({ readonlyConfig, tokens }) => {
+    const d = await getCallDataForSwap({
+      config: readonlyConfig,
+      fromToken: Object.assign({}, tokens.baseUsdc, {
+        // not a real token
+        address: "0x7f9adfbd38b669f03d1d11000bc76b9aaea28a81",
+      }),
+      toToken: tokens.baseAero,
+      amountIn: parseUnits("100", tokens.baseUsdc.decimals),
+      account: account.address,
+      slippage: 0.01,
+    });
+    expect(d).toBeNull();
+  });
+});
 
 describe("Test swap functionality with Anvil", () => {
   let client: ReturnType<typeof anvilBase.getClient>;
@@ -208,19 +208,17 @@ describe("Test swap functionality with Anvil", () => {
     // Get a client for Base Anvil instance
     client = anvilBase.getClient();
 
-    // Fund test accounts with ETH
-    for (const account of accounts.slice(0, 3)) {
-      await setBalance(client, {
-        address: account.address,
-        value: parseUnits("10000", 18),
-      });
-    }
+    // Fund test account with ETH
+    await setBalance(client, {
+      address: account.address,
+      value: parseUnits("10000", 18),
+    });
 
     // Mine a block to apply the changes
     await mine(client, { blocks: 1 });
   }, 30000);
 
-  test.only(
+  test(
     "quote and swap from AERO to USDC",
     { timeout: 30000 },
     async ({ config, readonlyConfig, tokens }) => {

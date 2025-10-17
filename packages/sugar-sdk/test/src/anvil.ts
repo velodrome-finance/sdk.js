@@ -14,7 +14,7 @@ import {
   type Transport,
 } from "viem";
 
-import { accounts, poolId } from "./constants.js";
+import { account, poolId } from "./constants.js";
 
 /**
  * Get environment variable with fallback
@@ -59,7 +59,7 @@ type DefineAnvilReturnType<chain extends Chain> = {
       : config["account"] extends Account
         ? config["account"]
         : config["account"] extends true
-          ? ParseAccount<(typeof accounts)[0]["address"]>
+          ? ParseAccount<(typeof account)["address"]>
           : undefined,
     undefined,
     { mode: "anvil" }
@@ -116,8 +116,7 @@ function defineAnvil<const chain extends Chain>(
         createClient({
           ...clientConfig,
           ...config,
-          account:
-            config?.account === true ? accounts[0].address : config?.account,
+          account: config?.account === true ? account.address : config?.account,
           chain: config?.chain === false ? undefined : chain,
           transport: http(rpcUrl.http),
         }) as any
