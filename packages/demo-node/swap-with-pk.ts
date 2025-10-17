@@ -7,8 +7,8 @@ import {
   getDefaultConfig,
   getListedTokens,
   getQuoteForSwap,
-  getUnsignedSwapTransaction,
   submitSignedTransaction,
+  swap,
 } from "sugar-sdk";
 import { fileURLToPath } from "url";
 import { parseArgs } from "util";
@@ -224,11 +224,12 @@ async function main() {
 
     // Get unsigned transaction data
     console.log("\nGenerating unsigned transaction...");
-    const unsignedTx = await getUnsignedSwapTransaction({
+    const unsignedTx = await swap({
       config: readOnlyConfig,
       quote,
       account: accountAddress,
       slippage,
+      unsignedTransactionOnly: true,
     });
 
     console.log("\n✅ Unsigned transaction generated:");

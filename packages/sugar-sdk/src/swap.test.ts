@@ -12,12 +12,7 @@ import {
 import { approve } from "./approval.js";
 import { type Token } from "./primitives/index.js";
 // Import the swap functions
-import {
-  getCallDataForSwap,
-  getQuoteForSwap,
-  getUnsignedSwapTransaction,
-  swap,
-} from "./swap.js";
+import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
 import { submitSignedTransaction } from "./utils.js";
 
@@ -477,17 +472,15 @@ describe("Test swap functionality", () => {
   });
 
   test(
-    "getUnsignedSwapTransaction and submitSignedTransaction",
+    "handles unsignedTransactionOnly flag",
     { timeout: 30000 },
     async ({ config, supersimConfig, tokens }) => {
       const amountIn = parseUnits("100", tokens.opVelo.decimals);
 
       // ====== CLIENT 1: Read-only client (no wallet connection) ======
-      // This simulates a backend service or app that generates transaction data
-
       // Step 1: Get quote using read-only config
       const quote = await getQuoteForSwap({
-        config, // Read-only, no wallet needed
+        config,
         fromToken: tokens.opVelo,
         toToken: tokens.opUsdc,
         amountIn,
@@ -495,12 +488,13 @@ describe("Test swap functionality", () => {
 
       expect(quote).toBeTruthy();
 
-      // Step 2: Get unsigned transaction data using read-only config
-      const unsignedTx = await getUnsignedSwapTransaction({
-        config, // Read-only, no wallet needed
+      // Step 2: Use swap() with unsignedTransactionOnly=true to get unsigned transaction
+      const unsignedTx = await swap({
+        config,
         quote: quote!,
         account: TEST_ACCOUNT_ADDRESS,
-        slippage: 0.05, // 5% slippage for test
+        slippage: 0.05,
+        unsignedTransactionOnly: true,
       });
 
       // Verify unsigned transaction structure
@@ -511,11 +505,9 @@ describe("Test swap functionality", () => {
       expect(unsignedTx.chainId).toBe(quote!.fromToken.chainId);
 
       // ====== CLIENT 2: Wallet client (has private key) ======
-      // This simulates the user's wallet signing and submitting the transaction
-
-      // Step 3: Approve tokens using wallet client
+      // Step 3: Approve tokens
       await approve({
-        config: supersimConfig, // Wallet-connected config
+        config: supersimConfig,
         tokenAddress:
           quote!.fromToken.wrappedAddress || quote!.fromToken.address,
         spenderAddress: quote!.spenderAddress,
@@ -523,7 +515,7 @@ describe("Test swap functionality", () => {
         chainId: quote!.fromToken.chainId,
       });
 
-      // Step 4: Sign transaction with wallet client
+      // Step 4: Sign and submit transaction
       const client = supersimConfig.getClient({
         chainId: unsignedTx.chainId,
       });
@@ -542,13 +534,12 @@ describe("Test swap functionality", () => {
         chainId: unsignedTx.chainId,
         nonce,
         gas: 1000000n,
-        maxFeePerGas: 10000000000n, // 10 gwei
-        maxPriorityFeePerGas: 10000000000n, // 10 gwei
+        maxFeePerGas: 10000000000n,
+        maxPriorityFeePerGas: 10000000000n,
       });
 
-      // Step 5: Submit signed transaction using wallet client
       const hash = await submitSignedTransaction({
-        config: supersimConfig, // Wallet-connected config
+        config: supersimConfig,
         signedTransaction,
         waitForReceipt: true,
       });
