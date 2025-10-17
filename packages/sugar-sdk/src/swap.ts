@@ -265,7 +265,9 @@ export async function swap({
   const receipt = await waitForTransactionReceipt(config, { hash });
 
   if (receipt.status !== "success") {
-    throw new Error(`Swap transaction failed: ${receipt.status}`);
+    throw new Error(
+      `Swap transaction failed: ${receipt.status}. Hash: ${hash}`
+    );
   }
 
   return hash;
