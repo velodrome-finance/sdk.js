@@ -5,8 +5,6 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { init } from "@/lib/test-helpers.js";
 import { anvilBase } from "~test/src/anvil.js";
-import { anvilBase } from "~test/src/anvil.js";
-import { accounts } from "~test/src/constants.js";
 import { accounts } from "~test/src/constants.js";
 
 import { approve } from "./approval.js";
@@ -25,6 +23,8 @@ interface TestContext {
     opEth: Token;
     baseAero: Token;
     baseUsdc: Token;
+    baseWeth: Token;
+    baseEth: Token;
   };
 }
 
@@ -57,6 +57,8 @@ const test = it.extend<TestContext>({
     const opEth = findToken("eth", 10);
     const baseAero = findToken("aero", 8453);
     const baseUsdc = findToken("usdc", 8453);
+    const baseWeth = findToken("weth", 8453);
+    const baseEth = findToken("eth", 8453);
 
     if (!opVelo) throw new Error("Could not find VELO token for testing (OP)");
     if (!opWeth) throw new Error("Could not find WETH token for testing (OP)");
@@ -66,8 +68,21 @@ const test = it.extend<TestContext>({
       throw new Error("Could not find BASE AERO token for testing (Base)");
     if (!baseUsdc)
       throw new Error("Could not find BASE USDC token for testing (Base)");
+    if (!baseWeth)
+      throw new Error("Could not find BASE WETH token for testing (Base)");
+    if (!baseEth)
+      throw new Error("Could not find BASE ETH token for testing (Base)");
 
-    const tokens = { opVelo, opWeth, opUsdc, opEth, baseAero, baseUsdc };
+    const tokens = {
+      opVelo,
+      opWeth,
+      opUsdc,
+      opEth,
+      baseAero,
+      baseUsdc,
+      baseWeth,
+      baseEth,
+    };
     await use(tokens);
   },
 });
@@ -180,6 +195,7 @@ describe("Test swap functionality with Anvil", () => {
         amount: quote!.amount,
         chainId: quote!.fromToken.chainId,
         privateKey: accounts[0].privateKey,
+        waitForReceipt: false,
       });
 
       console.log(">>>>>>>>>>>> approved, going to swap");
@@ -263,6 +279,7 @@ describe("Test swap functionality with Anvil", () => {
         amount: quote!.amount,
         chainId: quote!.fromToken.chainId,
         privateKey: accounts[0].privateKey,
+        waitForReceipt: false,
       });
 
       await mine(client, { blocks: 1 });
@@ -307,6 +324,7 @@ describe("Test swap functionality with Anvil", () => {
         amount: quote!.amount,
         chainId: quote!.fromToken.chainId,
         privateKey: accounts[0].privateKey,
+        waitForReceipt: false,
       });
 
       await mine(client, { blocks: 1 });
