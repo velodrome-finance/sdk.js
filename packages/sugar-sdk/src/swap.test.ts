@@ -1,4 +1,6 @@
 import { formatUnits, parseUnits } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { getTransactionCount } from "viem/actions";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
@@ -12,6 +14,7 @@ import { type Token } from "./primitives/index.js";
 // Import the swap functions
 import { getCallDataForSwap, getQuoteForSwap, swap } from "./swap.js";
 import { getListedTokens } from "./tokens.js";
+import { submitSignedTransaction } from "./utils.js";
 
 interface TestContext {
   config: Awaited<ReturnType<typeof init>>;
@@ -185,51 +188,6 @@ describe("Test swap functionality", () => {
       const r = await swap({
         config: supersimConfig,
         quote: quote!,
-      });
-      expect(r).toBeDefined();
-      expect(r.startsWith("0x")).toBe(true);
-    }
-  );
-
-  test(
-    "quote and swap from WETH to USDC using private key",
-    { timeout: 30000 },
-    async ({ config, supersimConfig, tokens }) => {
-      const amountIn = parseUnits("1", tokens.opWeth.decimals);
-      const quote = await getQuoteForSwap({
-        config,
-        fromToken: tokens.opWeth,
-        toToken: tokens.opUsdc,
-        amountIn,
-      });
-
-      expect(quote).toBeTruthy();
-      expect(quote!.fromToken).toEqual(tokens.opWeth);
-      expect(quote!.toToken).toEqual(tokens.opUsdc);
-      expect(quote!.amount).toBe(amountIn);
-      expect(quote!.amountOut).toBeGreaterThan(0n);
-      expect(quote!.path).toBeDefined();
-      expect(quote!.path.nodes).toBeInstanceOf(Array);
-      expect(quote!.path.nodes.length).toBeGreaterThan(0);
-      expect(quote!.spenderAddress).toBeDefined();
-
-      // Approve tokens before swap
-      await approve({
-        config: supersimConfig,
-        tokenAddress:
-          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
-        spenderAddress: quote!.spenderAddress,
-        amount: quote!.amount,
-        chainId: quote!.fromToken.chainId,
-        privateKey:
-          "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
-      });
-
-      const r = await swap({
-        config: supersimConfig,
-        quote: quote!,
-        privateKey:
-          "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
       });
       expect(r).toBeDefined();
       expect(r.startsWith("0x")).toBe(true);
@@ -512,4 +470,83 @@ describe("Test swap functionality", () => {
     });
     expect(d).toBeNull();
   });
+
+  test(
+    "handles unsignedTransactionOnly flag",
+    { timeout: 30000 },
+    async ({ config, supersimConfig, tokens }) => {
+      const amountIn = parseUnits("100", tokens.opVelo.decimals);
+
+      // ====== CLIENT 1: Read-only client (no wallet connection) ======
+      // Step 1: Get quote using read-only config
+      const quote = await getQuoteForSwap({
+        config,
+        fromToken: tokens.opVelo,
+        toToken: tokens.opUsdc,
+        amountIn,
+      });
+
+      expect(quote).toBeTruthy();
+
+      // Step 2: Use swap() with unsignedTransactionOnly=true to get unsigned transaction
+      const unsignedTx = await swap({
+        config,
+        quote: quote!,
+        account: TEST_ACCOUNT_ADDRESS,
+        slippage: 0.05,
+        unsignedTransactionOnly: true,
+      });
+
+      // Verify unsigned transaction structure
+      expect(unsignedTx).toBeDefined();
+      expect(unsignedTx.to).toBeDefined();
+      expect(unsignedTx.data).toBeDefined();
+      expect(unsignedTx.value).toBeDefined();
+      expect(unsignedTx.chainId).toBe(quote!.fromToken.chainId);
+
+      // ====== CLIENT 2: Wallet client (has private key) ======
+      // Step 3: Approve tokens
+      await approve({
+        config: supersimConfig,
+        tokenAddress:
+          quote!.fromToken.wrappedAddress || quote!.fromToken.address,
+        spenderAddress: quote!.spenderAddress,
+        amount: quote!.amount,
+        chainId: quote!.fromToken.chainId,
+      });
+
+      // Step 4: Sign and submit transaction
+      const client = supersimConfig.getClient({
+        chainId: unsignedTx.chainId,
+      });
+      const nonce = await getTransactionCount(client, {
+        address: TEST_ACCOUNT_ADDRESS,
+      });
+
+      const account = privateKeyToAccount(
+        "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+      );
+
+      const signedTransaction = await account.signTransaction({
+        to: unsignedTx.to,
+        data: unsignedTx.data,
+        value: unsignedTx.value,
+        chainId: unsignedTx.chainId,
+        nonce,
+        gas: 1000000n,
+        maxFeePerGas: 10000000000n,
+        maxPriorityFeePerGas: 10000000000n,
+      });
+
+      const hash = await submitSignedTransaction({
+        config: supersimConfig,
+        signedTransaction,
+        waitForReceipt: true,
+      });
+
+      expect(hash).toBeDefined();
+      expect(hash.startsWith("0x")).toBe(true);
+      expect(hash.length).toBe(66);
+    }
+  );
 });
