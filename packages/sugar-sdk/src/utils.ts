@@ -1,5 +1,12 @@
-import { getAccount, switchChain } from "@wagmi/core";
+import {
+  getAccount,
+  getClient,
+  switchChain,
+  waitForTransactionReceipt,
+} from "@wagmi/core";
 import { splitEvery } from "ramda";
+import { Hex } from "viem";
+import { sendRawTransaction } from "viem/actions";
 
 import { SugarWagmiConfig } from "./config.js";
 
@@ -49,4 +56,44 @@ export async function processBatchesConcurrently<T, R>({
 
   const results = await Promise.all(batchPromises);
   return results.flat();
+}
+
+/**
+ * Submit a pre-signed transaction to the network
+ * @param config - Wagmi configuration
+ * @param signedTransaction - The serialized signed transaction (RLP-encoded)
+ * @param waitForReceipt - Whether to wait for transaction receipt (default: true)
+ * @returns Transaction hash
+ */
+export async function submitSignedTransaction({
+  config,
+  signedTransaction,
+  waitForReceipt = true,
+}: BaseParams & {
+  signedTransaction: Hex;
+  waitForReceipt?: boolean;
+}): Promise<Hex> {
+  const client = getClient(config);
+
+  if (!client) {
+    throw new Error("No client found in config");
+  }
+
+  // Send the raw signed transaction using viem's action
+  const hash = await sendRawTransaction(client, {
+    serializedTransaction: signedTransaction,
+  });
+
+  if (!waitForReceipt) {
+    return hash;
+  }
+
+  // Wait for transaction receipt
+  const receipt = await waitForTransactionReceipt(config, { hash });
+
+  if (receipt.status !== "success") {
+    throw new Error(`Transaction failed: ${receipt.status}. Hash: ${hash}`);
+  }
+
+  return hash;
 }

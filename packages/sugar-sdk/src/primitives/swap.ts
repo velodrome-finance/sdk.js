@@ -74,6 +74,7 @@ export function getQuoteForSwapVars(
     chainId,
     poolsPageSize: config.POOLS_PAGE_SIZE,
     mustExcludeTokens: unsafeTokensSet,
+    spenderAddress: getChainConfig(config, chainId).UNIVERSAL_ROUTER_ADDRESS,
   };
 }
 

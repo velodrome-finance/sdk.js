@@ -68,4 +68,5 @@ export type Quote = {
   fromToken: Token;
   toToken: Token;
   priceImpact: bigint;
+  spenderAddress: Address;
 };
