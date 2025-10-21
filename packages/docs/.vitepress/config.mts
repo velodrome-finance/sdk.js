@@ -8,7 +8,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "Home", link: "/" },
-      { text: "Guide", link: "/getting-started" },
+      { text: "Using with Node.js", link: "/using-node" },
       { text: "API Reference", link: "/api/overview" },
     ],
     search: {
@@ -19,9 +19,9 @@ export default defineConfig({
       {
         text: "Guide",
         items: [
-          { text: "Getting Started", link: "/getting-started" },
-          { text: "Swapping Tokens", link: "/swapping" },
-          { text: "Getting Calldata", link: "/calldata" },
+          { text: "Introduction", link: "/" },
+          { text: "Using with Node.js", link: "/using-node" },
+          { text: "Using with React", link: "/using-react" },
         ],
       },
       {

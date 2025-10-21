@@ -279,4 +279,4 @@ This is the main config type you'll use throughout the SDK.
 
 - [Tokens API](/api/tokens) - Fetch token data
 - [Swaps API](/api/swaps) - Execute swaps
-- [Getting Started Guide](/getting-started) - Setup walkthrough
+- [Using with Node.js](/using-node) - End-to-end usage guide

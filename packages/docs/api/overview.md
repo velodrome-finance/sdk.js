@@ -4,10 +4,10 @@ Complete reference for all Sugar SDK functions and types.
 
 ## Quick Links
 
-- [Configuration](/api/config) - Setup and initialize the SDK
-- [Tokens](/api/tokens) - Fetch token data and balances
-- [Swaps](/api/swaps) - Get quotes and execute swaps
-- [Approvals](/api/approvals) - Approve token spending
+- [Configuration](/api/config) – Setup and initialize the SDK
+- [Tokens](/api/tokens) – Fetch token data and balances
+- [Swaps](/api/swaps) – Quotes, calldata, and swap execution
+- [Approvals](/api/approvals) – Handle ERC20 allowances
 
 ## Core Concepts
 
@@ -32,17 +32,19 @@ The `Token` type represents an ERC20 token on a specific chain:
 
 ```typescript
 type Token = {
-  symbol: string;        // "USDC"
-  name: string;          // "USD Coin"
-  address: string;       // "0x..."
-  chainId: number;       // 10
-  decimals: number;      // 6
-  price: string;         // "1.00"
-  balance: bigint;       // 0n
-  listed: boolean;       // true
-  // ... additional fields
+  chainId: number;     // 10
+  address: Address;    // "0x..."
+  symbol: string;      // "USDC"
+  name?: string;       // "USD Coin"
+  decimals: number;    // 6
+  listed: boolean;     // true
+  balance: bigint;     // 0n
+  price: bigint;       // USD price scaled to 18 decimals
+  balanceValue: bigint;// USD value scaled to 18 decimals
 };
 ```
+
+`Address` comes from `viem` (`import type { Address } from "viem";`).
 
 ### Quotes
 
@@ -50,12 +52,12 @@ A `Quote` represents a swap route with expected output:
 
 ```typescript
 type Quote = {
-  amountOut: bigint;           // Expected output
-  priceImpact: bigint;         // Price impact in bps
+  amountOut: bigint;         // Expected output
+  priceImpact: bigint;       // Price impact in bps
   path: /* routing path */;
   fromToken: Token;
   toToken: Token;
-  spenderAddress: string;      // Address to approve
+  spenderAddress: Address;   // Address to approve
 };
 ```
 
@@ -137,8 +139,7 @@ if (quote) {
 
 ## Next Steps
 
-Explore the detailed API documentation:
-
+- [Using with Node.js](/using-node) – Install and run end-to-end flows
 - [Configuration API](/api/config)
 - [Tokens API](/api/tokens)
 - [Swaps API](/api/swaps)
