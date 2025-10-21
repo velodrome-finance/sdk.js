@@ -1,18 +1,6 @@
 import { connect } from "@wagmi/core";
 
-import {
-  _getTestConfig,
-  base,
-  ink,
-  lisk,
-  metalL2,
-  mode,
-  optimism,
-  soneium,
-  superseed,
-  swellchain,
-  unichain,
-} from "../config.js";
+import { _getTestConfig, supportedChains } from "../config.js";
 
 export const TEST_ACCOUNT_ADDRESS =
   "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
@@ -20,18 +8,7 @@ export const TEST_ACCOUNT_ADDRESS =
 export const init = async (testMode: boolean = false) => {
   // When honey is enabled, modify chain RPC URLs to use localhost
   const config = _getTestConfig({
-    chains: [
-      optimism, // 4444
-      unichain, // 4445
-      lisk, // 4446
-      metalL2, // 4447
-      soneium, // 4448
-      swellchain, // 4449
-      superseed, // 4450
-      base, // 44451
-      mode, // 44452
-      ink, // 44453
-    ].map((chain, i) => {
+    chains: supportedChains.map((chain, i) => {
       const rpcUrl = testMode
         ? `http://localhost:${i + 4444}`
         : import.meta.env[`VITE_RPC_URL_${chain.id}`];
