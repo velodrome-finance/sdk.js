@@ -33,6 +33,23 @@ TODO - might drop this altogether in favor of lints via hooks
 
 ## Documentation
 
+Documentation is located in @packages/docs and uses vitepress (https://vitepress.dev/). Most of the docs are generated based on inline jsdocs in the corresponding modules in @packages/sugar-sdk. For usage examples, check code in packages/demo-node.
+
+Here's the layout of the documentation that you must follow when generating docs:
+
+- Introduction
+    - What is Sugar SDK
+- Using with node.js
+    - Getting started
+    - Tokens
+    - Quotes
+    - Swaps
+- Using with React (coming soon)  
+
+For the corresponding sections covering nodejs usage, locate publicly available API elements from @packages/sugar-sdk/src/index.ts and document them using inline jsdocs they have in their corresponding modules. Where examples exist, include them. For more advanced examples consult @packages/demo-node
+
+We do NOT support react bindings at this moment so let's put a placeholder message for now
+
 ## Architecture Guidelines
 
 TODO - should talk about primitives here and any additional stuff that comes up
