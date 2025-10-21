@@ -25,6 +25,7 @@
   "homepage": "https://github.com/velodrome-finance/sdk.js#readme",
   "description": "",
   "workspaces": [
+    "packages/docs",
     "packages/sugar-sdk",
     "packages/demo-web",
     "packages/demo-node",
