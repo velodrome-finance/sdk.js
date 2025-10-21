@@ -11,6 +11,9 @@ export default defineConfig({
       { text: "Guide", link: "/getting-started" },
       { text: "API Reference", link: "/api/overview" },
     ],
+    search: {
+      provider: "local",
+    },
 
     sidebar: [
       {
