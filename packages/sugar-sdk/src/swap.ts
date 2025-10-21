@@ -4,7 +4,7 @@ import {
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { Address, Hex } from "viem";
+import { Address, encodeFunctionData, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
 import { applyPct } from "./primitives/externals/app/src/hooks/math.js";
@@ -20,41 +20,16 @@ import {
 } from "./primitives/index.js";
 import {
   BaseParams,
-  ChainParams,
   ensureConnectedChain,
   processBatchesConcurrently,
 } from "./utils.js";
 
-// ERC20 ABI for approve and allowance functions
-const erc20Abi = [
-  {
-    type: "function",
-    name: "approve",
-    inputs: [
-      { name: "spender", type: "address" },
-      { name: "amount", type: "uint256" },
-    ],
-    outputs: [{ name: "", type: "bool" }],
-    stateMutability: "nonpayable",
-  },
-  {
-    type: "function",
-    name: "allowance",
-    inputs: [
-      { name: "owner", type: "address" },
-      { name: "spender", type: "address" },
-    ],
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
-    name: "balanceOf",
-    inputs: [{ name: "account", type: "address" }],
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-  },
-] as const;
+interface CallDataForSwap {
+  commands: Hex;
+  inputs: Hex[];
+  minAmountOut: bigint;
+  priceImpact: bigint;
+}
 
 interface CallDataForSwap {
   commands: Hex;
@@ -120,7 +95,7 @@ export async function getQuoteForSwap({
   batchSize?: number;
   concurrentLimit?: number;
 }) {
-  const { chainId, mustExcludeTokens } = getQuoteForSwapVars(
+  const { chainId, mustExcludeTokens, spenderAddress } = getQuoteForSwapVars(
     config.sugarConfig,
     fromToken,
     toToken
@@ -170,6 +145,7 @@ export async function getQuoteForSwap({
             fromToken,
             toToken,
             priceImpact: 0n,
+            spenderAddress,
           } as Quote);
     })
     .filter((quote) => quote !== null);
@@ -177,47 +153,83 @@ export async function getQuoteForSwap({
   return getBestQuote([quotes]);
 }
 
-async function ensureTokenApproval({
-  config,
-  tokenAddress,
-  spenderAddress,
-  amount,
-  chainId,
-}: ChainParams & {
-  tokenAddress: string;
-  spenderAddress: string;
-  amount: bigint;
-}) {
-  // TODO: check if approval is already sufficient
-  const approveHash = await writeContract(config, {
-    chainId,
-    address: tokenAddress as Hex,
-    abi: erc20Abi,
-    functionName: "approve",
-    args: [spenderAddress as Hex, amount],
-  });
-  await waitForTransactionReceipt(config, { hash: approveHash });
+interface UnsignedSwapTransaction {
+  to: Address;
+  data: Hex;
+  value: bigint;
+  chainId: number;
 }
 
+interface BaseSwapParams extends BaseParams {
+  quote: Quote;
+  slippage?: number;
+}
+
+interface SwapOptions extends BaseSwapParams {
+  unsignedTransactionOnly?: false;
+  waitForReceipt?: boolean;
+  account?: Address; // Optional for when wallet is connected
+}
+
+interface UnsignedSwapOptions extends BaseSwapParams {
+  unsignedTransactionOnly: true;
+  account: Address; // Required for unsigned txs
+  waitForReceipt?: never; // Can't be used with unsigned txs
+}
+
+/**
+ * Execute a swap or get unsigned transaction data for external signing
+ * @param config - Wagmi configuration
+ * @param quote - Quote object from getQuoteForSwap
+ * @param slippage - Slippage tolerance (0 to 1, default: 0.005 = 0.5%)
+ * @param unsignedTransactionOnly - If true, returns unsigned transaction data instead of executing
+ * @param account - Address that will execute the swap (required when unsignedTransactionOnly=true)
+ * @param waitForReceipt - Wait for transaction receipt (only applies when executing)
+ * @returns Transaction hash (if executing) or unsigned transaction data (if unsignedTransactionOnly=true)
+ */
+export async function swap(options: SwapOptions): Promise<string>;
+export async function swap(
+  options: UnsignedSwapOptions
+): Promise<UnsignedSwapTransaction>;
 export async function swap({
   config,
   quote,
-  slippagePct,
-}: BaseParams & {
-  quote: Quote;
-  slippagePct?: string;
-}) {
-  const account = getAccount(config);
+  slippage = 0.005,
+  unsignedTransactionOnly = false,
+  account: providedAccount,
+  waitForReceipt = true,
+}: SwapOptions | UnsignedSwapOptions): Promise<
+  string | UnsignedSwapTransaction
+> {
+  if (slippage < 0 || slippage > 1) {
+    throw new Error("Invalid slippage value. Should be between 0 and 1.");
+  }
+
+  // Get account - either provided or from config
+  let accountAddress: Address;
+  if (unsignedTransactionOnly) {
+    if (!providedAccount) {
+      throw new Error(
+        "account parameter is required when unsignedTransactionOnly=true"
+      );
+    }
+    accountAddress = providedAccount;
+  } else {
+    const account = getAccount(config);
+    if (!account.address) {
+      throw new Error("No connected account found. Please connect a wallet.");
+    }
+    accountAddress = account.address;
+  }
+
   const { chainId, planner, amount } = getSwapVars(
     config.sugarConfig,
     quote,
-    slippagePct,
-    account.address
+    `${Math.round(slippage * 100)}`,
+    accountAddress
   );
 
-  await ensureConnectedChain({ config, chainId });
-
-  // Get the Universal Router address from the execute params
+  // Get the swap parameters
   const swapParams = executeSwapParams({
     config: config.sugarConfig,
     chainId,
@@ -226,22 +238,40 @@ export async function swap({
     value: amount,
   });
 
-  await ensureTokenApproval({
-    config,
-    tokenAddress: quote.fromToken.wrappedAddress || quote.fromToken.address,
-    spenderAddress: swapParams.address,
-    amount: quote.amount,
-    chainId,
-  });
+  // Return unsigned transaction if requested
+  if (unsignedTransactionOnly) {
+    const data = encodeFunctionData({
+      abi: swapParams.abi,
+      functionName: swapParams.functionName,
+      args: swapParams.args,
+    });
 
+    return {
+      to: swapParams.address,
+      data,
+      value: swapParams.value,
+      chainId: swapParams.chainId,
+    };
+  }
+
+  // Otherwise execute the swap
+  await ensureConnectedChain({ config, chainId });
   const hash = await writeContract(config, swapParams);
+
+  if (!waitForReceipt) {
+    return hash;
+  }
+
   const receipt = await waitForTransactionReceipt(config, { hash });
 
   if (receipt.status !== "success") {
-    throw new Error(`Swap transaction failed: ${receipt.status}`);
+    throw new Error(
+      `Swap transaction failed: ${receipt.status}. Hash: ${hash}`
+    );
   }
 
   return hash;
 }
 
 export { Quote } from "./primitives";
+export type { UnsignedSwapTransaction };

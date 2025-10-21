@@ -91,6 +91,7 @@ const buildQuote = (nodes: RouteElement[]) => ({
   path: {
     nodes,
   },
+  spenderAddress: "0x0000000000000000000000000000000000000000" as Address,
 });
 
 describe("Swap setupPlanner", () => {
