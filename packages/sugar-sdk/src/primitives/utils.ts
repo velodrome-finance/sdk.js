@@ -7,6 +7,11 @@ import {
 
 import { Config } from "../config.js";
 
+interface PaginationBatch {
+  limit: number;
+  offset: number;
+}
+
 /**
  * Represents a single pagination batch with offset and limit.
  * @internal

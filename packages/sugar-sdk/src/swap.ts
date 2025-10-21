@@ -1,12 +1,10 @@
 import {
   getAccount,
-  getClient,
   readContracts,
   waitForTransactionReceipt,
   writeContract,
 } from "@wagmi/core";
-import { Address, createWalletClient, Hex, http } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
+import { Address, encodeFunctionData, Hex } from "viem";
 
 import { getPoolsForSwaps } from "./pools.js";
 import { applyPct } from "./primitives/externals/app/src/hooks/math.js";
@@ -97,7 +95,7 @@ export async function getCallDataForSwap({
   const { planner } = getSwapVars(
     config.sugarConfig,
     quote,
-    `${Math.ceil(slippage * 100)}`,
+    `${Math.round(slippage * 100)}`,
     account
   );
 
@@ -146,11 +144,15 @@ export async function getQuoteForSwap({
   fromToken,
   toToken,
   amountIn,
+  batchSize = 50,
+  concurrentLimit = 10,
 }: BaseParams & {
   fromToken: Token;
   toToken: Token;
   amountIn: bigint;
-}): Promise<Quote | null> {
+  batchSize?: number;
+  concurrentLimit?: number;
+}) {
   const { chainId, mustExcludeTokens, spenderAddress } = getQuoteForSwapVars(
     config.sugarConfig,
     fromToken,
@@ -173,8 +175,8 @@ export async function getQuoteForSwap({
 
   const quoteResponses = await processBatchesConcurrently({
     items: paths,
-    batchSize: 50,
-    concurrentLimit: 10,
+    batchSize,
+    concurrentLimit,
     processBatch: async (batch) =>
       readContracts(config, {
         contracts: batch.map((path) =>
@@ -209,104 +211,72 @@ export async function getQuoteForSwap({
   return getBestQuote([quotes]);
 }
 
+interface UnsignedSwapTransaction {
+  to: Address;
+  data: Hex;
+  value: bigint;
+  chainId: number;
+}
+
+interface BaseSwapParams extends BaseParams {
+  quote: Quote;
+  slippage?: number;
+}
+
+interface SwapOptions extends BaseSwapParams {
+  unsignedTransactionOnly?: false;
+  waitForReceipt?: boolean;
+  account?: Address; // Optional for when wallet is connected
+}
+
+interface UnsignedSwapOptions extends BaseSwapParams {
+  unsignedTransactionOnly: true;
+  account: Address; // Required for unsigned txs
+  waitForReceipt?: never; // Can't be used with unsigned txs
+}
+
+export async function swap(options: SwapOptions): Promise<string>;
+export async function swap(
+  options: UnsignedSwapOptions
+): Promise<UnsignedSwapTransaction>;
+
 /**
- * Executes a token swap transaction on-chain.
- *
- * Submits a swap transaction to the blockchain using the Universal Router contract.
- * Automatically switches to the correct chain if needed. Optionally waits for the
- * transaction to be confirmed.
- *
- * **IMPORTANT**: Before calling this function, you must approve the spender contract to spend
- * your tokens. Call the ERC20 `approve` function on the `fromToken` contract with the spender
- * address set to `quote.spenderAddress` and an appropriate amount (at least `quote.amount`).
- *
- * Supports two execution modes:
- * - With a connected wallet (via wagmi connectors)
- * - With a private key for direct transaction signing
- *
- * @param params - Swap execution parameters
- * @param params.config - The Sugar SDK configuration
- * @param params.quote - The swap quote to execute (from getQuoteForSwap)
- * @param params.slippage - Slippage tolerance as decimal between 0 and 1 (e.g., 0.005 for 0.5%, default: 0.005)
- * @param params.waitForReceipt - Whether to wait for transaction confirmation (default: true)
- * @param params.privateKey - Optional private key for direct transaction signing. If provided, the swap will be executed using this key instead of a connected wallet
- * @returns Promise that resolves to the transaction hash as a string
- * @throws Error if the transaction fails or is reverted
- * @throws Error if no connected account is found and no private key is provided
- *
- * @example
- * // Using a connected wallet
- * ```typescript
- * const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
- *
- * // Approve the spender to spend your tokens
- * await writeContract(config, {
- *   address: fromToken.address,
- *   abi: erc20Abi,
- *   functionName: 'approve',
- *   args: [quote.spenderAddress, quote.amount],
- * });
- *
- * // Execute the swap
- * const txHash = await swap({
- *   config,
- *   quote,
- *   slippage: 0.005, // 0.5% slippage
- * });
- * console.log(`Swap executed: ${txHash}`);
- * // txHash: string (e.g., "0x1234...")
- * ```
- *
- * @example
- * // Using a private key
- * ```typescript
- * const quote = await getQuoteForSwap({ config, fromToken, toToken, amountIn });
- *
- * // Approve the spender to spend your tokens (using wallet client with private key)
- * await walletClient.writeContract({
- *   address: fromToken.address,
- *   abi: erc20Abi,
- *   functionName: 'approve',
- *   args: [quote.spenderAddress, quote.amount],
- * });
- *
- * // Execute the swap
- * const txHash = await swap({
- *   config,
- *   quote,
- *   slippage: 0.005, // 0.5% slippage
- *   privateKey: "0x..." as Hex, // Private key for signing
- * });
- * console.log(`Swap executed: ${txHash}`);
- * ```
+ * Execute a swap or get unsigned transaction data for external signing
+ * @param config - Wagmi configuration
+ * @param quote - Quote object from getQuoteForSwap
+ * @param slippage - Slippage tolerance (0 to 1, default: 0.005 = 0.5%)
+ * @param unsignedTransactionOnly - If true, returns unsigned transaction data instead of executing
+ * @param account - Address that will execute the swap (required when unsignedTransactionOnly=true)
+ * @param waitForReceipt - Wait for transaction receipt (only applies when executing)
+ * @returns Transaction hash (if executing) or unsigned transaction data (if unsignedTransactionOnly=true)
  */
 export async function swap({
   config,
   quote,
   slippage = 0.005,
+  unsignedTransactionOnly = false,
+  account: providedAccount,
   waitForReceipt = true,
-  privateKey,
-}: BaseParams & {
-  quote: Quote;
-  slippage?: number;
-  waitForReceipt?: boolean;
-  privateKey?: Hex;
-}): Promise<string> {
-  if (typeof slippage !== "undefined" && (slippage < 0 || slippage > 1)) {
+}: SwapOptions | UnsignedSwapOptions): Promise<
+  string | UnsignedSwapTransaction
+> {
+  if (slippage < 0 || slippage > 1) {
     throw new Error("Invalid slippage value. Should be between 0 and 1.");
   }
 
-  // Determine account address based on whether privateKey is provided
+  // Get account - either provided or from config
   let accountAddress: Address;
-  if (privateKey) {
-    const account = privateKeyToAccount(privateKey);
-    accountAddress = account.address;
+  if (unsignedTransactionOnly) {
+    if (!providedAccount) {
+      throw new Error(
+        "account parameter is required when unsignedTransactionOnly=true"
+      );
+    }
+    accountAddress = providedAccount;
   } else {
     const account = getAccount(config);
     if (!account.address) {
-      throw new Error(
-        "No connected account found. Please connect a wallet or provide a private key."
-      );
+      throw new Error("No connected account found. Please connect a wallet.");
     }
     accountAddress = account.address;
   }
@@ -314,13 +284,11 @@ export async function swap({
   const { chainId, planner, amount } = getSwapVars(
     config.sugarConfig,
     quote,
-    typeof slippage !== "undefined"
-      ? `${Math.ceil(slippage * 100)}`
-      : undefined,
+    `${Math.round(slippage * 100)}`,
     accountAddress
   );
 
-  // Get the Universal Router address from the execute params
+  // Get the swap parameters
   const swapParams = executeSwapParams({
     config: config.sugarConfig,
     chainId,
@@ -329,45 +297,25 @@ export async function swap({
     value: amount,
   });
 
-  let hash: Hex;
-
-  if (privateKey) {
-    // re: https://wagmi.sh/core/guides/viem#private-key-mnemonic-accounts
-    // XX: there does not seem to be a more elegant way to hook into wagmi connector system upstairs
-    // so we are descending into viem's abyss here
-    // Use viem's wallet client for private key transactions
-    const account = privateKeyToAccount(privateKey);
-
-    // Get the viem client from wagmi for the specific chain
-    const viemClient = getClient(config, { chainId });
-
-    if (!viemClient) {
-      throw new Error(`No client found for chain ${chainId}`);
-    }
-
-    // Get the RPC URL from the chain configuration and create a new transport
-    const rpcUrl = viemClient.chain.rpcUrls.default.http[0];
-    const transport = http(rpcUrl, { batch: true });
-
-    // Create wallet client reusing the chain config and RPC transport
-    const walletClient = createWalletClient({
-      account,
-      chain: viemClient.chain,
-      transport,
-    });
-
-    hash = await walletClient.writeContract({
-      address: swapParams.address,
+  // Return unsigned transaction if requested
+  if (unsignedTransactionOnly) {
+    const data = encodeFunctionData({
       abi: swapParams.abi,
       functionName: swapParams.functionName,
       args: swapParams.args,
-      value: swapParams.value,
     });
-  } else {
-    await ensureConnectedChain({ config, chainId });
-    // Use wagmi's writeContract for injected wallet transactions
-    hash = await writeContract(config, swapParams);
+
+    return {
+      to: swapParams.address,
+      data,
+      value: swapParams.value,
+      chainId: swapParams.chainId,
+    };
   }
+
+  // Otherwise execute the swap
+  await ensureConnectedChain({ config, chainId });
+  const hash = await writeContract(config, swapParams);
 
   if (!waitForReceipt) {
     return hash;
@@ -376,10 +324,13 @@ export async function swap({
   const receipt = await waitForTransactionReceipt(config, { hash });
 
   if (receipt.status !== "success") {
-    throw new Error(`Swap transaction failed: ${receipt.status}`);
+    throw new Error(
+      `Swap transaction failed: ${receipt.status}. Hash: ${hash}`
+    );
   }
 
   return hash;
 }
 
 export { Quote } from "./primitives";
+export type { UnsignedSwapTransaction };

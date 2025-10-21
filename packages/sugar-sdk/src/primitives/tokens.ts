@@ -109,10 +109,7 @@ export function getTokenPricesParams<ChainId extends number>({
  *
  * @internal
  */
-export function getCustomPricesVars(config: Config): Array<{
-  chainId: number;
-  tokens: Array<{ token_address: Address; decimals: number }>;
-}> {
+export function getCustomPricesVars(config: Config) {
   const configuredChainIds = config.chains.map((c) => c.CHAIN.id);
 
   return Object.values(config.PRICE_MAPS)
