@@ -113,11 +113,14 @@ export async function processBatchesConcurrently<T, R>({
 }
 
 /**
- * Submit a pre-signed transaction to the network
- * @param config - Wagmi configuration
- * @param signedTransaction - The serialized signed transaction (RLP-encoded)
- * @param waitForReceipt - Whether to wait for transaction receipt (default: true)
- * @returns Transaction hash
+ * Submits a pre-signed transaction to the connected network.
+ *
+ * @param params - Submission options
+ * @param params.config - Combined Wagmi + Sugar configuration
+ * @param params.signedTransaction - The signed serialized transaction
+ * @param params.waitForReceipt - Whether to wait for the transaction receipt (default: true)
+ * @returns Promise that resolves to the transaction hash
+ * @throws Error if no client is available in the configuration or if the transaction fails on-chain
  */
 export async function submitSignedTransaction({
   config,

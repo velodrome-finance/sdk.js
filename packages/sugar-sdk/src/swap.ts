@@ -34,7 +34,7 @@ interface CallDataForSwap {
   inputs: Hex[];
   /** Minimum acceptable output amount after slippage */
   minAmountOut: bigint;
-  /** Price impact of the swap in basis points */
+  /** Price impact of the swap */
   priceImpact: bigint;
 }
 
@@ -43,7 +43,7 @@ interface CallDataForSwap {
  *
  * This function calculates the best swap route, applies slippage tolerance, and returns
  * the encoded transaction data without executing the swap. Useful for building custom
- * transaction flows or estimating gas.
+ * transaction flows.
  *
  * @param params - Swap parameters
  * @param params.config - The Sugar SDK configuration
@@ -53,7 +53,7 @@ interface CallDataForSwap {
  * @param params.account - Address of the account executing the swap
  * @param params.slippage - Slippage tolerance as decimal (e.g., 0.01 for 1%)
  * @returns Promise that resolves to a CallDataForSwap object containing commands, inputs, minAmountOut, and priceImpact, or null if no valid route is found
- * @throws Error if slippage is not between 0 and 1
+ * @throws Error if slippage is not between 0 and 1 or if quote search throws an error
  *
  * @example
  * ```typescript
@@ -63,7 +63,7 @@ interface CallDataForSwap {
  *   toToken: wethToken,
  *   amountIn: 1000000n, // 1 USDC (6 decimals)
  *   account: "0x...",
- *   slippage: 0.005, // 0.5%
+ *   slippage: 0.01, // 1%
  * });
  * // callData: CallDataForSwap | null
  * ```
@@ -122,7 +122,9 @@ export async function getCallDataForSwap({
  * @param params.fromToken - The token being sold
  * @param params.toToken - The token being bought
  * @param params.amountIn - Amount of fromToken to swap (as bigint)
- * @returns Promise that resolves to a Quote object with amountOut, path, and priceImpact, or null if no valid route exists
+ * @param params.batchSize - Number of candidate routes evaluated per multicall batch (default: 50)
+ * @param params.concurrentLimit - Maximum number of multicall batches processed in parallel (default: 10)
+ * @returns Promise that resolves to a Quote object with amountOut, path, and priceImpact, or null if no quote is found
  *
  * @example
  * ```typescript
@@ -211,6 +213,15 @@ export async function getQuoteForSwap({
   return getBestQuote([quotes]);
 }
 
+/**
+ * Represents the unsigned transaction data required to execute a swap via the Universal Router.
+ * Use this when you need to sign transactions outside of the SDK (e.g., hardware wallets).
+ *
+ * @property {Address} to - Router contract address that should receive the transaction
+ * @property {Hex} data - ABI-encoded calldata describing the swap
+ * @property {bigint} value - Native token value that must accompany the transaction
+ * @property {number} chainId - Chain identifier for the target network
+ */
 interface UnsignedSwapTransaction {
   to: Address;
   data: Hex;
@@ -241,14 +252,16 @@ export async function swap(
 ): Promise<UnsignedSwapTransaction>;
 
 /**
- * Execute a swap or get unsigned transaction data for external signing
- * @param config - Wagmi configuration
- * @param quote - Quote object from getQuoteForSwap
+ * Executes a swap through the Universal Router or returns unsigned transaction data for custom signing.
+ *
+ * @param config - Wagmi configuration instance
+ * @param quote - Quote object returned by getQuoteForSwap
  * @param slippage - Slippage tolerance (0 to 1, default: 0.005 = 0.5%)
- * @param unsignedTransactionOnly - If true, returns unsigned transaction data instead of executing
+ * @param unsignedTransactionOnly - If true, returns unsigned transaction data instead of executing immediately
  * @param account - Address that will execute the swap (required when unsignedTransactionOnly=true)
  * @param waitForReceipt - Wait for transaction receipt (only applies when executing)
- * @returns Transaction hash (if executing) or unsigned transaction data (if unsignedTransactionOnly=true)
+ * @returns Promise that resolves to the transaction hash when executing directly, or to unsigned transaction details when `unsignedTransactionOnly` is true
+ * @throws Error if slippage is outside the [0, 1] range or when an account is required but missing
  */
 export async function swap({
   config,
