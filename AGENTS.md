@@ -1,11 +1,12 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to LLM based coding agents when working with code in this repository.
 
 ## About the codebase
 
-- This is a monorepo for Sugar SDK: a collection of typescript API bindings for underlying smart contracts built and maintained by good folks at Dromos labs
+- This is a monorepo for Sugar SDK: a collection of typescript API bindings for underlying smart contracts
 - It uses `npm` as a package manager
+
 
 ## Commands
 
@@ -13,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - to build SDK use `cd packages/sugar-sdk && npm run build`
 - to run tests use `npm test`
 
-## Claude's workflow
+## Workflow
 
 - carefully study the task that is given to you
 - come up with a plan
@@ -29,6 +30,8 @@ TODO - fill this out
 ## Code Style Guidelines
 
 TODO - might drop this altogether in favor of lints via hooks
+
+## Documentation
 
 ## Architecture Guidelines
 
