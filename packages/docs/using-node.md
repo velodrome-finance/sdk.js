@@ -26,7 +26,7 @@ const config = getDefaultConfig({
 });
 ```
 
-> **Important:** Sugar SDK fans out a large number of RPC calls when loading tokens, quotes, and swap routes. Use private or paid RPC URLs rather than public community endpoints so you avoid rate limits and keep responses fast.
+> **Important:** Sugar SDK makes a large number of RPC calls when loading tokens, quotes etc. We recommend you use dedicated RPC providers rather than public community endpoints so you avoid rate limits and keep responses fast.
 
 Once you have `config`, you're ready to fetch tokens, request quotes, and submit swaps.
 
