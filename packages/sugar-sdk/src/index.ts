@@ -1,4 +1,4 @@
-export * from "./approval.js";
+export { approve } from "./approval.js";
 export {
   base,
   celo,
@@ -16,6 +16,7 @@ export {
   swellchain,
   unichain,
 } from "./config.js";
-export * from "./swap.js";
-export * from "./tokens.js";
+export type { UnsignedSwapTransaction } from "./swap.js";
+export { getCallDataForSwap, getQuoteForSwap, Quote, swap } from "./swap.js";
+export { getListedTokens, Token } from "./tokens.js";
 export { submitSignedTransaction } from "./utils.js";

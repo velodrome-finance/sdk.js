@@ -4,6 +4,7 @@ import { uniqBy } from "ramda";
 import { Address, extractChain, isAddress } from "viem";
 
 import { getPoolsPagination } from "./pools.js";
+import type { Token } from "./primitives/index.js";
 import {
   getCustomPricesVars,
   getTokenPricesParams as getTokenRatesParams,
@@ -18,7 +19,28 @@ import {
 import { onDromeError } from "./primitives/utils.js";
 import { BaseParams, ChainParams } from "./utils.js";
 
-export async function getListedTokens(params: BaseParams) {
+/**
+ * Retrieves all listed tokens across all configured chains.
+ *
+ * Fetches token data from every chain in the configuration, including balances for the
+ * connected account, current prices, and metadata. Results are merged and sorted according
+ * to the configured token order.
+ *
+ * @param params - Base parameters
+ * @param params.config - The Sugar SDK configuration
+ * @returns Promise that resolves to an array of Token objects representing all listed tokens sorted by configured order
+ *
+ * @example
+ * ```typescript
+ * const tokens = await getListedTokens({ config });
+ * console.log(`Found ${tokens.length} tokens across all chains`);
+ * tokens.forEach(token => {
+ *   console.log(`${token.symbol}: $${token.price}`);
+ * });
+ * // tokens: Token[]
+ * ```
+ */
+export async function getListedTokens(params: BaseParams): Promise<Token[]> {
   const { config } = params;
   const customPrices = await getCustomPrices({ config });
 
@@ -55,13 +77,27 @@ export async function getListedTokens(params: BaseParams) {
   }).sorted;
 }
 
+/**
+ * Fetches token data from a specific blockchain.
+ *
+ * Retrieves all listed tokens from the specified chain, including their balances,
+ * prices, and metadata. Uses pagination to handle large token lists efficiently.
+ *
+ * @param params - Chain-specific parameters
+ * @param params.config - The Sugar SDK configuration
+ * @param params.chainId - The chain ID to fetch tokens from
+ * @param params.customPrices - Mapping of token addresses to custom price overrides
+ * @returns Promise that resolves to an array of Token objects from the specified chain
+ *
+ * @internal
+ */
 async function getTokensFromChain({
   config,
   chainId,
   customPrices,
 }: ChainParams & {
   customPrices: Record<Address, bigint>;
-}) {
+}): Promise<ReturnType<typeof transformTokens>> {
   const accountAddress = getAccount(config).address;
   const { upperBound } = await getPoolsPagination({ config, chainId });
 
@@ -119,7 +155,21 @@ async function getTokensFromChain({
   });
 }
 
-async function getCustomPrices({ config }: BaseParams) {
+/**
+ * Fetches custom price overrides for tokens that need cross-chain price lookups.
+ *
+ * Some tokens require their price to be fetched from a different chain than where
+ * they exist. This function handles those custom price mappings.
+ *
+ * @param params - Base parameters
+ * @param params.config - The Sugar SDK configuration
+ * @returns Promise that resolves to a Record mapping token addresses (Address) to their custom prices (bigint)
+ *
+ * @internal
+ */
+async function getCustomPrices({
+  config,
+}: BaseParams): Promise<Record<Address, bigint>> {
   const requests = getCustomPricesVars(config.sugarConfig).map(
     ({ chainId, tokens }) =>
       getTokenPrices({ config, chainId, rawTokens: tokens })
@@ -134,13 +184,27 @@ async function getCustomPrices({ config }: BaseParams) {
   }
 }
 
+/**
+ * Retrieves current prices for a set of tokens on a specific chain.
+ *
+ * Fetches token prices from the on-chain prices oracle contract. Handles chunking
+ * of requests to avoid hitting gas limits and returns normalized price data.
+ *
+ * @param params - Price fetching parameters
+ * @param params.config - The Sugar SDK configuration
+ * @param params.chainId - The chain ID where tokens exist
+ * @param params.rawTokens - Array of token objects with address and decimals
+ * @returns Promise that resolves to a Record mapping token addresses (Address) to their USD prices (bigint)
+ *
+ * @internal
+ */
 async function getTokenPrices({
   config,
   chainId,
   rawTokens,
 }: ChainParams & {
   rawTokens: Array<{ token_address: Address; decimals: number }>;
-}) {
+}): Promise<Record<Address, bigint>> {
   const { tokenChunks, customConnectors, useWrappers, thresholdFilter } =
     getTokenPricesVars(config.sugarConfig, chainId, rawTokens);
   const rawRates: RawTokenRateWithDecimals[] = [];

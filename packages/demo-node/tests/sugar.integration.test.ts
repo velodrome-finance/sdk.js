@@ -5,6 +5,7 @@ import {
   getCallDataForSwap,
   getDefaultConfig,
   getListedTokens,
+  getQuoteForSwap,
   ink,
   lisk,
   metalL2,
@@ -12,6 +13,7 @@ import {
   optimism,
   soneium,
   superseed,
+  swap,
   swellchain,
   unichain,
 } from "sugar-sdk";
@@ -104,5 +106,50 @@ describe("sugar-sdk integration smoke tests", () => {
     });
 
     expect(baseResult).toBeTruthy();
+  });
+
+  it("can build an unsigned transaction for swap", async () => {
+    const config = getDefaultConfig({
+      chains: [{ chain: optimism, rpcUrl: import.meta.env.VITE_RPC_URL_10 }],
+    });
+
+    const tokens = await getListedTokens({ config });
+
+    const getToken = (identifier: string, chainId: number) =>
+      tokens.find(
+        (t) =>
+          t.chainId === chainId &&
+          (t.address.toLowerCase() === identifier.toLowerCase() ||
+            t.symbol?.toLowerCase() === identifier.toLowerCase())
+      );
+
+    const opEth = getToken("eth", 10);
+    const opUsdc = getToken("usdc", 10);
+
+    expect(opEth).toBeDefined();
+    expect(opUsdc).toBeDefined();
+
+    const quote = await getQuoteForSwap({
+      config,
+      fromToken: opEth!,
+      toToken: opUsdc!,
+      amountIn: 1n * 10n ** BigInt(opEth!.decimals),
+    });
+
+    expect(quote).toBeTruthy();
+
+    const unsignedTx = await swap({
+      config,
+      quote: quote!,
+      account: TEST_ACCOUNT_ADDRESS,
+      slippage: 0.01,
+      unsignedTransactionOnly: true,
+    });
+
+    expect(unsignedTx).toBeDefined();
+    expect(unsignedTx.to).toBeDefined();
+    expect(unsignedTx.data.startsWith("0x")).toBe(true);
+    expect(unsignedTx.value).toBeDefined();
+    expect(unsignedTx.chainId).toBe(opEth!.chainId);
   });
 });

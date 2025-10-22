@@ -1,12 +1,20 @@
 // src commit 7033ad288c0bf70324bf7fd93e2af244d213cf79
 import { Address } from "viem";
 
-// An extended ERC-20 type to address our needs
-
-// Mainly:
-//  * works with native tokens which require a wrapped address
-//  * provides for additional attributes from `LpToken` (on-chain token data)
-//  * provides for internal cached attributes like price, balance ($-value)
+/**
+ * Represents a token tracked by the Sugar SDK, enriched with metadata and cached values.
+ *
+ * @property {number} chainId - Chain identifier where the token exists
+ * @property {Address} address - Token contract address (lowercased)
+ * @property {string | undefined} name - Optional human-readable token name
+ * @property {string} symbol - Short ticker symbol displayed in UI
+ * @property {boolean} listed - Indicates whether the token is discoverable via the SDK
+ * @property {number} decimals - Number of decimal places used by the token
+ * @property {bigint} balance - Current account balance for the token
+ * @property {bigint} price - USD price scaled according to SDK conventions
+ * @property {bigint} balanceValue - USD value of the current balance
+ * @property {Address | undefined} wrappedAddress - Optional wrapped representation when the token is native
+ */
 export type Token = Readonly<{
   chainId: number;
   address: Address;
@@ -54,13 +62,17 @@ export type RoutePath = {
   nodes: RouteElement[];
 };
 
-/*
-  In swaps, Quote gives you the following info:
-
-    <amount> of <fromToken> is quoted in <amountOut> of <toToken>
-
-  and to get there you need to follows <nodes> inside <path>
-*/
+/**
+ * Describes the result of quoting a swap, including the path and pricing metadata.
+ *
+ * @property {RoutePath} path - Ordered list of hops required to execute the swap
+ * @property {bigint} amount - Input token amount for the quote
+ * @property {bigint} amountOut - Expected output token amount
+ * @property {Token} fromToken - Metadata for the input token
+ * @property {Token} toToken - Metadata for the output token
+ * @property {bigint} priceImpact - Estimated price impact in basis points
+ * @property {Address} spenderAddress - Address that must be approved to spend the input token
+ */
 export type Quote = {
   path: RoutePath;
   amount: bigint;

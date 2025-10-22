@@ -17,9 +17,23 @@ describe("Test fetching tokens", () => {
   it("should have tokens across supported chains", async () => {
     const tokens = await getListedTokens({ config: await init() });
     const chainIds = tokens.map((token) => token.chainId);
-    expect(new Set(chainIds).size).toEqual(10);
-    expect(chainIds).toContain(10);
-    expect(chainIds).toContain(8453);
+    const uniqueChainIds = Array.from(new Set(chainIds)).sort((a, b) => a - b);
+    const expectedChainIds = [
+      10, // Optimism
+      130, // Unichain
+      252, // Fraxtal
+      1135, // Lisk
+      1750, // Metal L2
+      1868, // Soneium
+      1923, // Swellchain
+      5330, // Superseed
+      8453, // Base
+      34443, // Mode
+      42220, // Celo
+      57073, // Ink
+    ];
+
+    expect(uniqueChainIds).toEqual(expectedChainIds);
   });
   it("should work with a subset of chains", async () => {
     const config = getDefaultConfig({
