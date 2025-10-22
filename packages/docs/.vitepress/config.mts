@@ -2,9 +2,9 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: '/sdk.js/',
+  base: "/sdk.js/",
   title: "Sugar SDK",
-  description: "TypeScript client for accessing DeFi smart contracts across multiple chains",
+  description: "Sugar makes Velodrome and Aerodrome devs life sweeter 🍭",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
