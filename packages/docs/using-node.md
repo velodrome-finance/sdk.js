@@ -85,18 +85,23 @@ See the [Core API Swaps reference](/api/swaps) for more.
 
 ## Swaps
 
-Swapping is a three step process: approve the router once per token, fetch a quote, then call `swap`. The SDK validates slippage, switches chains when necessary, and waits for receipts by default.
+Swapping is a three step process: find a suitable quote, approve funds, perform actual swap.
 
 ```typescript
-import { approve, getListedTokens, getQuoteForSwap, swap } from "sugar-sdk";
+import {
+  approve,
+  getListedTokens,
+  getQuoteForSwap,
+  swap,
+} from "sugar-sdk";
 
 const tokens = await getListedTokens({ config });
-const usdc = tokens.find((token) => token.symbol === "USDC" && token.chainId === 10);
-const weth = tokens.find((token) => token.symbol === "WETH" && token.chainId === 10);
-
-if (!usdc || !weth) {
-  throw new Error("Required tokens are not available in the current configuration.");
-}
+const usdc = tokens.find(
+  (token) => token.chainId === 10 && token.symbol === "USDC"
+);
+const weth = tokens.find(
+  (token) => token.chainId === 10 && token.symbol === "WETH"
+);
 
 const quote = await getQuoteForSwap({
   config,
@@ -105,9 +110,7 @@ const quote = await getQuoteForSwap({
   amountIn: 1_000_000n,
 });
 
-if (!quote) {
-  throw new Error("No swap route found.");
-}
+if (!quote) throw new Error("No quote found.");
 
 await approve({
   config,
@@ -117,11 +120,7 @@ await approve({
   chainId: usdc.chainId,
 });
 
-const hash = await swap({
-  config,
-  quote,
-  slippage: 0.005, // 0.5% tolerance
-});
+const hash = await swap({ config, quote, slippage: 0.01 });
 
 console.log(`Swap confirmed: ${hash}`);
 ```
