@@ -44,19 +44,15 @@ const optimismTokens = tokens.filter((token) => token.chainId === 10);
 const usdc = tokens.find(
   (token) => token.symbol === "USDC" && token.chainId === 10
 );
-
-if (usdc) {
-  const humanBalance =
-    Number(usdc.balance) / 10 ** usdc.decimals;
-  console.log(`Balance: ${humanBalance} ${usdc.symbol}`);
-}
 ```
 
 Every `Token` includes symbol, name, decimals, chain ID, USD price, balances (if a wallet is connected), and flags such as `listed`. Amounts are bigints so you retain full precision.
 
+See the [Core API Tokens reference](/api/tokens) for more.
+
 ## Quotes
 
-`getQuoteForSwap` inspects all supported paths between two tokens, reads the on-chain quoter, and returns the best `Quote` it finds. A quote contains the expected output amount (`amountOut`), price impact, routing path, and the spender address that must be approved before swapping.
+`getQuoteForSwap` returns the best `Quote` to swap between 2 tokens. A quote contains the expected output amount (`amountOut`), price impact, routing path, and the spender address needed for approval before swapping.
 
 ```typescript
 import { getListedTokens, getQuoteForSwap } from "sugar-sdk";
@@ -80,8 +76,7 @@ if (!quote) {
   throw new Error("No swap route found.");
 }
 
-console.log(`Expected output: ${quote.amountOut} wei of ${quote.toToken.symbol}`);
-console.log(`Price impact: ${Number(quote.priceImpact) / 100} %`);
+console.log(`Expected output: ${quote.amountOut} of ${quote.toToken.symbol}`);
 ```
 
 Tweak the optional `batchSize` and `concurrentLimit` parameters if you need to balance speed and RPC load:
