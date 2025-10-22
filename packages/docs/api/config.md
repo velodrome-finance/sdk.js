@@ -17,7 +17,7 @@ function getDefaultConfig(params: {
 ### Parameters
 
 - `chains` - Array of chain configurations
-  - `chain` - Chain object from `@wagmi/core/chains` or sugar-sdk exports
+  - `chain` - Chain object from [`@wagmi/core/chains`](https://wagmi.sh/core/api/chains#available-chains) or sugar-sdk exports
   - `rpcUrl` - RPC endpoint URL for the chain
 
 ### Returns
@@ -43,12 +43,11 @@ const tokens = await getListedTokens({ config });
 ### Details
 
 This function:
-- Creates a wagmi config with injected wallet connector
+- Creates a wagmi config with sensible defaults
 - Configures HTTP transports with batching enabled
-- Filters `baseConfig` to include only specified chains
 - Returns combined config with `sugarConfig` property
 
-For most apps, this is the easiest way to get started.
+For most apps, this is the easiest way to get started with Sugar SDK.
 
 ---
 
@@ -149,9 +148,9 @@ const customConfig = {
 
 ---
 
-## Exported Chains
+## Supported Chains
 
-Sugar SDK re-exports all supported chain objects for convenience:
+Sugar SDK supports the following chains
 
 ```typescript
 import {
@@ -170,25 +169,9 @@ import {
 } from "sugar-sdk";
 ```
 
-### Example
-
-```typescript
-import { getDefaultConfig, optimism, base, mode } from "sugar-sdk";
-
-const config = getDefaultConfig({
-  chains: [
-    { chain: optimism, rpcUrl: process.env.OP_RPC },
-    { chain: base, rpcUrl: process.env.BASE_RPC },
-    { chain: mode, rpcUrl: process.env.MODE_RPC },
-  ]
-});
-```
-
----
-
 ## supportedChains
 
-Array of all chains supported by Sugar SDK.
+Array of all chains supported by Sugar SDK (ordered by Chain ID in ascending order):
 
 ### Type
 
@@ -272,11 +255,3 @@ type SugarWagmiConfig = WagmiCoreConfig & {
 ```
 
 This is the main config type you'll use throughout the SDK.
-
----
-
-## Next Steps
-
-- [Tokens API](/api/tokens) - Fetch token data
-- [Swaps API](/api/swaps) - Execute swaps
-- [Using with Node.js](/using-node) - End-to-end usage guide
