@@ -1,6 +1,6 @@
 # Core API
 
-Complete reference for all Sugar SDK functions and types.
+This is the lowest level public API Sugar SDK exposes. It might be somewhat verbose but should serve as a good foundation to get you started. This API is usable in both nodejs and web environments. For React friendly bindings check out [Using with React](/using-react) docs.
 
 ## Quick Links
 
@@ -13,7 +13,7 @@ Complete reference for all Sugar SDK functions and types.
 
 ### Configuration
 
-Sugar SDK extends wagmi's configuration with multi-chain DeFi settings. You create a config once and use it throughout your app:
+Sugar SDK extends Wagmi's [configuration](https://wagmi.sh/core/api/createConfig#config) with Sugar specific settings. You create a config once and use it throughout your app:
 
 ```typescript
 import { getDefaultConfig, optimism, base } from "sugar-sdk";
@@ -26,121 +26,18 @@ const config = getDefaultConfig({
 });
 ```
 
-### Tokens
+### Calling Sugar functions
 
-The `Token` type represents an ERC20 token on a specific chain:
-
-```typescript
-type Token = {
-  chainId: number;     // 10
-  address: Address;    // "0x..."
-  symbol: string;      // "USDC"
-  name?: string;       // "USD Coin"
-  decimals: number;    // 6
-  listed: boolean;     // true
-  balance: bigint;     // 0n
-  price: bigint;       // USD price scaled to 18 decimals
-  balanceValue: bigint;// USD value scaled to 18 decimals
-};
-```
-
-`Address` comes from `viem` (`import type { Address } from "viem";`).
-
-### Quotes
-
-A `Quote` represents a swap route with expected output:
-
-```typescript
-type Quote = {
-  amountOut: bigint;         // Expected output
-  priceImpact: bigint;       // Price impact in bps
-  path: /* routing path */;
-  fromToken: Token;
-  toToken: Token;
-  spenderAddress: Address;   // Address to approve
-};
-```
+All Sugar functionality is exposed via async functions that receive Sugar config object you've created above alongside some function specific parameters. You can learn about which specific params are available in the corresponding sections
 
 ### Amounts as BigInt
 
-All token amounts use `bigint` to handle decimals precisely:
+All parameters that deal with amounts of tokens use `bigint` and take into consideration number of decimals for specific token:
 
 ```typescript
 // 1000 USDC (6 decimals)
-const amount = 1000000000n;
+const amountUSDC = 1000000000n;
 
 // 1 WETH (18 decimals)
-const amount = 1000000000000000000n;
-
-// Helper to convert from decimal
-function toAmount(value: number, decimals: number): bigint {
-  return BigInt(Math.floor(value * 10 ** decimals));
-}
-
-toAmount(1000, 6);  // 1000000000n (1000 USDC)
-toAmount(1, 18);    // 1000000000000000000n (1 WETH)
+const amountWETH = 1000000000000000000n;
 ```
-
-## Function Categories
-
-### Configuration Functions
-
-- `getDefaultConfig()` - Create config with sensible defaults
-- `init()` - Attach Sugar config to existing wagmi config
-- Exported chains: `optimism`, `base`, `mode`, etc.
-
-### Token Functions
-
-- `getListedTokens()` - Fetch all tokens across configured chains
-
-### Swap Functions
-
-- `getQuoteForSwap()` - Get best swap quote
-- `swap()` - Execute a swap transaction
-- `getCallDataForSwap()` - Get encoded swap calldata
-
-### Approval Functions
-
-- `approve()` - Approve token spending
-
-## Type Exports
-
-All major types are exported for use in your app:
-
-```typescript
-import type {
-  Config,
-  ChainConfig,
-  Token,
-  Quote,
-  SugarWagmiConfig,
-} from "sugar-sdk";
-```
-
-## Using with TypeScript
-
-The SDK is fully typed. Your editor will provide autocomplete and type checking:
-
-```typescript
-import { getQuoteForSwap } from "sugar-sdk";
-
-const quote = await getQuoteForSwap({
-  config,        // SugarWagmiConfig
-  fromToken,     // Token
-  toToken,       // Token
-  amountIn,      // bigint
-});
-
-// quote is Quote | null
-if (quote) {
-  console.log(quote.amountOut); // bigint
-}
-```
-
-## Next Steps
-
-- [Using with Node.js](/using-node) – Install and run end-to-end flows
-- [Configuration API](/api/config)
-- [Tokens API](/api/tokens)
-- [Swaps API](/api/swaps)
-- [Approvals API](/api/approvals)
