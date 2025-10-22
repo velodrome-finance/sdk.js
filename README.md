@@ -4,50 +4,30 @@
 
 Sugar SDK for JS and TS developers.
 
-## Configuration
+## Getting Started
 
-The following chains are currently supported by Sugar SDK
+Install the SDK alongside its peer dependencies:
 
-- Optimism (10)
-- Unichain (130)
-- Fraxtal (252)
-- Lisk (1135)
-- Metal L2 (1750)
-- Soneium (1868) 
-- Swellchain (1923) 
-- Superseed (5330)
-- Base (8453)
-- Mode (34443)
-- Celo (42220)
-- Ink (57073)
+```bash
+npm install \
+  https://github.com/velodrome-finance/sdk.js/releases/tag/v0.3.0-alpha.1 \
+  @wagmi/core \
+  viem
+```
 
-Sugar config attaches itself onto an existing wagmi config instance so downstream callers can consume both wagmi and sugar specific settings from a single object (using `sugarConfig` prop).
+Create a multi-chain configuration with `getDefaultConfig`. The helper wraps wagmi's `createConfig`, wires transports, and filters the built-in `baseConfig` down to the chains you care about. The result is a `SugarWagmiConfig`, which you pass to every SDK function.
 
-The easiest way to get started with Sugar is using `getDefaultConfig`
-
-```ts
-import { getDefaultConfig, base, optimism } from "sugar-sdk";
+```typescript
+import { getDefaultConfig, getListedTokens, optimism, base } from "sugar-sdk";
 
 const config = getDefaultConfig({
   chains: [
     { chain: optimism, rpcUrl: process.env.OP_RPC! },
     { chain: base, rpcUrl: process.env.BASE_RPC! },
-  ]
+  ],
 });
-```
 
-If you want to customize how Wagmi is set up and tweak additional sugar config options, you can use `init` helper
-
-```ts
-import { createConfig } from "@wagmi/core";
-import { baseConfig, init } from "sugar-sdk";
-
-const wagmiConfig = createConfig(/* ... */);
-
-const customConfig = init(wagmiConfig, {
-  ...baseConfig,
-  // customize base config here
-});
+const tokens = await getListedTokens({ config });
 ```
 
 ## Hacking on sugar locally
@@ -57,6 +37,8 @@ Make sure you have the right version of node activated and install all the depen
 ```bash
 nvm use && npm i
 ```
+
+Use `.env.example` to populate `.env` inside packages
 
 Make sure the SDK builds correctly:
 

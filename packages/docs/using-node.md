@@ -7,7 +7,10 @@ Sugar SDK is designed first for Node.js and TypeScript runtimes. The sections be
 Install the SDK alongside its peer dependencies:
 
 ```bash
-npm install sugar-sdk @wagmi/core viem
+npm install \
+  https://github.com/velodrome-finance/sdk.js/releases/tag/v0.3.0-alpha.1 \
+  @wagmi/core \
+  viem
 ```
 
 Create a multi-chain configuration with `getDefaultConfig`. The helper wraps wagmi's `createConfig`, wires transports, and filters the built-in `baseConfig` down to the chains you care about. The result is a `SugarWagmiConfig`, which you pass to every SDK function.
