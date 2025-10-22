@@ -2,9 +2,9 @@
 
 Functions and types for configuring Sugar SDK.
 
-## getDefaultConfig()
+## getDefaultConfig
 
-Creates a default Sugar SDK configuration with sensible defaults.
+Creates a default Sugar SDK configuration with sensible defaults. It sets up a wagmi config, enables HTTP batching, and returns a combined config with the `sugarConfig` property.
 
 ### Signature
 
@@ -40,20 +40,9 @@ const config = getDefaultConfig({
 const tokens = await getListedTokens({ config });
 ```
 
-### Details
+## init
 
-This function:
-- Creates a wagmi config with sensible defaults
-- Configures HTTP transports with batching enabled
-- Returns combined config with `sugarConfig` property
-
-For most apps, this is the easiest way to get started with Sugar SDK.
-
----
-
-## init()
-
-Attaches Sugar SDK configuration to an existing wagmi config instance.
+Attaches Sugar SDK configuration to an existing wagmi config instance. Use it when you need custom wagmi settings, tweaked Sugar parameters, or to integrate an existing wagmi setup.
 
 ### Signature
 
@@ -98,13 +87,6 @@ const config = init(wagmiConfig, {
 });
 ```
 
-### Details
-
-Use this when you need:
-- Custom wagmi configuration
-- Modified Sugar settings
-- Integration with existing wagmi setup
-
 ---
 
 ## baseConfig
@@ -146,9 +128,7 @@ const customConfig = {
 };
 ```
 
----
-
-## Supported Chains
+## Chains
 
 Sugar SDK supports the following chains
 
@@ -190,8 +170,6 @@ supportedChains.forEach(chain => {
   console.log(`${chain.name} (${chain.id})`);
 });
 ```
-
----
 
 ## Types
 
