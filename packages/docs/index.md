@@ -9,7 +9,7 @@ hero:
       text: Get Started
       link: /using-node
     - theme: alt
-      text: API Reference
+      text: Core API
       link: /api/overview
 
 features:

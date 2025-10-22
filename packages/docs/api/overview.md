@@ -1,4 +1,4 @@
-# API Reference
+# Core API
 
 Complete reference for all Sugar SDK functions and types.
 

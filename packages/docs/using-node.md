@@ -1,6 +1,6 @@
 # Using Sugar SDK with Node.js
 
-Sugar SDK is designed first for Node.js and TypeScript runtimes. The sections below walk through installation, configuration, token discovery, quoting, and swap execution using the public APIs exported from `packages/sugar-sdk/src/index.ts`.
+Core Sugar SDK API can be use directly with Node.js runtime.
 
 ## Getting Started
 
@@ -13,7 +13,7 @@ npm install \
   viem
 ```
 
-Create a multi-chain configuration with `getDefaultConfig`. The helper wraps wagmi's `createConfig`, wires transports, and filters the built-in `baseConfig` down to the chains you care about. The result is a `SugarWagmiConfig`, which you pass to every SDK function.
+Create a multi-chain configuration with `getDefaultConfig` by picking the chains you need.
 
 ```typescript
 import { getDefaultConfig, optimism, base } from "sugar-sdk";
@@ -26,28 +26,13 @@ const config = getDefaultConfig({
 });
 ```
 
-Need custom wagmi options? Build your own wagmi config and attach Sugar metadata with `init`:
-
-```typescript
-import { createConfig, http } from "@wagmi/core";
-import { baseConfig, init, optimism, base } from "sugar-sdk";
-
-const wagmiConfig = createConfig({
-  chains: [optimism, base],
-  transports: {
-    [optimism.id]: http(process.env.OP_RPC!),
-    [base.id]: http(process.env.BASE_RPC!),
-  },
-});
-
-const config = init(wagmiConfig, baseConfig);
-```
+> **Important:** Sugar SDK fans out a large number of RPC calls when loading tokens, quotes, and swap routes. Use private or paid RPC URLs rather than public community endpoints so you avoid rate limits and keep responses fast.
 
 Once you have `config`, you're ready to fetch tokens, request quotes, and submit swaps.
 
 ## Tokens
 
-Use `getListedTokens` to load every listed token across the chains in your configuration. The function fans out requests per chain, enriches the results with balances, prices, and metadata, then returns a sorted array of `Token` objects.
+Use `getListedTokens` to load every listed token across the chains in your configuration.
 
 ```typescript
 import { getListedTokens } from "sugar-sdk";

@@ -10,7 +10,7 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/" },
       { text: "Using with Node.js", link: "/using-node" },
-      { text: "API Reference", link: "/api/overview" },
+      { text: "Core API", link: "/api/overview" },
     ],
     search: {
       provider: "local",
@@ -26,7 +26,7 @@ export default defineConfig({
         ],
       },
       {
-        text: "API Reference",
+        text: "Core API",
         items: [
           { text: "Overview", link: "/api/overview" },
           { text: "Configuration", link: "/api/config" },
