@@ -1,15 +1,42 @@
 # Swaps API
 
-Functions for building quotes, preparing calldata, and executing swaps through the Universal Router.
+Getting quotes and performing swaps using Sugar SDK.
 
 ## getQuoteForSwap
 
-Fetches the best available route between two tokens. Internally the SDK enumerates paths, batches multicalls to the quoter contract, and returns the highest output.
+Fetches the best available quote to swap token.
+
+### Signature
+
+```typescript
+function getQuoteForSwap(params: {
+  config: SugarWagmiConfig;
+  fromToken: Token;
+  toToken: Token;
+  amountIn: bigint;
+  batchSize?: number;
+  concurrentLimit?: number;
+}): Promise<Quote | null>
+```
+
+### Parameters
+
+- `config` - `SugarWagmiConfig` produced by `getDefaultConfig`, `init`, or a custom setup.
+- `fromToken` - Source `Token` object.
+- `toToken` - Destination `Token` object.
+- `amountIn` - Amount of `fromToken` to swap.
+- `batchSize` - Optional candidate routes per multicall batch (default `50`).
+- `concurrentLimit` - Optional number of batches processed in parallel (default `10`).
+
+### Returns
+
+`Promise<Quote | null>` - Best swap route information, or `null` when none is found.
+
+### Example
 
 ```typescript
 import { getQuoteForSwap } from "sugar-sdk";
 
-// fromToken and toToken are Token objects from getListedTokens
 const quote = await getQuoteForSwap({
   config,
   fromToken,
@@ -20,66 +47,133 @@ const quote = await getQuoteForSwap({
 });
 ```
 
-- `config` – `SugarWagmiConfig` produced by `getDefaultConfig` or `init`.
-- `fromToken` / `toToken` – `Token` objects returned by `getListedTokens`.
-- `amountIn` – Bigint amount in the source token's smallest unit.
-- `batchSize` (optional) – Number of candidate routes per multicall batch (default `50`).
-- `concurrentLimit` (optional) – Number of batches processed in parallel (default `10`).
+## Quote
 
-Returns a `Quote | null`. When `null`, no viable swap path exists or inputs are invalid.
+Quote represents a swap route, expected outputs, and metadata needed for execution.
 
-### Quote Shape
+```typescript
+type Quote = {
+  path: RoutePath;
+  amount: bigint;
+  amountOut: bigint;
+  fromToken: Token;
+  toToken: Token;
+  priceImpact: bigint;
+  spenderAddress: Address;
+};
+```
 
-`Quote` includes:
+### Fields
 
-- `amountOut` – Expected output amount as bigint.
-- `priceImpact` – Price impact in basis points.
-- `path` – Internal routing data used by the planner.
-- `fromToken` / `toToken` – Source and destination tokens.
-- `amount` – Input amount echoed back as bigint.
-- `spenderAddress` – Address that must be approved before swapping.
+- `amountOut` - Expected output amount as bigint.
+- `priceImpact` - Estimated price impact in basis points.
+- `path` - Ordered list of hops the swap will execute.
+- `spenderAddress` - Address that must be approved before swapping.
 
 ## getCallDataForSwap
 
-Generates router calldata and min-out details without sending a transaction. Validates slippage (must be between `0` and `1`) and returns `null` when no route exists.
+Generates router calldata and minimum-out details without sending a transaction. Returns null when no quote is available. 
 
-### Custom calldata
+### Signature
 
-Use `getCallDataForSwap` when you need Universal Router commands for batching, meta-transactions, or external contract execution.
+```typescript
+function getCallDataForSwap(params: {
+  config: SugarWagmiConfig;
+  fromToken: Token;
+  toToken: Token;
+  amountIn: bigint;
+  account: Address;
+  slippage: number;
+}): Promise<CallDataForSwap | null>
+```
+
+### Parameters
+
+- `config` - `SugarWagmiConfig` instance used for quoting.
+- `fromToken` - Source `Token`.
+- `toToken` - Destination `Token`.
+- `amountIn` - Amount to swap, expressed in smallest units.
+- `account` - Wallet address.
+- `slippage` - Decimal slippage tolerance between `0` and `1` (e.g., `0.01` for 1%).
+
+### Returns
+
+`Promise<CallDataForSwap | null>` - Encoded commands, inputs, min-out, and price impact, or `null` when no route is available.
+
+### Example
 
 ```typescript
 import { getCallDataForSwap } from "sugar-sdk";
-import { getAccount } from "@wagmi/core";
-
-const { address } = getAccount(config);
-if (!address) throw new Error("Connect a wallet before requesting calldata.");
 
 const callData = await getCallDataForSwap({
   config,
   fromToken,
   toToken,
   amountIn: 1_000_000n,
-  account: address,
-  slippage: 0.005, // 0.5% as decimal
+  account: "0x...",
+  slippage: 0.05, // 5%
 });
-
-if (callData) {
-  console.log(callData.commands);      // Hex router command stream
-  console.log(callData.inputs);        // Encoded args
-  console.log(callData.minAmountOut);  // bigint after slippage
-  console.log(callData.priceImpact);   // bigint in bps
-}
 ```
 
-Use this for:
+Use `getCallDataForSwap` when you need raw input data to pass directly to Universal Router and when you can't or don't want to use swap functionality directly
 
-- Gas estimation (`estimateGas` with `commands` + `inputs`)
-- Passing swap data to other contracts
-- Building batched transactions or meta-transactions
+## CallDataForSwap
+
+`CallDataForSwap` represents the encoded Universal Router payload returned by `getCallDataForSwap`.
+
+```typescript
+type CallDataForSwap = {
+  commands: Hex;
+  inputs: Hex[];
+  minAmountOut: bigint;
+  priceImpact: bigint;
+};
+```
+
+### Fields
+
+- `commands` - Hex-encoded Universal Router command stream.
+- `inputs` - ABI-encoded arguments matching each command.
+- `minAmountOut` - Minimum accepted output after applying slippage.
+- `priceImpact` - Estimated price impact of the swap.
 
 ## swap
 
-Executes a swap or returns unsigned transaction data, depending on the options you pass. Slippage must be a decimal between `0` and `1`.
+Executes a swap through the Universal Router or returns unsigned transaction data for custom signing.
+
+### Signature
+
+```typescript
+function swap(params: {
+  config: SugarWagmiConfig;
+  quote: Quote;
+  slippage?: number;
+  waitForReceipt?: boolean;
+}): Promise<string>;
+
+function swap(params: {
+  config: SugarWagmiConfig;
+  quote: Quote;
+  slippage?: number;
+  unsignedTransactionOnly: true;
+  account: Address;
+}): Promise<UnsignedSwapTransaction>;
+```
+
+### Parameters
+
+- `config` - `SugarWagmiConfig`.
+- `quote` - `Quote` returned by `getQuoteForSwap`.
+- `slippage` - Optional decimal tolerance (default `0.005` = 0.5%).
+- `waitForReceipt` - Optional flag to await confirmation (default `true` when executing).
+- `unsignedTransactionOnly` - Set to `true` to receive an `UnsignedSwapTransaction` instead of executing.
+- `account` - Required when `unsignedTransactionOnly` is `true`; address that will submit the transaction.
+
+### Returns
+
+`Promise<string | UnsignedSwapTransaction>` - Transaction hash when executing immediately, or unsigned transaction data when requested.
+
+### Example
 
 ```typescript
 import {
@@ -118,25 +212,9 @@ const txHash = await swap({
 console.log(`Swap confirmed: ${txHash}`);
 ```
 
-### Options
-
-- `config` – `SugarWagmiConfig`.
-- `quote` – `Quote` returned by `getQuoteForSwap`.
-- `slippage` (optional) – Decimal tolerance (default `0.005` = 0.5%).
-- `waitForReceipt` (optional) – Wait for confirmation (`true` by default).
-- `unsignedTransactionOnly` (optional) – When `true`, returns an `UnsignedSwapTransaction` instead of executing.
-- `account` (optional) – Required only when `unsignedTransactionOnly` is `true`; identifies who will execute the transaction.
-
-If `unsignedTransactionOnly` is omitted or `false`, the SDK:
-
-1. Ensures the connected wallet is on the right chain.
-2. Encodes the Universal Router call.
-3. Sends the transaction via `writeContract`.
-4. Waits for the receipt when `waitForReceipt` is true and throws if the receipt status is not `"success"`.
-
 ### Unsigned Transactions
 
-Request the raw router call when you need to sign elsewhere:
+Request unsigned transaction when you need to customize how you sign it:
 
 ```typescript
 import { swap } from "sugar-sdk";
@@ -146,16 +224,9 @@ const unsignedTx = await swap({
   quote,
   slippage: 0.01,
   unsignedTransactionOnly: true,
-  account: "0xYourExecutorAddress",
+  account: "0x...",
 });
-
-console.log(unsignedTx.to);      // Universal Router address
-console.log(unsignedTx.data);    // ABI-encoded calldata
-console.log(unsignedTx.value);   // Native value (bigint)
-console.log(unsignedTx.chainId); // Chain ID
 ```
-
-#### Offline signing
 
 Submit the signed payload later with `submitSignedTransaction`.
 
@@ -168,15 +239,3 @@ const txHash = await submitSignedTransaction({
   waitForReceipt: false,
 });
 ```
-
-## Types
-
-```typescript
-import type {
-  Quote,
-  UnsignedSwapTransaction,
-} from "sugar-sdk";
-```
-
-- `Quote` – Detailed swap route information (see above).
-- `UnsignedSwapTransaction` – `{ to: Address; data: Hex; value: bigint; chainId: number; }`.
