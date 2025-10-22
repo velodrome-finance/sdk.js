@@ -58,12 +58,12 @@ See the [Core API Tokens reference](/api/tokens) for more.
 import { getListedTokens, getQuoteForSwap } from "sugar-sdk";
 
 const tokens = await getListedTokens({ config });
-const usdc = tokens.find((token) => token.symbol === "USDC" && token.chainId === 10);
-const weth = tokens.find((token) => token.symbol === "WETH" && token.chainId === 10);
-
-if (!usdc || !weth) {
-  throw new Error("Required tokens are not available in the current configuration.");
-}
+const usdc = tokens.find(
+  (token) => token.chainId === 10 && token.symbol === "USDC"
+);
+const weth = tokens.find(
+  (token) => token.chainId === 10 && token.symbol === "WETH"
+);
 
 const quote = await getQuoteForSwap({
   config,
@@ -76,21 +76,12 @@ if (!quote) {
   throw new Error("No swap route found.");
 }
 
-console.log(`Expected output: ${quote.amountOut} of ${quote.toToken.symbol}`);
+console.log(
+  `Expected output: ${quote.amountOut} of ${quote.toToken.symbol}`
+);
 ```
 
-Tweak the optional `batchSize` and `concurrentLimit` parameters if you need to balance speed and RPC load:
-
-```typescript
-await getQuoteForSwap({
-  config,
-  fromToken: usdc,
-  toToken: weth,
-  amountIn: 1_000_000n,
-  batchSize: 25,
-  concurrentLimit: 5,
-});
-```
+See the [Core API Swaps reference](/api/swaps) for more.
 
 ## Swaps
 
@@ -135,47 +126,4 @@ const hash = await swap({
 console.log(`Swap confirmed: ${hash}`);
 ```
 
-Advanced flows can skip direct execution:
-
-- **Custom calldata** – `getCallDataForSwap` returns the encoded router commands so you can batch swaps or execute them from your own contracts. It enforces the same slippage rules as `swap`. Reuse the `usdc` and `weth` tokens from the previous example.
-
-  ```typescript
-  import { getCallDataForSwap } from "sugar-sdk";
-  import { getAccount } from "@wagmi/core";
-
-  const { address } = getAccount(config);
-  if (!address) {
-    throw new Error("Connect a wallet before requesting swap calldata.");
-  }
-
-  const callData = await getCallDataForSwap({
-    config,
-    fromToken: usdc,
-    toToken: weth,
-    amountIn: 1_000_000n,
-    account: address,
-    slippage: 0.005,
-  });
-
-  if (callData) {
-    console.log("Router commands:", callData.commands);
-    console.log("Minimum amount out:", callData.minAmountOut);
-  }
-  ```
-
-- **Offline signing** – When you already have a signed transaction (for example, from the `swap-with-pk.ts` demo script), submit it with `submitSignedTransaction`. The helper forwards the raw transaction to the connected RPC and optionally waits for the receipt.
-
-  ```typescript
-  import { submitSignedTransaction } from "sugar-sdk";
-
-  // signedTransaction is a serialized hex string you obtained elsewhere
-  const txHash = await submitSignedTransaction({
-    config,
-    signedTransaction,
-    waitForReceipt: false,
-  });
-
-  console.log(`Submitted signed transaction: ${txHash}`);
-  ```
-
-Remember that `swap` accepts a `unsignedTransactionOnly` flag if you want the Universal Router payload without sending it. Combine that with your own signing logic or the demo-node scripts to build enterprise workflows.
+See the [Core API Swaps reference](/api/swaps) for more.

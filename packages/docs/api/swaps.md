@@ -43,6 +43,10 @@ Returns a `Quote | null`. When `null`, no viable swap path exists or inputs are 
 
 Generates router calldata and min-out details without sending a transaction. Validates slippage (must be between `0` and `1`) and returns `null` when no route exists.
 
+### Custom calldata
+
+Use `getCallDataForSwap` when you need Universal Router commands for batching, meta-transactions, or external contract execution.
+
 ```typescript
 import { getCallDataForSwap } from "sugar-sdk";
 import { getAccount } from "@wagmi/core";
@@ -150,6 +154,8 @@ console.log(unsignedTx.data);    // ABI-encoded calldata
 console.log(unsignedTx.value);   // Native value (bigint)
 console.log(unsignedTx.chainId); // Chain ID
 ```
+
+#### Offline signing
 
 Submit the signed payload later with `submitSignedTransaction`.
 
