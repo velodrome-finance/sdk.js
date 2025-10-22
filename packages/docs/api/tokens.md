@@ -1,10 +1,26 @@
 # Tokens API
 
-Token discovery utilities and types exported from Sugar SDK.
+Working with tokens in Sugar SDK.
 
 ## getListedTokens
 
-Fetches all listed tokens across every chain in your `SugarWagmiConfig`. The helper requests token metadata, balances, and USD prices in parallel, merges the results, and sorts them according to `DEFAULT_TOKEN_ORDER`.
+Fetches all listed tokens across every chain in your `SugarWagmiConfig`. 
+
+### Signature
+
+```typescript
+function getListedTokens(params: BaseParams): Promise<Token[]>
+```
+
+### Parameters
+
+- `config` - your instance of `SugarWagmiConfig`.
+
+### Returns
+
+`Promise<Token[]>` - List of tokens with balances, USD prices, and metadata for each configured chain.
+
+### Example
 
 ```typescript
 import { getListedTokens } from "sugar-sdk";
@@ -18,31 +34,16 @@ const usdc = tokens.find(
 );
 
 if (usdc) {
-  const balance =
-    Number(usdc.balance) / 10 ** usdc.decimals;
-  const priceUsd =
-    Number(usdc.price) / 10 ** 18; // prices are scaled to 18 decimals
-
+  const balance = Number(usdc.balance) / 10 ** usdc.decimals;
   console.log(`Balance: ${balance} ${usdc.symbol}`);
-  console.log(`Price: $${priceUsd.toFixed(2)}`);
 }
 ```
 
-### Parameters
+> NOTE: The helper only pulls balances when you have connected your wallet
 
-- `config` – `SugarWagmiConfig`.
+## Token
 
-Returns `Promise<Token[]>`. The promise resolves even if one of the chains fails: errors are routed through the shared `onError` handler and the remaining chains continue.
-
-### Runtime Characteristics
-
-- Uses pagination helpers to respect pool/token limits.
-- Pulls balances only when `getAccount(config)` has an address.
-- Requests on-chain prices in batches to avoid RPC overload.
-
-## Token Type
-
-`Token` is defined in `packages/sugar-sdk/src/primitives/externals/app/src/hooks/types.ts` and re-exported via `sugar-sdk`. It represents an ERC20 token plus computed metadata.
+Token represents an ERC20 token plus computed metadata
 
 ```typescript
 type Token = Readonly<{
@@ -59,22 +60,10 @@ type Token = Readonly<{
 }>;
 ```
 
-Key fields:
+### Fields
 
 - `balance` – Current wallet balance as bigint (0n when no wallet is connected).
-- `price` – USD price scaled to 18 decimals (divide by `10 ** 18` for a float).
+- `price` – USD price scaled to 18 decimals.
 - `balanceValue` – Balance multiplied by price, also scaled to 18 decimals.
 - `wrappedAddress` – Optional wrapped representation for native tokens.
-- `listed` – Indicates whether the token should appear in default lists.
-
-All numeric amounts are bigints to preserve precision. Convert to human-readable values by dividing by `10 ** token.decimals` (for balances) or `10 ** 18` (for USD amounts).
-
-```typescript
-function formatTokenAmount(amount: bigint, decimals: number): string {
-  return (Number(amount) / 10 ** decimals).toLocaleString();
-}
-
-function formatUsd(value: bigint): string {
-  return `$${(Number(value) / 10 ** 18).toFixed(2)}`;
-}
-```
+- `listed` – Indicates whether the token is listed.
