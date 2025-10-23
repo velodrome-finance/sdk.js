@@ -1,13 +1,13 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Button, HelperText, Spinner, TextInput } from "flowbite-react";
-import { useEffect, useMemo, useState } from "react";
 import {
   getListedTokens,
   getQuoteForSwap,
   type SugarWagmiConfig,
   swap,
   type Token,
-} from "sugar-sdk";
+} from "@dromos-labs/sdk.js";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Button, HelperText, Spinner, TextInput } from "flowbite-react";
+import { useEffect, useMemo, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { BaseError, extractChain, formatUnits, parseUnits } from "viem";
 import { useConfig } from "wagmi";

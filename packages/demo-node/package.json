@@ -11,7 +11,7 @@
   "dependencies": {
     "@wagmi/core": "^2.22.1",
     "dotenv": "^16.4.7",
-    "sugar-sdk": "^0.3.0-alpha.1",
+    "@dromos-labs/sdk.js": "^0.3.0-alpha.1",
     "viem": "^2.38.2"
   },
   "devDependencies": {

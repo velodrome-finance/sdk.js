@@ -49,7 +49,7 @@ npm i
 - Build the SDK:
 
 ```shell
-npm run build -w sugar-sdk
+npm run build -w @dromos-labs/sdk.js
 ```
 
 - To run the app for Aerodrome use:

@@ -1,7 +1,5 @@
 #!/usr/bin/env tsx
 
-import { config as loadEnv } from "dotenv";
-import { dirname, resolve } from "path";
 import {
   base,
   getDefaultConfig,
@@ -9,7 +7,9 @@ import {
   getQuoteForSwap,
   submitSignedTransaction,
   swap,
-} from "sugar-sdk";
+} from "@dromos-labs/sdk.js";
+import { config as loadEnv } from "dotenv";
+import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import { parseArgs } from "util";
 import { encodeFunctionData, Hex } from "viem";
