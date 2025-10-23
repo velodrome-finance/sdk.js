@@ -1,5 +1,5 @@
 {
-  "name": "sugar-sdk",
+  "name": "@dromos-labs/sdk.js",
   "version": "0.3.0-alpha.1",
   "main": "./dist/index.js",
   "scripts": {
