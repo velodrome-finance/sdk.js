@@ -17,7 +17,7 @@ function getDefaultConfig(params: {
 ### Parameters
 
 - `chains` - Array of chain configurations
-  - `chain` - Chain object from [`@wagmi/core/chains`](https://wagmi.sh/core/api/chains#available-chains) or sugar-sdk exports
+  - `chain` - Chain object from [`@wagmi/core/chains`](https://wagmi.sh/core/api/chains#available-chains) or @dromos-labs/sdk.js exports
   - `rpcUrl` - RPC endpoint URL for the chain
 
 ### Returns
@@ -27,7 +27,7 @@ function getDefaultConfig(params: {
 ### Example
 
 ```typescript
-import { getDefaultConfig, optimism, base } from "sugar-sdk";
+import { getDefaultConfig, optimism, base } from "@dromos-labs/sdk.js";
 
 const config = getDefaultConfig({
   chains: [
@@ -66,7 +66,7 @@ function init<T extends WagmiCoreConfig>(
 
 ```typescript
 import { createConfig } from "@wagmi/core";
-import { baseConfig, init } from "sugar-sdk";
+import { baseConfig, init } from "@dromos-labs/sdk.js";
 
 // Create custom wagmi config
 const wagmiConfig = createConfig({
@@ -114,7 +114,7 @@ const baseConfig: Config
 ### Example
 
 ```typescript
-import { baseConfig } from "sugar-sdk";
+import { baseConfig } from "@dromos-labs/sdk.js";
 
 console.log(baseConfig.MAX_HOPS);           // 3
 console.log(baseConfig.DEFAULT_CHAIN_ID);   // 10
@@ -146,7 +146,7 @@ import {
   mode,       // Chain ID 34443
   celo,       // Chain ID 42220
   ink,        // Chain ID 57073
-} from "sugar-sdk";
+} from "@dromos-labs/sdk.js";
 ```
 
 ## supportedChains
@@ -162,7 +162,7 @@ const supportedChains: Chain[]
 ### Example
 
 ```typescript
-import { supportedChains } from "sugar-sdk";
+import { supportedChains } from "@dromos-labs/sdk.js";
 
 console.log(`Sugar SDK supports ${supportedChains.length} chains`);
 

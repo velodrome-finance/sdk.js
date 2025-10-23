@@ -35,7 +35,7 @@ function getQuoteForSwap(params: {
 ### Example
 
 ```typescript
-import { getQuoteForSwap } from "sugar-sdk";
+import { getQuoteForSwap } from "@dromos-labs/sdk.js";
 
 const quote = await getQuoteForSwap({
   config,
@@ -103,7 +103,7 @@ function getCallDataForSwap(params: {
 ### Example
 
 ```typescript
-import { getCallDataForSwap } from "sugar-sdk";
+import { getCallDataForSwap } from "@dromos-labs/sdk.js";
 
 const callData = await getCallDataForSwap({
   config,
@@ -181,7 +181,7 @@ import {
   getListedTokens,
   getQuoteForSwap,
   swap,
-} from "sugar-sdk";
+} from "@dromos-labs/sdk.js";
 
 const tokens = await getListedTokens({ config });
 const fromToken = tokens.find((token) => token.symbol === "USDC" && token.chainId === 10);
@@ -217,7 +217,7 @@ console.log(`Swap confirmed: ${txHash}`);
 Request unsigned transaction when you need to customize how you sign it:
 
 ```typescript
-import { swap } from "sugar-sdk";
+import { swap } from "@dromos-labs/sdk.js";
 
 const unsignedTx = await swap({
   config,
@@ -231,7 +231,7 @@ const unsignedTx = await swap({
 Submit the signed payload later with `submitSignedTransaction`.
 
 ```typescript
-import { submitSignedTransaction } from "sugar-sdk";
+import { submitSignedTransaction } from "@dromos-labs/sdk.js";
 
 const txHash = await submitSignedTransaction({
   config,
