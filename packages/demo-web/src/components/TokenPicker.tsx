@@ -1,3 +1,4 @@
+import type { Token } from "@dromos-labs/sdk.js";
 import {
   Button,
   ChevronDownIcon,
@@ -6,7 +7,6 @@ import {
   Modal,
 } from "flowbite-react";
 import { useState } from "react";
-import type { Token } from "sugar-sdk";
 import { formatUnits } from "viem";
 
 export function TokenPicker({

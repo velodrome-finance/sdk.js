@@ -13,7 +13,7 @@ import {
   superseed,
   swellchain,
   unichain,
-} from "sugar-sdk";
+} from "@dromos-labs/sdk.js";
 import { type Chain } from "viem";
 
 function getRpcUrl(chain: Chain) {

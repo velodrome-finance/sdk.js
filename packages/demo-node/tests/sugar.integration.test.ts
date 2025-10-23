@@ -16,7 +16,7 @@ import {
   swap,
   swellchain,
   unichain,
-} from "sugar-sdk";
+} from "@dromos-labs/sdk.js";
 import { describe, expect, it } from "vitest";
 
 export const TEST_ACCOUNT_ADDRESS =
@@ -43,7 +43,7 @@ describe("env", () => {
   });
 });
 
-describe("sugar-sdk integration smoke tests", () => {
+describe("@dromos-labs/sdk.js integration smoke tests", () => {
   it("can fetch tokens", async () => {
     const config = getDefaultConfig({
       chains: [
