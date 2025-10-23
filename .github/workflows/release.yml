@@ -6,72 +6,12 @@ on:
       - '*'
   workflow_dispatch:
 
-env:
-  VITE_RPC_URL_10: ${{ secrets.VITE_RPC_URL_10 }}
-  VITE_RPC_URL_8453: ${{ secrets.VITE_RPC_URL_8453 }}
-  VITE_RPC_URL_34443: ${{ secrets.VITE_RPC_URL_34443 }}
-  VITE_RPC_URL_1135: ${{ secrets.VITE_RPC_URL_1135 }}
-  VITE_RPC_URL_252: ${{ secrets.VITE_RPC_URL_252 }}
-  VITE_RPC_URL_1750: ${{ secrets.VITE_RPC_URL_1750 }}
-  VITE_RPC_URL_57073: ${{ secrets.VITE_RPC_URL_57073 }}
-  VITE_RPC_URL_1868: ${{ secrets.VITE_RPC_URL_1868 }}
-  VITE_RPC_URL_5330: ${{ secrets.VITE_RPC_URL_5330 }}
-  VITE_RPC_URL_1923: ${{ secrets.VITE_RPC_URL_1923 }}
-  VITE_RPC_URL_130: ${{ secrets.VITE_RPC_URL_130 }}
-  VITE_RPC_URL_42220: ${{ secrets.VITE_RPC_URL_42220 }}
-
 jobs:
   build-and-release:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Build sugar-sdk
-        run: |
-          cd packages/sugar-sdk
-          npm run build
-
-      # - name: Run Honey 🍯
-      #   uses: ./.github/actions/honey
-          
-      # - name: Run tests
-      #   run: npm test
-        
-      - name: Create sugar-sdk release package
-        run: |
-          cd packages/sugar-sdk
-          VERSION=$(node -p "require('./package.json').version")
-          npm pack
-          mkdir -p ../../release-artifacts
-          mv sugar-sdk-*.tgz ../../release-artifacts/sugar-sdk-${VERSION}.tgz
-        
-      - name: Create GitHub Release
-        run: |
-          cd packages/sugar-sdk
-          VERSION=$(node -p "require('./package.json').version")
-          cd ../..
-          gh release create ${{ github.ref_name }} ./release-artifacts/sugar-sdk-${VERSION}.tgz --title "Sugar SDK release ${{ github.ref_name }}" --notes "Sugar SDK release ${{ github.ref_name }}
-
-          Install the packaged SDK (requires GitHub token for private repo):
-          \`\`\`
-          npm install https://\${GITHUB_TOKEN}@github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/sugar-sdk-${VERSION}.tgz
-          \`\`\`
-          
-          Or download and install locally:
-          \`\`\`
-          curl -H \"Authorization: token \${GITHUB_TOKEN}\" -L -o sugar-sdk-${VERSION}.tgz https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/sugar-sdk-${VERSION}.tgz
-          npm install ./sugar-sdk-${VERSION}.tgz
-          \`\`\`"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: ./.github/workflows/_shared-build.yml
+    with:
+      run-lint: false
+      run-honey: false
+      run-tests: false
+      run-publish: true
+    secrets: inherit
