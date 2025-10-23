@@ -16,7 +16,7 @@ npm install \
 Create a multi-chain configuration with `getDefaultConfig` by picking the chains you need.
 
 ```typescript
-import { getDefaultConfig, optimism, base } from "sugar-sdk";
+import { getDefaultConfig, optimism, base } from "@dromos-labs/sdk.js";
 
 const config = getDefaultConfig({
   chains: [
@@ -35,7 +35,7 @@ Once you have `config`, you're ready to fetch tokens, request quotes, and submit
 Use `getListedTokens` to load every listed token across the chains in your configuration.
 
 ```typescript
-import { getListedTokens } from "sugar-sdk";
+import { getListedTokens } from "@dromos-labs/sdk.js";
 
 const tokens = await getListedTokens({ config });
 console.log(`Found ${tokens.length} tokens across all chains.`);
@@ -55,7 +55,7 @@ See the [Core API Tokens reference](/api/tokens) for more.
 `getQuoteForSwap` returns the best `Quote` to swap between 2 tokens. A quote contains the expected output amount (`amountOut`), price impact, routing path, and the spender address needed for approval before swapping.
 
 ```typescript
-import { getListedTokens, getQuoteForSwap } from "sugar-sdk";
+import { getListedTokens, getQuoteForSwap } from "@dromos-labs/sdk.js";
 
 const tokens = await getListedTokens({ config });
 const usdc = tokens.find(
@@ -93,7 +93,7 @@ import {
   getListedTokens,
   getQuoteForSwap,
   swap,
-} from "sugar-sdk";
+} from "@dromos-labs/sdk.js";
 
 const tokens = await getListedTokens({ config });
 const usdc = tokens.find(

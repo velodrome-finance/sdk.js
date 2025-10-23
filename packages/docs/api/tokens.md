@@ -23,7 +23,7 @@ function getListedTokens(params: BaseParams): Promise<Token[]>
 ### Example
 
 ```typescript
-import { getListedTokens } from "sugar-sdk";
+import { getListedTokens } from "@dromos-labs/sdk.js";
 
 const tokens = await getListedTokens({ config });
 console.log(`Loaded ${tokens.length} tokens.`);

@@ -35,7 +35,7 @@ function approve(params: {
 ### Example
 
 ```typescript
-import { approve, getQuoteForSwap } from "sugar-sdk";
+import { approve, getQuoteForSwap } from "@dromos-labs/sdk.js";
 
 const quote = await getQuoteForSwap({
   config, fromToken, toToken, amountIn: 1_000_000n

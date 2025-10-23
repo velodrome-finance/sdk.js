@@ -16,7 +16,7 @@ This is the lowest level public API Sugar SDK exposes. It might be somewhat verb
 Sugar SDK extends Wagmi's [configuration](https://wagmi.sh/core/api/createConfig#config) with Sugar specific settings. You create a config once and use it throughout your app:
 
 ```typescript
-import { getDefaultConfig, optimism, base } from "sugar-sdk";
+import { getDefaultConfig, optimism, base } from "@dromos-labs/sdk.js";
 
 const config = getDefaultConfig({
   chains: [
