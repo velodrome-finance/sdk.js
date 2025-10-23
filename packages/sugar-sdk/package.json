@@ -1,11 +1,12 @@
 {
   "name": "sugar-sdk",
   "version": "0.3.0-alpha.1",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "check": "npx tsc --noEmit",
     "clean": "rm -rf dist",
     "build": "npm run check && npm run clean && npx tsc --project tsconfig.build.json",
+    "prepublishOnly": "npm run build",
     "test": "vitest"
   },
   "repository": {
@@ -19,7 +20,7 @@
     "url": "https://github.com/velodrome-finance/sdk.js/issues"
   },
   "homepage": "https://github.com/velodrome-finance/sdk.js#readme",
-  "description": "",
+  "description": "Sugar makes Velodrome and Aerodrome devs life sweeter",
   "type": "module",
   "files": [
     "dist/**/*",

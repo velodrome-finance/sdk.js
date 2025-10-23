@@ -1,0 +1,105 @@
+name: Shared Build Workflow
+
+on:
+  workflow_call:
+    inputs:
+      run-lint:
+        required: false
+        type: boolean
+        default: false
+      run-honey:
+        required: false
+        type: boolean
+        default: false
+      run-tests:
+        required: false
+        type: boolean
+        default: false
+      run-publish:
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      VITE_RPC_URL_10:
+        required: true
+      VITE_RPC_URL_8453:
+        required: true
+      VITE_RPC_URL_34443:
+        required: true
+      VITE_RPC_URL_1135:
+        required: true
+      VITE_RPC_URL_252:
+        required: true
+      VITE_RPC_URL_1750:
+        required: true
+      VITE_RPC_URL_57073:
+        required: true
+      VITE_RPC_URL_1868:
+        required: true
+      VITE_RPC_URL_5330:
+        required: true
+      VITE_RPC_URL_1923:
+        required: true
+      VITE_RPC_URL_130:
+        required: true
+      VITE_RPC_URL_42220:
+        required: true
+      NPM_TOKEN:
+        required: false
+
+env:
+  VITE_RPC_URL_10: ${{ secrets.VITE_RPC_URL_10 }}
+  VITE_RPC_URL_8453: ${{ secrets.VITE_RPC_URL_8453 }}
+  VITE_RPC_URL_34443: ${{ secrets.VITE_RPC_URL_34443 }}
+  VITE_RPC_URL_1135: ${{ secrets.VITE_RPC_URL_1135 }}
+  VITE_RPC_URL_252: ${{ secrets.VITE_RPC_URL_252 }}
+  VITE_RPC_URL_1750: ${{ secrets.VITE_RPC_URL_1750 }}
+  VITE_RPC_URL_57073: ${{ secrets.VITE_RPC_URL_57073 }}
+  VITE_RPC_URL_1868: ${{ secrets.VITE_RPC_URL_1868 }}
+  VITE_RPC_URL_5330: ${{ secrets.VITE_RPC_URL_5330 }}
+  VITE_RPC_URL_1923: ${{ secrets.VITE_RPC_URL_1923 }}
+  VITE_RPC_URL_130: ${{ secrets.VITE_RPC_URL_130 }}
+  VITE_RPC_URL_42220: ${{ secrets.VITE_RPC_URL_42220 }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting checks
+        if: ${{ inputs.run-lint }}
+        run: npx --yes eslint .
+
+      - name: Run Honey 🍯
+        if: ${{ inputs.run-honey }}
+        uses: ./.github/actions/honey
+
+      - name: Build sugar-sdk
+        if: ${{ !inputs.run-publish }}
+        run: |
+          cd packages/sugar-sdk
+          npm run build
+
+      - name: Run tests
+        if: ${{ inputs.run-tests }}
+        run: npm test
+
+      - name: Publish sugar-sdk
+        if: ${{ inputs.run-publish }}
+        working-directory: packages/sugar-sdk
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
