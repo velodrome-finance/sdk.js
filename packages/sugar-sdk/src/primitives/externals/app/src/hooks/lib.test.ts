@@ -41,7 +41,7 @@ test("Prepare route", async ({ DEFAULT_CHAIN_ID }) => {
     },
   ];
   //for a quote
-  expect(prepareRoute(10, await getConfig(), v2Nodes, "quote")).toEqual({
+  expect(prepareRoute(DEFAULT_CHAIN_ID, await getConfig(), v2Nodes, "quote")).toEqual({
     types: ["address", "int24", "address", "int24", "address"],
     values: [
       "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
