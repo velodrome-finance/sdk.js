@@ -205,7 +205,7 @@ describe("Swap setupPlanner", () => {
     });
 
     expect(packRoute).toHaveBeenCalledTimes(1);
-    expect(packRoute).toHaveBeenCalledWith(sugarConfig, [v3PoolRouteElement]);
+    expect(packRoute).toHaveBeenCalledWith(DEFAULT_CHAIN_ID, sugarConfig, [v3PoolRouteElement]);
     expect(routePlanner.addCommand).toHaveBeenCalledTimes(1);
     expect(routePlanner.addCommand).toHaveBeenNthCalledWith(
       1,

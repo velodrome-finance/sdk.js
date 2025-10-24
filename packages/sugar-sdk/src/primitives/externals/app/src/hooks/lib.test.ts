@@ -1,9 +1,25 @@
-import { expect, test } from "vitest";
+import { expect, it } from "vitest";
 import { getConfig } from "@/lib/test-helpers";
 import { RouteElement } from "./types.js";
 import { prepareRoute } from "./lib";
 
-test("Prepare route", async () => {
+interface TestContext {
+  sugarConfig: Awaited<ReturnType<typeof getConfig>>;
+  DEFAULT_CHAIN_ID: number;
+}
+
+const test = it.extend<TestContext>({
+  // eslint-disable-next-line no-empty-pattern
+  sugarConfig: async ({}, use) => {
+    const sugarConfig = await getConfig();
+    await use(sugarConfig);
+  },
+  DEFAULT_CHAIN_ID: async ({ sugarConfig }, use) => {
+    await use(sugarConfig.DEFAULT_CHAIN_ID);
+  },
+});
+
+test("Prepare route", async ({ DEFAULT_CHAIN_ID }) => {
   const v2Nodes: RouteElement[] = [
     {
       from: "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
@@ -25,7 +41,7 @@ test("Prepare route", async () => {
     },
   ];
   //for a quote
-  expect(prepareRoute(await getConfig(), v2Nodes, "quote")).toEqual({
+  expect(prepareRoute(10, await getConfig(), v2Nodes, "quote")).toEqual({
     types: ["address", "int24", "address", "int24", "address"],
     values: [
       "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",
@@ -37,7 +53,7 @@ test("Prepare route", async () => {
   });
   //for a quote
   expect(
-    prepareRoute(
+    prepareRoute(DEFAULT_CHAIN_ID,
       await getConfig(),
       [
         {
@@ -92,7 +108,7 @@ test("Prepare route", async () => {
   });
 
   //for a v2 swap command
-  expect(prepareRoute(await getConfig(), v2Nodes, "swap")).toEqual({
+  expect(prepareRoute(DEFAULT_CHAIN_ID, await getConfig(), v2Nodes, "swap")).toEqual({
     types: ["address", "bool", "address", "bool", "address"],
     values: [
       "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db",

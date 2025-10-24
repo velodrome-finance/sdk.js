@@ -2,6 +2,8 @@
 import { Address, encodePacked } from "viem";
 import { RouteElement } from "./types.js";
 import { Config } from "../../../../../config.js";
+import { base } from "@wagmi/core/chains";
+import { isAddressEqual } from "viem";
 
 export const poolTypes = {
   basic: (type: number) => type === 0 || type === -1,
@@ -10,7 +12,27 @@ export const poolTypes = {
   stable: (type: number) => type === 0 || (type > 0 && type <= 50),
 } as const;
 
+const getFillerForCLPool = ({ pool, config, chainId }: { pool: RouteElement; config: Config; chainId: number }): number => {
+  // CL pools filler is the same as their type aka tick space...
+      // Base pools using new CL factory get a slight tweak however
+      
+    if (chainId === base.id) {
+      const bc = config.chains.find((c) => c.CHAIN.id === base.id);
+      if (!bc) {
+        throw new Error(`Config for chainId ${base.id} not found`);
+      }
+
+      if (bc.SLIPSTREAM_FACTORY_ADDRESS && isAddressEqual(pool.factory, bc.SLIPSTREAM_FACTORY_ADDRESS)) {
+          // apply flagged tick spacing
+          return (pool.type | 0x100000) >>> 0;
+      }
+    }
+
+    return Number(pool.type); 
+}
+
 export function prepareRoute(
+  chainId: number,
   config: Config,
   nodes: RouteElement[],
   type: "swap" | "quote"
@@ -35,9 +57,9 @@ export function prepareRoute(
           ? config.QUOTER_STABLE_POOL_FILLER
           : config.QUOTER_VOLATILE_POOL_FILLER;
 
-      // CL pools filler is the same as their type aka tick space...
+      // CL pools filler
       if (Number(pool.type) > 0) {
-        filler = Number(pool.type);
+        filler = getFillerForCLPool({ pool, config, chainId });
       }
 
       return s.length === 0
@@ -67,10 +89,11 @@ export function prepareRoute(
 }
 
 export function packRoute(
+  chainId: number,
   config: Config,
   nodes: RouteElement[],
   type: "swap" | "quote" = "swap"
 ) {
-  const { types, values } = prepareRoute(config, nodes, type);
+  const { types, values } = prepareRoute(chainId, config, nodes, type);
   return encodePacked(types, values);
 }
