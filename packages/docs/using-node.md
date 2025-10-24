@@ -8,7 +8,7 @@ Install the SDK alongside its peer dependencies:
 
 ```bash
 npm install \
-  https://github.com/velodrome-finance/sdk.js/releases/tag/v0.3.0-alpha.1 \
+  @dromos-labs/sdk.js \
   @wagmi/core \
   viem
 ```
