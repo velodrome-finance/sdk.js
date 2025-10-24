@@ -93,7 +93,7 @@ export const setupPlanner = ({
         quote.toToken.wrappedAddress ? routerAddress : account,
         quote.amount,
         minAmountOut,
-        packRoute(config, nodes),
+        packRoute(chainId, config, nodes),
         !tokensComeFromContract,
         false,
       ] as const
@@ -125,7 +125,7 @@ export const setupPlanner = ({
         quote.amount,
         // no expectations on the min amount out
         0n,
-        packRoute(config, firstBatch),
+        packRoute(chainId, config, firstBatch),
         !tokensComeFromContract,
         false,
       ]
@@ -151,7 +151,7 @@ export const setupPlanner = ({
             isBatchV2 ? 0n : CONTRACT_BALANCE_FOR_V3_SWAPS,
             // no idea how much money is coming out, so no expectations
             0n,
-            packRoute(config, batch),
+            packRoute(chainId, config, batch),
             // `false` means money comes from the contract
             false,
             false,
@@ -176,7 +176,7 @@ export const setupPlanner = ({
         isLastBatchV2 ? 0n : CONTRACT_BALANCE_FOR_V3_SWAPS,
         // we want at least minAmount out back
         minAmountOut,
-        packRoute(config, lastBatch),
+        packRoute(chainId, config, lastBatch),
         false,
         false,
       ]
