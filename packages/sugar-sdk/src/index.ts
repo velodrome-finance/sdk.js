@@ -18,5 +18,6 @@ export {
 } from "./config.js";
 export type { UnsignedSwapTransaction } from "./swap.js";
 export { getCallDataForSwap, getQuoteForSwap, Quote, swap } from "./swap.js";
+export { getPoolsForSwaps, getPoolsPagination } from "./pools.js";
 export { getListedTokens, Token } from "./tokens.js";
 export { submitSignedTransaction } from "./utils.js";
