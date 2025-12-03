@@ -152,4 +152,49 @@ describe("@dromos-labs/sdk.js integration smoke tests", () => {
     expect(unsignedTx.value).toBeDefined();
     expect(unsignedTx.chainId).toBe(opEth!.chainId);
   });
+
+  it("can get quote for VGBP → USDC on Base", async () => {
+    const config = getDefaultConfig({
+      chains: [{ chain: base, rpcUrl: import.meta.env.VITE_RPC_URL_8453 }],
+    });
+
+    const tokens = await getListedTokens({ config });
+
+    const getToken = (address: string, chainId: number) =>
+      tokens.find(
+        (t) =>
+          t.address.toLowerCase() === address.toLowerCase() &&
+          t.chainId === chainId
+      );
+
+    // VGBP on Base
+    const vgbp = getToken("0xaeb4bb7debd1e5e82266f7c3b5cff56b3a7bf411", 8453);
+    // USDC on Base
+    const usdc = getToken("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913", 8453);
+
+    expect(vgbp).toBeDefined();
+    expect(usdc).toBeDefined();
+
+    const amountIn = 100n * 10n ** BigInt(vgbp!.decimals);
+    const quote = await getQuoteForSwap({
+      config,
+      fromToken: vgbp!,
+      toToken: usdc!,
+      amountIn,
+    });
+
+    expect(quote).toBeTruthy();
+    expect(quote!.amountOut).toBeGreaterThan(0n);
+
+    // Print human-readable results
+    const amountInFormatted = Number(amountIn) / 10 ** vgbp!.decimals;
+    const amountOutFormatted = Number(quote!.amountOut) / 10 ** usdc!.decimals;
+    const rate = amountOutFormatted / amountInFormatted;
+
+    console.log("\n=== VGBP → USDC Quote ===");
+    console.log(`From: ${amountInFormatted} ${vgbp!.symbol}`);
+    console.log(`To: ${amountOutFormatted.toFixed(6)} ${usdc!.symbol}`);
+    console.log(`Rate: 1 ${vgbp!.symbol} = ${rate.toFixed(6)} ${usdc!.symbol}`);
+    console.log("=========================\n");
+  });
 });
