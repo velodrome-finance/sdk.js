@@ -99,11 +99,10 @@ async function getTokensFromChain({
   customPrices: Record<Address, bigint>;
 }): Promise<ReturnType<typeof transformTokens>> {
   const accountAddress = getAccount(config).address;
-  const { upperBound } = await getPoolsPagination({ config, chainId });
+  const { limit, upperBound } = await getPoolsPagination({ config, chainId });
 
   const rawTokens = await paginate({
-    // TODO: once https://github.com/velodrome-finance/sugar/pull/130/commits/4c6f795383dd5338ebdd8b258ae8a94a45e52487 is deployed we can paginate this call
-    limit: 1000, // currently limit is for tokens or pools, while offset is only for pools
+    limit,
     upperBound,
     fetchData: (limit, offset) => {
       return readContract(

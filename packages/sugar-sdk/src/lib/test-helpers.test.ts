@@ -16,7 +16,7 @@ describe("init", () => {
     const config = await init(false);
     // spot check if this looks like a real network via non public RPC
     expect(
-      config.chains[1].rpcUrls.default.http[0].includes("lb.drpc.org")
+      config.chains[1].rpcUrls.default.http[0].includes("lb.drpc.live")
     ).toBeTruthy();
   });
 });

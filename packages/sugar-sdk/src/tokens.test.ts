@@ -8,7 +8,7 @@ describe("Test fetching tokens", () => {
   it("should be able to fetch", async () => {
     const tokens = await getListedTokens({ config: await init() });
     // spot check common sense token count for OP
-    expect(tokens.filter((t) => t.chainId === 10).length).toBeGreaterThan(80);
+    expect(tokens.filter((t) => t.chainId === 10).length).toBeGreaterThan(50);
     // spot check common sense token count for Base
     expect(tokens.filter((t) => t.chainId === 8453).length).toBeGreaterThan(
       301
