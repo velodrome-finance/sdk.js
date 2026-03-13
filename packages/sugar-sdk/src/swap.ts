@@ -192,6 +192,21 @@ export async function getQuoteForSwap({
       }),
   });
 
+  // Detect out-of-gas errors that indicate the multicall read limit was reached.
+  // Individual contract reverts are normal (invalid routes), but if ALL calls in a
+  // batch fail with "out of gas", the multicall itself hit the gas limit.
+  const oogResponses = quoteResponses.filter(
+    (r) =>
+      r.status === "failure" &&
+      r.error?.message?.toLowerCase().includes("out of gas")
+  );
+  if (
+    oogResponses.length > 0 &&
+    oogResponses.length === quoteResponses.length
+  ) {
+    throw new Error("Fetching quotes: read limit reached");
+  }
+
   const quotes = quoteResponses
     .map((response, i) => {
       const amountOut = response.result?.[0];

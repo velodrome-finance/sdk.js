@@ -25,6 +25,7 @@ export type Token = Readonly<{
   balance: bigint;
   price: bigint;
   balanceValue: bigint;
+  emerging?: boolean;
   wrappedAddress?: Address;
 }>;
 
