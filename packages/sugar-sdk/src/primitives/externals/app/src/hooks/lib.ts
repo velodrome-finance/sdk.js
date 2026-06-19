@@ -2,7 +2,6 @@
 import { Address, encodePacked } from "viem";
 import { RouteElement } from "./types.js";
 import { Config } from "../../../../../config.js";
-import { base } from "@wagmi/core/chains";
 import { isAddressEqual } from "viem";
 
 export const poolTypes = {
@@ -13,23 +12,18 @@ export const poolTypes = {
 } as const;
 
 const getFillerForCLPool = ({ pool, config, chainId }: { pool: RouteElement; config: Config; chainId: number }): number => {
-  // CL pools filler is the same as their type aka tick space...
-      // Base pools using new CL factory get a slight tweak however
-      
-    if (chainId === base.id) {
-      const bc = config.chains.find((c) => c.CHAIN.id === base.id);
-      if (!bc) {
-        throw new Error(`Config for chainId ${base.id} not found`);
-      }
-
-      if (bc.SLIPSTREAM_FACTORY_ADDRESS && isAddressEqual(pool.factory, bc.SLIPSTREAM_FACTORY_ADDRESS)) {
-          // apply flagged tick spacing
-          return (pool.type | 0x100000) >>> 0;
-      }
+  const cc = config.chains.find((c) => c.CHAIN.id === chainId);
+  if (cc) {
+    // NEW Slipstream factory -> 0x080000 ; OLD factory -> 0x100000
+    if (cc.SLIPSTREAM_FACTORY_ADDRESS && isAddressEqual(pool.factory, cc.SLIPSTREAM_FACTORY_ADDRESS)) {
+      return (pool.type | 0x080000) >>> 0;
     }
-
-    return Number(pool.type); 
-}
+    if (cc.OLD_SLIPSTREAM_FACTORY_ADDRESS && isAddressEqual(pool.factory, cc.OLD_SLIPSTREAM_FACTORY_ADDRESS)) {
+      return (pool.type | 0x100000) >>> 0;
+    }
+  }
+  return Number(pool.type);
+};
 
 export function prepareRoute(
   chainId: number,
